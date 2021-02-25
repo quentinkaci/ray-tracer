@@ -3,15 +3,15 @@
 namespace primitives
 {
     Color::Color(uchar r, uchar g, uchar b)
-        : r_(r)
-        , g_(g)
-        , b_(b)
+        : r(r)
+        , g(g)
+        , b(b)
     {}
 }
 
 
 std::ostream& operator<<(std::ostream& os, const primitives::Color& color)
 {
-    os << "R: " << color.r_ << ", G: " << color.g_ << ", B: " << color.b_ << std::endl;
+    os << "R: " << color.r << ", G: " << color.g << ", B: " << color.b << std::endl;
     return os;
 }

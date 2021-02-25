@@ -7,17 +7,13 @@
 
 namespace primitives
 {
-    class Color
+    struct Color
     {
-    public:
         Color(uchar r, uchar g, uchar b);
 
-        friend std::ostream& operator<<(std::ostream& os, const Color& color);
-
-    private:
-        uchar r_;
-        uchar g_;
-        uchar b_;
+        uchar r;
+        uchar g;
+        uchar b;
     };
 }
 
