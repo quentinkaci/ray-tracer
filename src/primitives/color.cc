@@ -7,6 +7,10 @@ namespace primitives
         , g(g)
         , b(b)
     {}
+
+    Color::Color()
+        : Color(0, 0, 0)
+    {}
 }
 
 

@@ -11,6 +11,8 @@ namespace primitives
     {
         Color(uchar r, uchar g, uchar b);
 
+        Color();
+
         uchar r;
         uchar g;
         uchar b;
