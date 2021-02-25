@@ -1,3 +1,3 @@
 #pragma once
 
-using uchar = unsigned char
+using uchar = unsigned char;

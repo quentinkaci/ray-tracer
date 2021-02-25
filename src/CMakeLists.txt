@@ -10,8 +10,6 @@ set_target_properties(sources PROPERTIES
 
 target_link_libraries(sources PRIVATE
         common_options
-        ${CMAKE_DL_LIBS}
-        dl
 )
 
 add_executable(ray-tracer
@@ -25,7 +23,5 @@ set_target_properties(ray-tracer PROPERTIES
 
 target_link_libraries(ray-tracer PRIVATE
         common_options
-        ${CMAKE_DL_LIBS}
         sources
-        dl
 )

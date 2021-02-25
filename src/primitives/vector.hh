@@ -5,7 +5,6 @@
 
 #include <iostream>
 
-
 namespace primitives
 {
     struct Vector3
