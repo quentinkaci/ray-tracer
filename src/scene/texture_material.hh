@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types.hh"
-#include "color.hh"
+#include "primitives/color.hh"
 
 
 namespace scene

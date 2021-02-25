@@ -2,6 +2,12 @@ add_library(sources
         primitives/color.cc
         primitives/point.cc
         primitives/vector.cc
+
+        scene/object.cc
+        scene/scene.cc
+        scene/uniform_texture.cc
+
+        utils/image.cc
 )
 
 set_target_properties(sources PROPERTIES

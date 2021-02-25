@@ -10,7 +10,7 @@ namespace scene
     public:
         UniformTexture(Caracteristic caracteristic);
 
-        Caracteristic get_texture(const uint& x, const uint& y) override;
+        Caracteristic get_texture(const uint&, const uint&) override;
 
     private:
         Caracteristic caracteristic_;
