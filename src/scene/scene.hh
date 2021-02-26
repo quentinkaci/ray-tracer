@@ -1,5 +1,8 @@
 #pragma once
 
+#include "object.hh"
+#include "light.hh"
+
 #include <vector>
 
 namespace scene
@@ -10,9 +13,9 @@ namespace scene
 
         ~Scene() = default;
 
+        std::vector<Object> objects;
+        std::vector<Light> light_sources;
         // FIXME
-        std::vector<int> objects;
-        std::vector<int> light_sources;
         int camera;
     };
 }

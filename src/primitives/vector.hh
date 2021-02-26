@@ -9,13 +9,12 @@ namespace primitives
 {
     struct Vector3
     {
-        Vector3(Point3 src, Point3 dst);
+        Vector3(Point3 dst);
 
         Vector3 operator*(const float& n) const;
 
         Vector3 operator-(const Vector3& v) const;
 
-        Point3 src;
         Point3 dst;
     };
 }

@@ -2,11 +2,11 @@
 
 namespace scene
 {
-    UniformTexture::UniformTexture(Caracteristic caracteristic)
+    UniformTexture::UniformTexture(const TextureMaterialCaracteristics& caracteristic)
         : caracteristic_(caracteristic)
     {}
 
-    Caracteristic UniformTexture::get_texture(const uint&, const uint&)
+    const TextureMaterialCaracteristics& UniformTexture::get_texture(const primitives::Point3&)
     {
         return caracteristic_;
     }

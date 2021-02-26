@@ -3,6 +3,8 @@
 #include "texture_material.hh"
 #include "primitives/vector.hh"
 
+#include <vector>
+
 
 namespace scene
 {
@@ -11,11 +13,11 @@ namespace scene
     public:
         Object(const TextureMaterial& texture_material);
 
-        virtual bool is_ray_intersecting(const primitives::Point3& a, int lambda, const primitives::Vector3& v) = 0;
+        virtual std::vector<int> ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) = 0;
 
-        virtual primitives::Vector3 get_normal_from(const primitives::Point3& p) = 0;
+        virtual primitives::Vector3 get_normal(const primitives::Point3& A) = 0;
 
-        virtual primitives::Vector3 get_texture(const primitives::Point3& p) = 0;
+        virtual primitives::Vector3 get_texture(const primitives::Point3& A) = 0;
 
     private:
         const TextureMaterial& texture_material_;

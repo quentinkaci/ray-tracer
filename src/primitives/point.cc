@@ -22,6 +22,5 @@ namespace primitives
 
 std::ostream& operator<<(std::ostream& os, const primitives::Point3& point)
 {
-    os << "(" << point.x << ", " << point.y << ", " << point.z << ")" << std::endl;
-    return os;
+    return os << "(" << point.x << ", " << point.y << ", " << point.z << ")" << std::endl;
 }

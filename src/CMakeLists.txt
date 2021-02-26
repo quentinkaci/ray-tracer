@@ -4,7 +4,9 @@ add_library(sources
         primitives/vector.cc
 
         scene/object.cc
+        scene/point_light.cc
         scene/scene.cc
+        scene/sphere.cc
         scene/uniform_texture.cc
 
         utils/image.cc

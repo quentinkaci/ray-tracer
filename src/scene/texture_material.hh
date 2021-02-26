@@ -2,11 +2,12 @@
 
 #include "types.hh"
 #include "primitives/color.hh"
+#include "primitives/point.hh"
 
 
 namespace scene
 {
-    struct Caracteristic
+    struct TextureMaterialCaracteristics
     {
         uint kd;
         uint ks;
@@ -15,6 +16,6 @@ namespace scene
 
     struct TextureMaterial
     {
-        virtual Caracteristic get_texture(const uint& x, const uint& y) = 0;
+        virtual const TextureMaterialCaracteristics& get_texture(const primitives::Point3& point) = 0;
     };
 }
