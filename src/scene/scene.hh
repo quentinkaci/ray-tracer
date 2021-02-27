@@ -2,6 +2,7 @@
 
 #include "object.hh"
 #include "light.hh"
+#include "camera.hh"
 
 #include <vector>
 
@@ -15,7 +16,6 @@ namespace scene
 
         std::vector<Object> objects;
         std::vector<Light> light_sources;
-        // FIXME
-        int camera;
+        Camera camera;
     };
 }

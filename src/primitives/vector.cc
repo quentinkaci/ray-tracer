@@ -1,5 +1,7 @@
 #include "vector.hh"
 
+#include <cmath>
+
 namespace primitives
 {
     Vector3::Vector3(Point3 dst)
@@ -14,6 +16,15 @@ namespace primitives
     Vector3 Vector3::operator-(const Vector3& v) const
     {
         return Vector3(dst - v.dst);
+    }
+
+    void Vector3::normalize()
+    {
+        uint length = sqrt(pow(dst.x, 2) + pow(dst.y, 2) + pow(dst.z, 2));
+
+        dst.x /= length;
+        dst.y /= length;
+        dst.z /= length;
     }
 }
 

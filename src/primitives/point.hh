@@ -11,7 +11,11 @@ namespace primitives
     {
         Point3(int x, int y, int z);
 
+        Point3();
+
         Point3 operator*(const float& n) const;
+
+        Point3 operator/(const float& n) const;
 
         Point3 operator-(const Point3& p) const;
 

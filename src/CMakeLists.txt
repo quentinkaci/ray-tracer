@@ -3,6 +3,7 @@ add_library(sources
         primitives/point.cc
         primitives/vector.cc
 
+        scene/camera.cc
         scene/object.cc
         scene/point_light.cc
         scene/scene.cc

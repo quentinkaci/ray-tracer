@@ -8,9 +8,18 @@ namespace primitives
         , z(z)
     {}
 
+    Point3::Point3()
+        : Point3(0, 0, 0)
+    {}
+
     Point3 Point3::operator*(const float& n) const
     {
         return Point3(x * n, y * n, z * n);
+    }
+
+    Point3 Point3::operator/(const float& n) const
+    {
+        return Point3(x / n, y / n, z / n);
     }
 
     Point3 Point3::operator-(const Point3& p) const

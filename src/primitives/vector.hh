@@ -11,9 +11,13 @@ namespace primitives
     {
         Vector3(Point3 dst);
 
+        Vector3() = default;
+
         Vector3 operator*(const float& n) const;
 
         Vector3 operator-(const Vector3& v) const;
+
+        void normalize();
 
         Point3 dst;
     };
