@@ -8,7 +8,7 @@ namespace primitives
         : dst(dst)
     {}
 
-    Vector3 Vector3::operator*(const float& n) const
+    Vector3 Vector3::operator*(const double& n) const
     {
         return Vector3(dst * n);
     }

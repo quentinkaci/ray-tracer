@@ -23,11 +23,11 @@ namespace utils
         static TransformationMatrix translation_matrix(const primitives::Point3& point);
 
         // Angle in radian
-        static TransformationMatrix rotation_matrix(RotationAxis axis, float angle);
+        static TransformationMatrix rotation_matrix(RotationAxis axis, double angle);
 
         TransformationMatrix operator*(const TransformationMatrix& matrix) const;
 
-        primitives::Vector3 operator*(const primitives::Vector3& vector) const;
+        primitives::Vector3 apply(const primitives::Vector3& vector) const;
 
     private:
         double* matrix_;

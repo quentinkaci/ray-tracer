@@ -16,6 +16,6 @@ namespace scene
 
     struct TextureMaterial
     {
-        virtual const TextureMaterialCaracteristics& get_texture(const primitives::Point3& point) = 0;
+        virtual const TextureMaterialCaracteristics& get_caracteristics(const primitives::Point3& point) const = 0;
     };
 }

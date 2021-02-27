@@ -10,12 +10,12 @@ namespace scene
 {
     struct Scene
     {
-        Scene() = default;
+        Scene(Camera camera);
 
         ~Scene() = default;
 
-        std::vector<Object> objects;
-        std::vector<Light> light_sources;
+        std::vector<Object*> objects;
+        std::vector<Light*> light_sources;
         Camera camera;
     };
 }

@@ -9,19 +9,21 @@ namespace primitives
 {
     struct Point3
     {
-        Point3(int x, int y, int z);
+        Point3(double x, double y, double z);
 
         Point3();
 
-        Point3 operator*(const float& n) const;
+        Point3 operator*(const double& n) const;
 
-        Point3 operator/(const float& n) const;
+        Point3 operator/(const double& n) const;
+
+        Point3 operator+(const Point3& p) const;
 
         Point3 operator-(const Point3& p) const;
 
-        int x;
-        int y;
-        int z;
+        double x;
+        double y;
+        double z;
     };
 }
 

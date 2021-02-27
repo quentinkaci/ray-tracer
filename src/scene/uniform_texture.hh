@@ -5,12 +5,12 @@
 
 namespace scene
 {
-    class UniformTexture : TextureMaterial
+    class UniformTexture : public TextureMaterial
     {
     public:
         UniformTexture(const TextureMaterialCaracteristics& caracteristic);
 
-        const TextureMaterialCaracteristics& get_texture(const primitives::Point3& point) override;
+        const TextureMaterialCaracteristics& get_caracteristics(const primitives::Point3& point) const override;
 
     private:
         TextureMaterialCaracteristics caracteristic_;

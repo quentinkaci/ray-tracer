@@ -25,7 +25,7 @@ namespace utils
         return res;
     }
 
-    TransformationMatrix TransformationMatrix::rotation_matrix(RotationAxis axis, float angle)
+    TransformationMatrix TransformationMatrix::rotation_matrix(RotationAxis axis, double angle)
     {
         TransformationMatrix res;
 
@@ -71,7 +71,7 @@ namespace utils
         return res;
     }
 
-    primitives::Vector3 TransformationMatrix::operator*(const primitives::Vector3& vector) const
+    primitives::Vector3 TransformationMatrix::apply(const primitives::Vector3& vector) const
     {
         int x = matrix_[0] * vector.dst.x + matrix_[1] * vector.dst.y
                 + matrix_[2] * vector.dst.z + matrix_[3];

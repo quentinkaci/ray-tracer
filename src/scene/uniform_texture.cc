@@ -6,7 +6,7 @@ namespace scene
         : caracteristic_(caracteristic)
     {}
 
-    const TextureMaterialCaracteristics& UniformTexture::get_texture(const primitives::Point3&)
+    const TextureMaterialCaracteristics& UniformTexture::get_caracteristics(const primitives::Point3&) const
     {
         return caracteristic_;
     }

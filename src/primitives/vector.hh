@@ -13,7 +13,7 @@ namespace primitives
 
         Vector3() = default;
 
-        Vector3 operator*(const float& n) const;
+        Vector3 operator*(const double& n) const;
 
         Vector3 operator-(const Vector3& v) const;
 

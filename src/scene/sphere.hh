@@ -7,16 +7,16 @@
 
 namespace scene
 {
-    class Sphere : Object
+    class Sphere : public Object
     {
     public:
         Sphere(const TextureMaterial& texture_material, const primitives::Point3& center, const uint radius);
 
-        std::vector<int> ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) override;
+        std::vector<double> ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) const override;
 
-        primitives::Vector3 get_normal(const primitives::Point3& A) override;
+        primitives::Vector3 get_normal(const primitives::Point3& A) const override;
 
-        primitives::Vector3 get_texture(const primitives::Point3& A) override;
+        const TextureMaterialCaracteristics& get_texture(const primitives::Point3& A) const override;
 
     private:
         const primitives::Point3& center_;

@@ -16,6 +16,6 @@ namespace primitives
 
 std::ostream& operator<<(std::ostream& os, const primitives::Color& color)
 {
-    os << "R: " << color.r << ", G: " << color.g << ", B: " << color.b << std::endl;
+    os << "R: " << +color.r << ", G: " << +color.g << ", B: " << +color.b << std::endl;
     return os;
 }

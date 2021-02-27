@@ -24,16 +24,17 @@ namespace utils
 
     void Image::save_to_ppm(const std::string& filename)
     {
-        std::ofstream ofs(filename + ".ppm", std::ios_base::out | std::ios_base::binary);
-        ofs << "P6" << std::endl << width << ' ' << height << std::endl << "255" << std::endl;
+        std::ofstream ofs(filename + ".ppm", std::ios_base::out);
+        ofs << "P3" << std::endl << width << ' ' << height << std::endl << "255" << std::endl;
 
         for (uint y = 0; y < height; ++y)
         {
             for (uint x = 0; x < width; ++x)
             {
                 primitives::Color c = pixel(x, y);
-                ofs << c.r << c.g << c.b << std::endl;
+                ofs << " " << std::to_string(c.r) << " " << std::to_string(c.g) << " " << std::to_string(c.b) << " ";
             }
+            ofs << std::endl;
         }
 
         ofs.close();

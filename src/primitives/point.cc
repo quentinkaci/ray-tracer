@@ -2,7 +2,7 @@
 
 namespace primitives
 {
-    Point3::Point3(int x, int y, int z)
+    Point3::Point3(double x, double y, double z)
         : x(x)
         , y(y)
         , z(z)
@@ -12,14 +12,19 @@ namespace primitives
         : Point3(0, 0, 0)
     {}
 
-    Point3 Point3::operator*(const float& n) const
+    Point3 Point3::operator*(const double& n) const
     {
         return Point3(x * n, y * n, z * n);
     }
 
-    Point3 Point3::operator/(const float& n) const
+    Point3 Point3::operator/(const double& n) const
     {
         return Point3(x / n, y / n, z / n);
+    }
+
+    Point3 Point3::operator+(const Point3& p) const
+    {
+        return Point3(x + p.x, y + p.y, z + p.z);
     }
 
     Point3 Point3::operator-(const Point3& p) const
