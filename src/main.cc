@@ -14,10 +14,10 @@ using namespace utils;
 
 int main(void)
 {
-    Scene scene(Camera(Point3(0, 0, 0), Point3(0, 0, 50), Point3(0, 1, 0), 90, 90, 1));
+    Scene scene(Camera(Point3(0.f, 0.f, 0.f), Point3(0.f, 0.f, 2.f), Point3(0.f, 1.f, 0.f), 90, 90, 1));
 
     UniformTexture sphere_uniform_texture(TextureMaterialCaracteristics{1, 1, Color(255, 0, 0)});
-    scene.objects.emplace_back(new Sphere(sphere_uniform_texture, Point3(0, 0, 50), 0.5));
+    scene.objects.emplace_back(new Sphere(sphere_uniform_texture, Point3(0.f, 0.f, 2.f), 0.5f));
 
     Engine engine(scene);
     Image image = engine.run(1080, 1920);

@@ -15,9 +15,6 @@ namespace engine
         primitives::Vector3* pixels_vector = scene_.camera.get_pixels_vector(height, width);
         primitives::Point3 origin = scene_.camera.get_origin();
 
-        // for (uint i = 0; i < height * width; ++i)
-        //     std::cout << pixels_vector[i] << std::endl;
-
         utils::Image res(height, width);
 
         for (uint j = 0; j < height; ++j)
