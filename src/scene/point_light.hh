@@ -16,7 +16,7 @@ namespace scene
         const primitives::Point3& get_center() const override;
 
     private:
-        const primitives::Point3& position_;
+        primitives::Point3 position_;
 
         LightCaracteristics caracteristics_;
     };

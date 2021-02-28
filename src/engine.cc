@@ -15,6 +15,9 @@ namespace engine
         primitives::Vector3* pixels_vector = scene_.camera.get_pixels_vector(height, width);
         primitives::Point3 origin = scene_.camera.get_origin();
 
+        // for (uint i = 0; i < height * width; ++i)
+        //     std::cout << pixels_vector[i] << std::endl;
+
         utils::Image res(height, width);
 
         for (uint j = 0; j < height; ++j)
@@ -33,20 +36,12 @@ namespace engine
 
         for (const scene::Object* object : scene_.objects)
         {
-            std::vector<double> lambda_vector = object->ray_intersection(A, v);
-            bool closer = false;
-
-            for (double lambda : lambda_vector)
+            std::optional<double> lambda = object->ray_intersection(A, v);
+            if (lambda.has_value() && lambda.value() < min_lambda)
             {
-                if (lambda < min_lambda)
-                {
-                    min_lambda = lambda;
-                    closer = true;
-                }
-            }
-
-            if (closer)
+                min_lambda = lambda.value();
                 closest_object = object;
+            }
         }
 
         if (closest_object == nullptr)

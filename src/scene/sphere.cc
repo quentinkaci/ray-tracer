@@ -5,36 +5,41 @@
 
 namespace scene
 {
-    Sphere::Sphere(const TextureMaterial& texture_material, const primitives::Point3& center, const uint radius)
+    Sphere::Sphere(const TextureMaterial& texture_material, const primitives::Point3& center, const double radius)
         : Object(texture_material)
         , center_(center)
         , radius_(radius)
     {}
 
-    std::vector<double> Sphere::ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) const
+    std::optional<double> Sphere::ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) const
     {
-        // FIXME Problem there
-        double a = pow(v.dst.x, 2) + pow(v.dst.y, 2) + pow(v.dst.z, 2);
-        double b = 2 * (v.dst.x * (A.x - center_.x) + v.dst.y * (A.y - center_.y)  + v.dst.z * (A.z - center_.z));
-        double c = A.x * (A.x - 2 * center_.x) + pow(center_.x, 2)
-                + A.y * (A.y - 2 * center_.y) + pow(center_.y, 2)
-                + A.z * (A.z - 2 * center_.z) + pow(center_.z, 2)
-                - pow(radius_, 2);
+        primitives::Vector3 relative_A(A - center_);
+        double a = v.dot(v);
+        double b = 2 * v.dot(relative_A);
+        double c = relative_A.dot(relative_A) - pow(radius_, 2);
 
-        std::vector<double> res;
+        // std::cout << "sphere center: " << center_ << std::endl;
+        // std::cout << "sphere radius: " << radius_ << std::endl;
+        // std::cout << "ray origin: " << A << std::endl;
+        // std::cout << "ray direction: " << v << std::endl;
 
-        double delta = b * b - 4 * a * c;
-        if (delta < 0)
-            return res;
-        else if (delta == 0)
-            res.push_back(- b / (2 * a));
-        else // delta > 0
+        double delta = pow(b, 2) - 4 * a * c;
+        if (delta >= 0)
         {
-            res.push_back((- b - sqrt(delta)) / (2 * a));
-            res.push_back((- b + sqrt(delta)) / (2 * a));
+            double x1 = (- b - sqrt(delta)) / (2 * a);
+            double x2 = (- b + sqrt(delta)) / (2 * a);
+
+            if (x1 < 0 && x2 < 0)
+                return std::nullopt;
+            if (x1 < 0 && x2 >= 0)
+                return x2;
+            else if (x2 < 0 && x1 >= 0)
+                return x1;
+            else
+                return std::min(x1, x2);
         }
 
-        return res;
+        return std::nullopt;
     }
 
     primitives::Vector3 Sphere::get_normal(const primitives::Point3& A) const

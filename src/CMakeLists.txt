@@ -11,7 +11,6 @@ add_library(sources
         scene/uniform_texture.cc
 
         utils/image.cc
-        utils/transformation_matrix.cc
 
         engine.cc
 )

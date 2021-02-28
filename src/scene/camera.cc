@@ -1,5 +1,4 @@
 #include "camera.hh"
-#include "utils/transformation_matrix.hh"
 
 #include <cmath>
 
@@ -25,30 +24,25 @@ namespace scene
     {
         primitives::Vector3* res = new primitives::Vector3[height * width];
 
-        double scale_x = tan(x_fov_ * 0.5 * M_PI / 180);
-        double scale_y = tan(y_fov_ * 0.5 * M_PI / 180);
-        double image_ratio = width / (double) height;
+        primitives::Vector3 forward(target_ - origin_);
+        primitives::Vector3 right = forward.cross(up_);
 
-        utils::TransformationMatrix translation = utils::TransformationMatrix::translation_matrix(origin_);
+        double image_plane_width = 2 * z_min_ * tan(x_fov_ * 0.5 * M_PI / 180.0);
+        double image_plane_height = 2 * z_min_ * tan(y_fov_ * 0.5 * M_PI / 180.0);
 
-        // FIXME Calculate correct angles and check axis
-        utils::TransformationMatrix x_rotation = utils::TransformationMatrix::rotation_matrix(utils::RotationAxis::X, 0);
-        utils::TransformationMatrix y_rotation = utils::TransformationMatrix::rotation_matrix(utils::RotationAxis::Y, 0);
-        utils::TransformationMatrix z_rotation = utils::TransformationMatrix::rotation_matrix(utils::RotationAxis::Z, 0);
+        primitives::Vector3 up_left = forward * z_min_ + up_ * (image_plane_height / 2) - right * (image_plane_width / 2);
 
-        utils::TransformationMatrix tranformation = z_rotation * y_rotation * x_rotation * translation;
+        double image_plane_ratio_width = image_plane_width / width;
+        double image_plane_ratio_height = image_plane_height / height;
 
         for (uint j = 0; j < height; ++j)
         {
             for (uint i = 0; i < width; ++i)
             {
-                // x and y in [-1, 1] with pixel at (height / 2, width / 2) has position (0, 0)
-                double x = (2 * (i + 0.5) / (double) width - 1) * image_ratio * scale_x;
-                double y = - (2 * (j + 0.5) / (double) height - 1) * scale_y;
-
-                primitives::Vector3 direction = tranformation.apply(primitives::Vector3(primitives::Point3(x, y, z_min_)));
-                direction.normalize();
-                res[i + j * width] = direction;
+                primitives::Vector3 v = up_left + right * image_plane_ratio_width * i
+                                        - up_ * image_plane_ratio_height * j;
+                v.normalize();
+                res[i + j * width] = v;
             }
         }
 

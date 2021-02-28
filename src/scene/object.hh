@@ -3,7 +3,7 @@
 #include "texture_material.hh"
 #include "primitives/vector.hh"
 
-#include <vector>
+#include <optional>
 
 
 namespace scene
@@ -13,7 +13,7 @@ namespace scene
     public:
         Object(const TextureMaterial& texture_material);
 
-        virtual std::vector<double> ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) const = 0;
+        virtual std::optional<double> ray_intersection(const primitives::Point3& A, const primitives::Vector3& v) const = 0;
 
         virtual primitives::Vector3 get_normal(const primitives::Point3& A) const = 0;
 

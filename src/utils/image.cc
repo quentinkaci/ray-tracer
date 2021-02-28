@@ -25,7 +25,7 @@ namespace utils
     void Image::save_to_ppm(const std::string& filename)
     {
         std::ofstream ofs(filename + ".ppm", std::ios_base::out);
-        ofs << "P3" << std::endl << width << ' ' << height << std::endl << "255" << std::endl;
+        ofs << "P3" << std::endl << width << " " << height << std::endl << "255" << std::endl;
 
         for (uint y = 0; y < height; ++y)
         {

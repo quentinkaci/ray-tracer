@@ -15,7 +15,13 @@ namespace primitives
 
         Vector3 operator*(const double& n) const;
 
+        Vector3 operator+(const Vector3& v) const;
+
         Vector3 operator-(const Vector3& v) const;
+
+        double dot(const Vector3& v) const;
+
+        Vector3 cross(const Vector3& v) const;
 
         void normalize();
 
