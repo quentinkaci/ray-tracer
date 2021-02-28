@@ -41,9 +41,6 @@ namespace engine
             }
         }
 
-        if (closest_object == nullptr)
-            return primitives::Color();
-        else
-            return closest_object->get_texture(A + (v * min_lambda).dst).color;
+        return closest_object == nullptr ? primitives::Color() : closest_object->get_texture(A + (v * min_lambda).dst).color;
     }
 }

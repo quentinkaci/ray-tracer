@@ -23,7 +23,7 @@ namespace primitives
 
         Vector3 cross(const Vector3& v) const;
 
-        void normalize();
+        Vector3 normalize() const;
 
         Point3 dst;
     };

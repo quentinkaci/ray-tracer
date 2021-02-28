@@ -24,13 +24,14 @@ namespace scene
     {
         primitives::Vector3* res = new primitives::Vector3[height * width];
 
-        primitives::Vector3 forward(target_ - origin_);
-        primitives::Vector3 right = forward.cross(up_);
+        primitives::Vector3 forward = primitives::Vector3(target_ - origin_).normalize();
+        primitives::Vector3 right = forward.cross(up_).normalize();
+        primitives::Vector3 up = up_.normalize();
 
         double image_plane_width = 2 * z_min_ * tan(x_fov_ * 0.5 * M_PI / 180.0);
         double image_plane_height = 2 * z_min_ * tan(y_fov_ * 0.5 * M_PI / 180.0);
 
-        primitives::Vector3 top_left = forward * z_min_ + up_ * (image_plane_height / 2) - right * (image_plane_width / 2);
+        primitives::Vector3 top_left = forward * z_min_ + up * (image_plane_height / 2) - right * (image_plane_width / 2);
 
         double unit_x = image_plane_width / width;
         double unit_y = image_plane_height / height;
@@ -39,9 +40,8 @@ namespace scene
         {
             for (uint i = 0; i < width; ++i)
             {
-                primitives::Vector3 v = top_left + right * unit_x * i - up_ * unit_y * j;
-                v.normalize();
-                res[i + j * width] = v;
+                primitives::Vector3 v = top_left + right * unit_x * i - up * unit_y * j;
+                res[i + j * width] = v.normalize();
             }
         }
 

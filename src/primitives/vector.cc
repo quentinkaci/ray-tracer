@@ -30,18 +30,16 @@ namespace primitives
 
     Vector3 Vector3::cross(const Vector3& v) const
     {
-        return Vector3(primitives::Point3(dst.y * v.dst.z - dst.z * v.dst.y
+        return Vector3(Point3(dst.y * v.dst.z - dst.z * v.dst.y
                                         , dst.z * v.dst.x - dst.x * v.dst.z
                                         , dst.x * v.dst.y - dst.y * v.dst.x));
     }
 
-    void Vector3::normalize()
+    Vector3 Vector3::normalize() const
     {
         uint length = sqrt(pow(dst.x, 2) + pow(dst.y, 2) + pow(dst.z, 2));
 
-        dst.x /= length;
-        dst.y /= length;
-        dst.z /= length;
+        return Vector3(Point3(dst.x / length, dst.y / length, dst.z / length));
     }
 }
 
