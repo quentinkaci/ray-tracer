@@ -65,24 +65,18 @@ namespace engine
 
         primitives::Point3 hitpoint = A + (v * min_lambda).dst;
         const scene::TextureMaterialCaracteristics& hitpoint_desc = closest_object->get_texture(hitpoint);
+        primitives::Vector3 Oi(primitives::Point3(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b));
+
+        primitives::Vector3 normal = closest_object->get_normal(hitpoint);
+        primitives::Vector3 reflected_ray = (v - normal * v.dot(normal) * 2).normalize();
+        primitives::Point3 offset_hitpoint = hitpoint + (normal * 0.0001).dst;
 
         primitives::Vector3 res;
 
         for (const scene::Light* light : scene_.light_sources)
         {
-            primitives::Vector3 normal = closest_object->get_normal(hitpoint);
-
             primitives::Vector3 light_ray(light->get_center() - hitpoint);
             light_ray = light_ray.normalize();
-
-            primitives::Vector3 reflected_ray = (v - normal * v.dot(normal) * 2).normalize();
-
-            primitives::Point3 offset_hitpoint = hitpoint + (normal * 0.0001).dst;
-
-            // Add reflexion
-            std::optional<primitives::Vector3> reflexion_contribution = ray_cast(offset_hitpoint, reflected_ray, depth + 1);
-            if (reflexion_contribution.has_value())
-                res = res + reflexion_contribution.value() * hitpoint_desc.reflection;
 
             // Take shadow into account
             std::optional<primitives::Vector3> light_check = ray_cast(offset_hitpoint, light_ray, RECURSION_LIMIT);
@@ -92,8 +86,6 @@ namespace engine
             primitives::Color light_color = light->get_caracteristics().color;
             primitives::Vector3 Li(primitives::Point3(light_color.r, light_color.g, light_color.b));
 
-            primitives::Vector3 Oi(primitives::Point3(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b));
-
             // Add diffuse component
             res =  res + Oi * Li * hitpoint_desc.kd
                     * std::max(normal.dot(light_ray), 0.);
@@ -102,6 +94,11 @@ namespace engine
             res = res + Li * hitpoint_desc.ks
                     * pow(std::max(reflected_ray.dot(light_ray), 0.), hitpoint_desc.ns);
         }
+
+        // Add reflexion
+        std::optional<primitives::Vector3> reflection_contribution = ray_cast(offset_hitpoint, reflected_ray, depth + 1);
+        if (reflection_contribution.has_value())
+            res = res + reflection_contribution.value() * hitpoint_desc.reflection;
 
         return res;
     }
