@@ -15,7 +15,11 @@ using namespace utils;
 
 int main(void)
 {
-    Scene scene(Camera(Point3(0., 0., 0.), Point3(0., 0., 1.), Point3(0., 1., 0.), 90., 55., 1.));
+    // FOV 70
+    double beta = 35.;
+    double alpha = beta * 16. / 9.;
+
+    Scene scene(Camera(Point3(0., 0., 0.), Point3(0., 0., 1.), Point3(0., 1., 0.), alpha, beta, 1.));
 
     UniformTexture sphere_uniform_texture_red(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(150, 0, 0)});
     scene.objects.emplace_back(new Sphere(sphere_uniform_texture_red, Point3(0., 2.5, 15.), 2.));
