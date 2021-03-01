@@ -3,9 +3,12 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <random>
 
-constexpr uint RECURSION_LIMIT = 5;
-constexpr double ESPILON = 0.0001;
+#define RECURSION_LIMIT 5
+#define EPSILON 0.0001
+#define NB_RAY_PER_PIXEL 50
+#define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 namespace engine
 {
@@ -18,21 +21,40 @@ namespace engine
         primitives::Vector3* pixels_vector = scene_.camera.get_pixels_vector(height, width);
         primitives::Point3 origin = scene_.camera.get_origin();
 
+        double unit_x = scene_.camera.get_unit_x(width);
+        double unit_y = scene_.camera.get_unit_y(height);
+
+        std::uniform_real_distribution<double> unif_x(- unit_x / 2., unit_x / 2.);
+        std::uniform_real_distribution<double> unif_y(- unit_y / 2., unit_y / 2.);
+        std::default_random_engine re;
+
         utils::Image res(height, width);
 
         for (uint j = 0; j < height; ++j)
         {
             for (uint i = 0; i < width; ++i)
             {
-                std::optional<primitives::Vector3> intensity = ray_cast(origin, pixels_vector[i + j * width]);
+                primitives::Vector3 average_intensity;
 
-                primitives::Color pixel_color(102, 178, 255);
-                if (intensity.has_value())
+                for (uint k = 0; k < NB_RAY_PER_PIXEL; ++k)
                 {
-                    pixel_color = primitives::Color(std::clamp(intensity->x, 0., 255.),
-                                std::clamp(intensity->y, 0., 255.),
-                                std::clamp(intensity->z, 0., 255.));
+                    primitives::Vector3 pixel_vector = pixels_vector[i + j * width];
+                    pixel_vector.x += unif_x(re);
+                    pixel_vector.y += unif_y(re);
+
+                    std::optional<primitives::Vector3> intensity = cast_ray(origin, pixel_vector);
+                    if (!intensity.has_value())
+                        intensity = BACKGROUND_COLOR;
+
+                    average_intensity = average_intensity + intensity.value();
                 }
+
+                average_intensity = average_intensity / (double) NB_RAY_PER_PIXEL;
+
+                primitives::Color pixel_color = primitives::Color(
+                                                std::clamp(average_intensity.x, 0., 255.),
+                                                std::clamp(average_intensity.y, 0., 255.),
+                                                std::clamp(average_intensity.z, 0., 255.));
 
                 res.pixel(i, j) = pixel_color;
             }
@@ -41,7 +63,7 @@ namespace engine
         return res;
     }
 
-    std::optional<primitives::Vector3> Engine::ray_cast(const primitives::Point3& A, const primitives::Vector3& v, uint depth)
+    std::optional<primitives::Vector3> Engine::cast_ray(const primitives::Point3& A, const primitives::Vector3& v, uint depth)
     {
         double min_lambda = std::numeric_limits<double>::infinity();
         const scene::Object* closest_object = nullptr;
@@ -69,7 +91,7 @@ namespace engine
 
         primitives::Vector3 normal = closest_object->get_normal(hitpoint);
         primitives::Vector3 reflected_ray = (v - normal * v.dot(normal) * 2).normalize();
-        primitives::Point3 offset_hitpoint = hitpoint + (normal * ESPILON).get_destination();
+        primitives::Point3 offset_hitpoint = hitpoint + (normal * EPSILON).get_destination();
 
         primitives::Vector3 res;
 
@@ -79,7 +101,7 @@ namespace engine
             light_ray = light_ray.normalize();
 
             // Take shadow into account
-            std::optional<primitives::Vector3> light_check = ray_cast(offset_hitpoint, light_ray, RECURSION_LIMIT);
+            std::optional<primitives::Vector3> light_check = cast_ray(offset_hitpoint, light_ray, RECURSION_LIMIT);
             // Obstacle betweem hitpoint and light
             if (light_check.has_value())
                 continue;
@@ -97,7 +119,7 @@ namespace engine
         }
 
         // Add reflexion
-        std::optional<primitives::Vector3> reflection_contribution = ray_cast(offset_hitpoint, reflected_ray, depth + 1);
+        std::optional<primitives::Vector3> reflection_contribution = cast_ray(offset_hitpoint, reflected_ray, depth + 1);
         if (reflection_contribution.has_value())
             res = res + reflection_contribution.value() * hitpoint_desc.reflection;
 

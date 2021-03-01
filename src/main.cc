@@ -25,7 +25,7 @@ int main(void)
     scene.objects.emplace_back(new Sphere(sphere_uniform_texture_red, Point3(0., 2.5, 15.), 2.));
 
     UniformTexture sphere_uniform_texture_blue(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 0, 150)});
-    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_blue, Point3(-4., -2.5, 20.), 2.));
+    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_blue, Point3(-4., -2.5, 22.5), 2.));
 
     UniformTexture sphere_uniform_texture_green(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 150, 0)});
     scene.objects.emplace_back(new Sphere(sphere_uniform_texture_green, Point3(2., -2.5, 15.), 2.));

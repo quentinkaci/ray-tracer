@@ -20,6 +20,18 @@ namespace scene
         return origin_;
     }
 
+    double Camera::get_unit_x(uint width) const
+    {
+        double image_plane_width = 2 * z_min_ * tan(x_fov_ * 0.5 * M_PI / 180.0);
+        return image_plane_width / width;
+    }
+
+    double Camera::get_unit_y(uint height) const
+    {
+        double image_plane_height = 2 * z_min_ * tan(y_fov_ * 0.5 * M_PI / 180.0);
+        return image_plane_height / height;
+    }
+
     primitives::Vector3* Camera::get_pixels_vector(uint height, uint width) const
     {
         primitives::Vector3* res = new primitives::Vector3[height * width];

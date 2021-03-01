@@ -16,7 +16,7 @@ namespace engine
         utils::Image run(uint height, uint width);
 
     private:
-        std::optional<primitives::Vector3> ray_cast(const primitives::Point3& A, const primitives::Vector3& v, uint depth = 0);
+        std::optional<primitives::Vector3> cast_ray(const primitives::Point3& A, const primitives::Vector3& v, uint depth = 0);
 
         scene::Scene scene_;
     };

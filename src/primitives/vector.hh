@@ -29,7 +29,11 @@ namespace primitives
 
     Vector3 operator*(const Vector3& v, const double& n);
 
+    Vector3 operator/(const Vector3& v, const double& n);
+
     Vector3 operator*(const Vector3& left, const Vector3& right);
+
+    Vector3 operator/(const Vector3& left, const Vector3& right);
 
     Vector3 operator+(const Vector3& left, const Vector3& right);
 

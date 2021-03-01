@@ -15,6 +15,10 @@ namespace scene
 
         primitives::Point3 get_origin() const;
 
+        double get_unit_x(uint width) const;
+
+        double get_unit_y(uint height) const;
+
         primitives::Vector3* get_pixels_vector(uint height, uint width) const;
 
     private:
