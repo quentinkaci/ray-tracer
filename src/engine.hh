@@ -4,6 +4,8 @@
 #include "scene/scene.hh"
 #include "primitives/color.hh"
 
+#include <optional>
+
 namespace engine
 {
     class Engine
@@ -14,7 +16,7 @@ namespace engine
         utils::Image run(uint height, uint width);
 
     private:
-        primitives::Color ray_cast(const primitives::Point3& A, const primitives::Vector3& v);
+        std::optional<primitives::Vector3> ray_cast(const primitives::Point3& A, const primitives::Vector3& v, uint depth = 0);
 
         scene::Scene scene_;
     };

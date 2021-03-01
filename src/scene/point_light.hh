@@ -6,7 +6,7 @@
 
 namespace scene
 {
-    class PointLight : Light
+    class PointLight : public Light
     {
     public:
         PointLight(const primitives::Point3& position, const primitives::Color& color, uint intensity);

@@ -11,6 +11,21 @@ namespace primitives
     Color::Color()
         : Color(0, 0, 0)
     {}
+
+    Color Color::operator*(const Color& color) const
+    {
+        return Color(r * color.r, g * color.g, b * color.b);
+    }
+
+    Color Color::operator+(const Color& color) const
+    {
+        return Color(r + color.r, g + color.g, b + color.b);
+    }
+
+    Color Color::operator*(const double& n) const
+    {
+        return Color(r * n, g * n, b * n);
+    }
 }
 
 

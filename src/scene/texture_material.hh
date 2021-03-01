@@ -9,8 +9,10 @@ namespace scene
 {
     struct TextureMaterialCaracteristics
     {
-        uint kd;
-        uint ks;
+        double kd;
+        double ks;
+        double ns;
+        double reflection;
         primitives::Color color;
     };
 

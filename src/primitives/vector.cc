@@ -13,6 +13,11 @@ namespace primitives
         return Vector3(dst * n);
     }
 
+    Vector3 Vector3::operator*(const Vector3& v) const
+    {
+        return Vector3(Point3(dst.x * v.dst.x, dst.y * v.dst.y, dst.z * v.dst.z));
+    }
+
     Vector3 Vector3::operator+(const Vector3& v) const
     {
         return Vector3(dst + v.dst);
