@@ -13,17 +13,10 @@ namespace primitives
 
         Color();
 
-        Color operator*(const Color& color) const;
-
-        Color operator+(const Color& color) const;
-
-        Color operator*(const double& n) const;
-
         uchar r;
         uchar g;
         uchar b;
     };
+
+    std::ostream& operator<<(std::ostream& os, const primitives::Color& color);
 }
-
-
-std::ostream& operator<<(std::ostream& os, const primitives::Color& color);

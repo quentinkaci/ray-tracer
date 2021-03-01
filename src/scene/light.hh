@@ -10,7 +10,6 @@ namespace scene
 {
     struct LightCaracteristics
     {
-        uint intensity;
         primitives::Color color;
     };
 

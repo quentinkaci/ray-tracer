@@ -4,8 +4,8 @@
 #include <cmath>
 #include <algorithm>
 
-#define RECURSION_LIMIT 2
-
+constexpr uint RECURSION_LIMIT = 2;
+constexpr double ESPILON = 0.0001;
 
 namespace engine
 {
@@ -29,9 +29,9 @@ namespace engine
                 primitives::Color pixel_color(102, 178, 255);
                 if (intensity.has_value())
                 {
-                    pixel_color = primitives::Color(std::clamp(intensity->dst.x, 0., 255.),
-                                std::clamp(intensity->dst.y, 0., 255.),
-                                std::clamp(intensity->dst.z, 0., 255.));
+                    pixel_color = primitives::Color(std::clamp(intensity->x, 0., 255.),
+                                std::clamp(intensity->y, 0., 255.),
+                                std::clamp(intensity->z, 0., 255.));
                 }
 
                 res.pixel(i, j) = pixel_color;
@@ -63,13 +63,13 @@ namespace engine
         if (depth >= RECURSION_LIMIT)
             return primitives::Vector3();
 
-        primitives::Point3 hitpoint = A + (v * min_lambda).dst;
+        primitives::Point3 hitpoint = A + (v * min_lambda).get_destination();
         const scene::TextureMaterialCaracteristics& hitpoint_desc = closest_object->get_texture(hitpoint);
-        primitives::Vector3 Oi(primitives::Point3(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b));
+        primitives::Vector3 Oi(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b);
 
         primitives::Vector3 normal = closest_object->get_normal(hitpoint);
         primitives::Vector3 reflected_ray = (v - normal * v.dot(normal) * 2).normalize();
-        primitives::Point3 offset_hitpoint = hitpoint + (normal * 0.0001).dst;
+        primitives::Point3 offset_hitpoint = hitpoint + (normal * ESPILON).get_destination();
 
         primitives::Vector3 res;
 
@@ -84,7 +84,7 @@ namespace engine
                 continue;
 
             primitives::Color light_color = light->get_caracteristics().color;
-            primitives::Vector3 Li(primitives::Point3(light_color.r, light_color.g, light_color.b));
+            primitives::Vector3 Li(light_color.r, light_color.g, light_color.b);
 
             // Add diffuse component
             res =  res + Oi * Li * hitpoint_desc.kd

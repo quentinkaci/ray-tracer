@@ -23,7 +23,7 @@ int main(void)
     UniformTexture sphere_uniform_texture_green(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 0, 150)});
     scene.objects.emplace_back(new Sphere(sphere_uniform_texture_green, Point3(-2., 0., 5.), 1.7));
 
-    scene.light_sources.emplace_back(new PointLight(Point3(10., 10., -10.), Color(255, 255, 255), 2.));
+    scene.light_sources.emplace_back(new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
 
     Engine engine(scene);
     Image image = engine.run(1080, 1920);

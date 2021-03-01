@@ -2,9 +2,9 @@
 
 namespace scene
 {
-    PointLight::PointLight(const primitives::Point3& position, const primitives::Color& color, uint intensity)
+    PointLight::PointLight(const primitives::Point3& position, const primitives::Color& color)
         : position_(position)
-        , caracteristics_{intensity, color}
+        , caracteristics_{color}
     {}
 
     const LightCaracteristics& PointLight::get_caracteristics() const

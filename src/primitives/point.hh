@@ -13,19 +13,18 @@ namespace primitives
 
         Point3();
 
-        Point3 operator*(const double& n) const;
-
-        Point3 operator/(const double& n) const;
-
-        Point3 operator+(const Point3& p) const;
-
-        Point3 operator-(const Point3& p) const;
-
         double x;
         double y;
         double z;
     };
+
+    Point3 operator*(const Point3& point, const double& n);
+
+    Point3 operator/(const Point3& point, const double& n);
+
+    Point3 operator+(const Point3& left, const Point3& right);
+
+    Point3 operator-(const Point3& left, const Point3& right);
+
+    std::ostream& operator<<(std::ostream& os, const Point3& point);
 }
-
-
-std::ostream& operator<<(std::ostream& os, const primitives::Point3& point);

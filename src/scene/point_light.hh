@@ -9,7 +9,7 @@ namespace scene
     class PointLight : public Light
     {
     public:
-        PointLight(const primitives::Point3& position, const primitives::Color& color, uint intensity);
+        PointLight(const primitives::Point3& position, const primitives::Color& color);
 
         const LightCaracteristics& get_caracteristics() const override;
 
