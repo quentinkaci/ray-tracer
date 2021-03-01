@@ -15,13 +15,16 @@ using namespace utils;
 
 int main(void)
 {
-    Scene scene(Camera(Point3(0., 0., 0.), Point3(0., 0., 1.), Point3(0., 1., 0.), 90., 60., 1.));
+    Scene scene(Camera(Point3(0., 0., 0.), Point3(0., 0., 1.), Point3(0., 1., 0.), 90., 55., 1.));
 
     UniformTexture sphere_uniform_texture_red(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(150, 0, 0)});
-    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_red, Point3(2., 0., 5.), 1.7));
+    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_red, Point3(2., 2.5, 10.), 2.));
 
-    UniformTexture sphere_uniform_texture_green(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 0, 150)});
-    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_green, Point3(-2., 0., 5.), 1.7));
+    UniformTexture sphere_uniform_texture_blue(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 0, 150)});
+    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_blue, Point3(-2., -2.5, 15.), 2.));
+
+    UniformTexture sphere_uniform_texture_green(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 150, 0)});
+    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_green, Point3(4., -2.5, 10.), 2.));
 
     scene.light_sources.emplace_back(new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
 

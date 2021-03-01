@@ -4,7 +4,7 @@
 #include <cmath>
 #include <algorithm>
 
-constexpr uint RECURSION_LIMIT = 2;
+constexpr uint RECURSION_LIMIT = 5;
 constexpr double ESPILON = 0.0001;
 
 namespace engine
@@ -65,7 +65,7 @@ namespace engine
 
         primitives::Point3 hitpoint = A + (v * min_lambda).get_destination();
         const scene::TextureMaterialCaracteristics& hitpoint_desc = closest_object->get_texture(hitpoint);
-        primitives::Vector3 Oi(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b);
+        primitives::Vector3 object_color(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b);
 
         primitives::Vector3 normal = closest_object->get_normal(hitpoint);
         primitives::Vector3 reflected_ray = (v - normal * v.dot(normal) * 2).normalize();
@@ -80,18 +80,19 @@ namespace engine
 
             // Take shadow into account
             std::optional<primitives::Vector3> light_check = ray_cast(offset_hitpoint, light_ray, RECURSION_LIMIT);
+            // Obstacle betweem hitpoint and light
             if (light_check.has_value())
                 continue;
 
-            primitives::Color light_color = light->get_caracteristics().color;
-            primitives::Vector3 Li(light_color.r, light_color.g, light_color.b);
+            primitives::Color lc = light->get_caracteristics().color;
+            primitives::Vector3 light_color(lc.r, lc.g, lc.b);
 
             // Add diffuse component
-            res =  res + Oi * Li * hitpoint_desc.kd
+            res = res + object_color * light_color * hitpoint_desc.kd
                     * std::max(normal.dot(light_ray), 0.);
 
             // Add specular component
-            res = res + Li * hitpoint_desc.ks
+            res = res + light_color * hitpoint_desc.ks
                     * pow(std::max(reflected_ray.dot(light_ray), 0.), hitpoint_desc.ns);
         }
 
