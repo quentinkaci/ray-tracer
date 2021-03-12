@@ -46,6 +46,6 @@ namespace scene
         double u = (atan2(- (A.z - center_.z), A.x - center_.x) + M_PI) / (2 * M_PI);
         double v = acos(- (A.y - center_.y) / radius_) / M_PI;
 
-        return Object::texture_material_.get_caracteristics(primitives::Point3(u, v, 0));
+        return Object::texture_material_.get_caracteristics(primitives::Point3(1 - u, 1- v, 0));
     }
 }

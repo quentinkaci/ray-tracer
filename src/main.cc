@@ -30,8 +30,10 @@ int main(void)
                                             TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color()});
     scene.objects.emplace_back(new Sphere(sphere_earth_texture, Point3(-4., -2.5, 22.5), 2.));
 
-    UniformTexture sphere_uniform_texture_green(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 150, 0)});
-    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_green, Point3(2., -2.5, 15.), 2.));
+    // Assume we are running the executable in a build folder
+    ImageTexture sphere_billiard_texture(*Image::load_from_ppm("../textures/8_billiard_ball"),
+                                            TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color()});
+    scene.objects.emplace_back(new Sphere(sphere_billiard_texture, Point3(2., -2.5, 15.), 2.));
 
     scene.light_sources.emplace_back(new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
 
