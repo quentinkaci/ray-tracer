@@ -43,8 +43,10 @@ namespace scene
 
     TextureMaterialCaracteristics Sphere::get_texture(const primitives::Point3& A) const
     {
-        double u = (atan2(- (A.z - center_.z), A.x - center_.x) + M_PI) / (2 * M_PI);
-        double v = acos(- (A.y - center_.y) / radius_) / M_PI;
+        primitives::Point3 relative_A(A - center_);
+
+        double u = (atan2(- relative_A.z, relative_A.x) + M_PI) / (2 * M_PI);
+        double v = acos(- relative_A.y / radius_) / M_PI;
 
         return Object::texture_material_.get_caracteristics(primitives::Point3(u, 1 - v, 0));
     }
