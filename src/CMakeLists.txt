@@ -9,6 +9,7 @@ add_library(sources
         scene/scene.cc
         scene/sphere.cc
         scene/uniform_texture.cc
+        scene/image_texture.cc
 
         utils/image.cc
 

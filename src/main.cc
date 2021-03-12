@@ -1,5 +1,6 @@
 #include "scene/scene.hh"
 #include "scene/uniform_texture.hh"
+#include "scene/image_texture.hh"
 #include "scene/sphere.hh"
 #include "scene/camera.hh"
 #include "scene/point_light.hh"
@@ -24,8 +25,10 @@ int main(void)
     UniformTexture sphere_uniform_texture_red(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(150, 0, 0)});
     scene.objects.emplace_back(new Sphere(sphere_uniform_texture_red, Point3(0., 2.5, 15.), 2.));
 
-    UniformTexture sphere_uniform_texture_blue(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 0, 150)});
-    scene.objects.emplace_back(new Sphere(sphere_uniform_texture_blue, Point3(-4., -2.5, 22.5), 2.));
+    // Assume we are running the executable in a build folder
+    ImageTexture sphere_earth_texture(*Image::load_from_ppm("../textures/earth_map"),
+                                            TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color()});
+    scene.objects.emplace_back(new Sphere(sphere_earth_texture, Point3(-4., -2.5, 22.5), 2.));
 
     UniformTexture sphere_uniform_texture_green(TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 150, 0)});
     scene.objects.emplace_back(new Sphere(sphere_uniform_texture_green, Point3(2., -2.5, 15.), 2.));

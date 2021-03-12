@@ -17,7 +17,7 @@ namespace scene
 
         virtual primitives::Vector3 get_normal(const primitives::Point3& A) const = 0;
 
-        virtual const TextureMaterialCaracteristics& get_texture(const primitives::Point3& A) const = 0;
+        virtual TextureMaterialCaracteristics get_texture(const primitives::Point3& A) const = 0;
 
     protected:
         const TextureMaterial& texture_material_;

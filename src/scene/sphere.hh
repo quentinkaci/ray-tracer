@@ -14,7 +14,7 @@ namespace scene
 
         primitives::Vector3 get_normal(const primitives::Point3& A) const override;
 
-        const TextureMaterialCaracteristics& get_texture(const primitives::Point3& A) const override;
+        TextureMaterialCaracteristics get_texture(const primitives::Point3& A) const override;
 
     private:
         primitives::Point3 center_;
