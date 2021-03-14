@@ -131,7 +131,7 @@ namespace engine
         const scene::TextureMaterialCaracteristics& hitpoint_desc = closest_object->get_texture(hitpoint);
         primitives::Vector3 object_color(hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b);
 
-        primitives::Vector3 normal = closest_object->get_normal(hitpoint);
+        primitives::Vector3 normal = closest_object->get_computed_normal(hitpoint);
         primitives::Vector3 reflected_ray = (v - normal * v.dot(normal) * 2).normalize();
         primitives::Point3 offset_hitpoint = hitpoint + (normal * EPSILON).get_destination();
 

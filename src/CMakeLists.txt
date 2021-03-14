@@ -12,8 +12,10 @@ add_library(sources
         scene/uniform_texture.cc
         scene/image_texture.cc
         scene/blob.cc
+        scene/bump_mapping_texture.cc
 
         utils/image.cc
+        utils/perlin_noise.cc
 
         engine.cc
 )

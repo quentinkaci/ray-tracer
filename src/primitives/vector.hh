@@ -18,6 +18,8 @@ namespace primitives
 
         Vector3 cross(const Vector3& v) const;
 
+        double norm() const;
+
         Vector3 normalize() const;
 
         Point3 get_destination() const;

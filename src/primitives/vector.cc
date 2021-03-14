@@ -37,9 +37,14 @@ namespace primitives
         return Point3(x, y, z);
     }
 
+    double Vector3::norm() const
+    {
+        return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+    }
+
     Vector3 Vector3::normalize() const
     {
-        double length = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+        double length = norm();
 
         return Vector3(x / length, y / length, z / length);
     }

@@ -38,16 +38,21 @@ namespace scene
 
     primitives::Vector3 Sphere::get_normal(const primitives::Point3& A) const
     {
-        return primitives::Vector3((A - center_) / radius_);
+        return primitives::Vector3((A - center_));
     }
 
-    TextureMaterialCaracteristics Sphere::get_texture(const primitives::Point3& A) const
+    primitives::Point3 Sphere::get_planar_projection(const primitives::Point3& A) const
     {
         primitives::Point3 relative_A(A - center_);
 
         double u = (atan2(- relative_A.z, relative_A.x) + M_PI) / (2 * M_PI);
         double v = acos(- relative_A.y / radius_) / M_PI;
 
-        return Object::texture_material_.get_caracteristics(primitives::Point3(u, 1 - v, 0));
+        return primitives::Point3(u, 1 - v, 0);
+    }
+
+    TextureMaterialCaracteristics Sphere::get_texture(const primitives::Point3& A) const
+    {
+        return Object::texture_material_.get_caracteristics(get_planar_projection(A));
     }
 }
