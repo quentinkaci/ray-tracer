@@ -7,7 +7,9 @@
 
 #define RECURSION_LIMIT 5
 #define EPSILON 0.0001
-#define NB_RAY_PER_PIXEL 1
+
+#define MAX_RAY_PER_PIXEL 50
+#define AA_THRESHOLD 50
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 namespace engine
@@ -15,6 +17,11 @@ namespace engine
     Engine::Engine(const scene::Scene& scene)
         : scene_(scene)
     {}
+
+    static double gradient(const primitives::Color& color, const primitives::Vector3& vector)
+    {
+        return sqrt(pow(color.r - vector.x, 2) + pow(color.g - vector.y, 2) + pow(color.b - vector.z, 2));
+    }
 
     utils::Image Engine::run(uint height, uint width)
     {
@@ -26,7 +33,10 @@ namespace engine
 
         std::uniform_real_distribution<double> unif_x(- unit_x / 2., unit_x / 2.);
         std::uniform_real_distribution<double> unif_y(- unit_y / 2., unit_y / 2.);
-        std::default_random_engine re;
+
+        std::random_device rd;
+        unsigned seed = rd();
+        std::default_random_engine re(seed);
 
         utils::Image res(height, width);
 
@@ -34,28 +44,45 @@ namespace engine
         {
             for (uint i = 0; i < width; ++i)
             {
-                primitives::Vector3 average_intensity;
+                const primitives::Vector3& pixel_vector = pixels_vector[i + j * width];
 
-                for (uint k = 0; k < NB_RAY_PER_PIXEL; ++k)
+                std::optional<primitives::Vector3> primary_intensity = cast_ray(origin, pixel_vector);
+                if (!primary_intensity.has_value())
+                    primary_intensity = BACKGROUND_COLOR;
+
+                primitives::Vector3 average_intensity = primary_intensity.value();
+
+                uint k = 1;
+
+                for (; k < MAX_RAY_PER_PIXEL; ++k)
                 {
-                    primitives::Vector3 pixel_vector = pixels_vector[i + j * width];
-                    pixel_vector.x += unif_x(re);
-                    pixel_vector.y += unif_y(re);
+                    primitives::Vector3 cur_average_intensity = average_intensity / (double)k;
 
-                    std::optional<primitives::Vector3> intensity = cast_ray(origin, pixel_vector);
-                    if (!intensity.has_value())
-                        intensity = BACKGROUND_COLOR;
+                    if ((i > 0 && j > 0 && gradient(res.get_pixel(i - 1, j - 1), cur_average_intensity) > AA_THRESHOLD)
+                        || (i > 0 && j < height - 1 && gradient(res.get_pixel(i - 1, j + 1), cur_average_intensity) > AA_THRESHOLD)
+                        || (j > 0 && gradient(res.get_pixel(i, j - 1), cur_average_intensity) > AA_THRESHOLD))
+                    {
+                        primitives::Vector3 random_vector = pixels_vector[i + j * width];
+                        random_vector.x += unif_x(re);
+                        random_vector.y += unif_y(re);
+                        random_vector.normalize();
 
-                    average_intensity = average_intensity + intensity.value();
+                        std::optional<primitives::Vector3> new_intensity = cast_ray(origin, random_vector);
+                        if (!new_intensity.has_value())
+                            new_intensity = BACKGROUND_COLOR;
+
+                        average_intensity = average_intensity + new_intensity.value();
+                    }
+                    else
+                        break;
                 }
 
-                average_intensity = average_intensity / (double) NB_RAY_PER_PIXEL;
+                average_intensity = average_intensity / (double)k;
 
                 primitives::Color pixel_color = primitives::Color(
-                                                std::clamp(average_intensity.x, 0., 255.),
-                                                std::clamp(average_intensity.y, 0., 255.),
-                                                std::clamp(average_intensity.z, 0., 255.));
-
+                                            std::clamp(average_intensity.x, 0., 255.),
+                                            std::clamp(average_intensity.y, 0., 255.),
+                                            std::clamp(average_intensity.z, 0., 255.));
                 res.pixel(i, j) = pixel_color;
             }
         }
