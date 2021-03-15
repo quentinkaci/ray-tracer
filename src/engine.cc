@@ -7,7 +7,7 @@
 
 #define RECURSION_LIMIT 5
 #define EPSILON 0.0001
-#define NB_RAY_PER_PIXEL 50
+#define NB_RAY_PER_PIXEL 1
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 namespace engine
