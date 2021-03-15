@@ -9,7 +9,7 @@
 #define EPSILON 0.0001
 
 #define MAX_RAY_PER_PIXEL 50
-#define AA_THRESHOLD 50
+#define AA_THRESHOLD 10
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 namespace engine
@@ -52,29 +52,43 @@ namespace engine
 
                 primitives::Vector3 average_intensity = primary_intensity.value();
 
-                uint k = 1;
+                std::vector<primitives::Color> neighbours;
 
+                if (j > 0)
+                {
+                    if (i > 0)
+                        neighbours.emplace_back(res.get_pixel(i - 1, j - 1));
+                    if (i < width - 1)
+                        neighbours.emplace_back(res.get_pixel(i + 1, j - 1));
+
+                    neighbours.emplace_back(res.get_pixel(i, j - 1));
+                }
+
+                if (i > 0)
+                    neighbours.emplace_back(res.get_pixel(i - 1, j));
+
+                uint k = 1;
                 for (; k < MAX_RAY_PER_PIXEL; ++k)
                 {
                     primitives::Vector3 cur_average_intensity = average_intensity / (double)k;
 
-                    if ((i > 0 && j > 0 && gradient(res.get_pixel(i - 1, j - 1), cur_average_intensity) > AA_THRESHOLD)
-                        || (i > 0 && j < height - 1 && gradient(res.get_pixel(i - 1, j + 1), cur_average_intensity) > AA_THRESHOLD)
-                        || (j > 0 && gradient(res.get_pixel(i, j - 1), cur_average_intensity) > AA_THRESHOLD))
-                    {
-                        primitives::Vector3 random_vector = pixels_vector[i + j * width];
-                        random_vector.x += unif_x(re);
-                        random_vector.y += unif_y(re);
-                        random_vector.normalize();
+                    bool over_threshold = false;
+                    for (const auto& neighbour : neighbours)
+                        over_threshold |= gradient(neighbour, cur_average_intensity) > AA_THRESHOLD;
 
-                        std::optional<primitives::Vector3> new_intensity = cast_ray(origin, random_vector);
-                        if (!new_intensity.has_value())
-                            new_intensity = BACKGROUND_COLOR;
-
-                        average_intensity = average_intensity + new_intensity.value();
-                    }
-                    else
+                    if (!over_threshold)
                         break;
+
+                    primitives::Vector3 random_vector = pixels_vector[i + j * width];
+                    random_vector.x += unif_x(re);
+                    random_vector.y += unif_y(re);
+                    random_vector.normalize();
+
+                    std::optional<primitives::Vector3> new_intensity = cast_ray(origin, random_vector);
+                    if (!new_intensity.has_value())
+                        new_intensity = BACKGROUND_COLOR;
+
+                    average_intensity = average_intensity + new_intensity.value();
                 }
 
                 average_intensity = average_intensity / (double)k;
@@ -83,6 +97,7 @@ namespace engine
                                             std::clamp(average_intensity.x, 0., 255.),
                                             std::clamp(average_intensity.y, 0., 255.),
                                             std::clamp(average_intensity.z, 0., 255.));
+
                 res.pixel(i, j) = pixel_color;
             }
         }
