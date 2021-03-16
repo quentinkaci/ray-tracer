@@ -11,6 +11,7 @@ add_library(sources
         scene/triangle.cc
         scene/uniform_texture.cc
         scene/image_texture.cc
+        scene/perlin_texture.cc
         scene/blob.cc
         scene/bump_mapping_texture.cc
 
