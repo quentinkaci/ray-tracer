@@ -59,9 +59,15 @@ namespace scene
         return u0.cross(u1).normalize();
     }
 
+    primitives::Point3 Triangle::get_planar_projection(const primitives::Point3&) const
+    {
+        // FIXME Uniform texture
+        return primitives::Point3();
+    }
+
     TextureMaterialCaracteristics Triangle::get_texture(const primitives::Point3&) const
     {
-        // Uniform texture
+        // FIXME Uniform texture
         return Object::texture_material_.get_caracteristics(primitives::Point3());
     }
 }

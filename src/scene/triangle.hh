@@ -14,6 +14,8 @@ namespace scene
 
         primitives::Vector3 get_normal(const primitives::Point3& A) const override;
 
+        primitives::Point3 get_planar_projection(const primitives::Point3& A) const;
+
         TextureMaterialCaracteristics get_texture(const primitives::Point3& A) const override;
 
     private:
