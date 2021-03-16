@@ -19,5 +19,7 @@ namespace engine
         std::optional<primitives::Vector3> cast_ray(const primitives::Point3& A, const primitives::Vector3& v, uint depth = 0);
 
         scene::Scene scene_;
+
+        const scene::Object* last_reflected_object_ = nullptr;
     };
 }

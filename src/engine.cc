@@ -120,8 +120,8 @@ namespace engine
             }
         }
 
-        // No object in ray direction
-        if (closest_object == nullptr)
+        // No object in ray direction or same object that reflect in himself
+        if (closest_object == nullptr || (depth == 1 && last_reflected_object_ == closest_object))
             return std::nullopt;
 
         if (depth >= RECURSION_LIMIT)
@@ -159,6 +159,8 @@ namespace engine
             res = res + light_color * hitpoint_desc.ks
                     * pow(std::max(reflected_ray.dot(light_ray), 0.), hitpoint_desc.ns);
         }
+
+        last_reflected_object_ = closest_object;
 
         // Add reflexion
         std::optional<primitives::Vector3> reflection_contribution = cast_ray(offset_hitpoint, reflected_ray, depth + 1);

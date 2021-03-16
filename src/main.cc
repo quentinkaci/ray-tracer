@@ -23,7 +23,7 @@ int main(void)
 
     Scene scene(Camera(Point3(0., 0., 0.), Point3(0., 0., 1.), Point3(0., 1., 0.), alpha, beta, 1.));
 
-    // BumpMappingTexture sphere_bump_texture_red(6., 10., TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(150, 0, 0)});
+    // BumpMappingTexture sphere_bump_texture_red(6., 10., 2., TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(150, 0, 0)});
     // scene.objects.emplace_back(new Sphere(sphere_bump_texture_red, Point3(0., 2.5, 15.), 2.));
 
     // // Assume we are running the executable in a build folder

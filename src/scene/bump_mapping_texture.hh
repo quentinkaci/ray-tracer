@@ -10,7 +10,7 @@ namespace scene
     class BumpMappingTexture : public TextureMaterial
     {
     public:
-        BumpMappingTexture(uint octave, double persistence, const TextureMaterialCaracteristics& caracteristic);
+        BumpMappingTexture(uint octave, double persistence, double instensity, const TextureMaterialCaracteristics& caracteristic);
 
         TextureMaterialCaracteristics get_caracteristics(const primitives::Point3& point) const override;
 
@@ -22,6 +22,8 @@ namespace scene
         uint octave_;
 
         double persistence_;
+
+        double intensity_;
 
         TextureMaterialCaracteristics caracteristic_;
     };

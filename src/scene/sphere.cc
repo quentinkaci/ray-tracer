@@ -38,7 +38,7 @@ namespace scene
 
     primitives::Vector3 Sphere::get_normal(const primitives::Point3& A) const
     {
-        return primitives::Vector3((A - center_));
+        return primitives::Vector3((A - center_) / radius_);
     }
 
     primitives::Point3 Sphere::get_planar_projection(const primitives::Point3& A) const

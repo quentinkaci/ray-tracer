@@ -5,9 +5,10 @@
 
 namespace scene
 {
-    BumpMappingTexture::BumpMappingTexture(uint octave, double persistence, const TextureMaterialCaracteristics& caracteristic)
+    BumpMappingTexture::BumpMappingTexture(uint octave, double persistence, double intensity, const TextureMaterialCaracteristics& caracteristic)
         : octave_(octave)
         , persistence_(persistence)
+        , intensity_(intensity)
         , caracteristic_(caracteristic)
     {}
 
@@ -27,6 +28,6 @@ namespace scene
             p_.get_octave(point.x, point.y - EPSILON, z, octave_, persistence_)
                 - p_.get_octave(point.x, point.y + EPSILON, z, octave_, persistence_),
             0.
-        );
+        ) * intensity_;
     }
 }
