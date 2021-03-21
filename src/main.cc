@@ -83,6 +83,11 @@ int main(void)
     // 0.30, 1., 0.30, Color(150, 0, 0)}); Blob blob(primitives::Point3(-1.,
     // -1., 4.), 0.05, 2, 400, uniform_texture_red);
     // blob.add(primitives::Point3(0., 0., 5.));
+
+    UniformTexture uniform_texture_blue(TextureMaterialCaracteristics{
+        0.005, 0.30, 1., 0.30, Color(10, 10, 200)});
+    // Blob blob(primitives::Point3(0., -5., 0.), 0.1, 10, 9.9,
+    // uniform_texture_blue); blob.add(primitives::Point3(0., -2.5, 8.), 10);
     // blob.run(scene);
 
     // scene.objects.emplace_back(new Sphere(uniform_texture_red, Point3(-1.,
@@ -92,13 +97,14 @@ int main(void)
     // -1., 5.), 0.1)); scene.objects.emplace_back(new
     // Sphere(uniform_texture_red, Point3(1., 1., 5.), 0.1));
 
-    UniformTexture uniform_texture_blue(TextureMaterialCaracteristics{
-        0.005, 0.30, 1., 0.30, Color(10, 10, 200)});
     scene.objects.emplace_back(
         new Plane(uniform_texture_blue, Point3(0., -5., 0.), Vector3(0, 1, 0)));
 
     std::cout << "Rendering " << scene.objects.size() << " objects"
               << std::endl;
+
+    scene.objects.emplace_back(
+        new Plane(uniform_texture_blue, Point3(0., -5., 0.), Vector3(0, 1, 0)));
 
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));

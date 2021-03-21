@@ -5,36 +5,38 @@
 
 #include <vector>
 
-
 namespace scene
 {
-    enum PerlinTextureType
-    {
-        DEFAULT = 0,
-        MARBLE,
-        WOOD,
-    };
+enum PerlinTextureType
+{
+    DEFAULT = 0,
+    MARBLE,
+    WOOD,
+};
 
-    class PerlinTexture : public TextureMaterial
-    {
-    public:
-        PerlinTexture(uint octave, double persistence,
-            const TextureMaterialCaracteristics& caracteristic, PerlinTextureType type,
-            std::vector<primitives::Color> color_list);
+class PerlinTexture : public TextureMaterial
+{
+  public:
+    PerlinTexture(uint                                 octave,
+                  double                               persistence,
+                  const TextureMaterialCaracteristics& caracteristic,
+                  PerlinTextureType                    type,
+                  std::vector<primitives::Color>       color_list);
 
-        TextureMaterialCaracteristics get_caracteristics(const primitives::Point3& point) const override;
+    TextureMaterialCaracteristics
+    get_caracteristics(const primitives::Point3& point) const override;
 
-    private:
-        uint octave_;
+  private:
+    uint octave_;
 
-        double persistence_;
+    double persistence_;
 
-        utils::PerlinNoise perlin_noise_;
+    utils::PerlinNoise perlin_noise_;
 
-        TextureMaterialCaracteristics caracteristic_;
+    TextureMaterialCaracteristics caracteristic_;
 
-        PerlinTextureType type_;
+    PerlinTextureType type_;
 
-        std::vector<primitives::Color> color_list_;
-    };
-}
+    std::vector<primitives::Color> color_list_;
+};
+} // namespace scene

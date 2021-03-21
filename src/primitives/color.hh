@@ -4,19 +4,18 @@
 
 #include <iostream>
 
-
 namespace primitives
 {
-    struct Color
-    {
-        Color(uchar r, uchar g, uchar b);
+struct Color
+{
+    Color(uchar r, uchar g, uchar b);
 
-        Color();
+    Color();
 
-        uchar r;
-        uchar g;
-        uchar b;
-    };
+    uchar r;
+    uchar g;
+    uchar b;
+};
 
-    std::ostream& operator<<(std::ostream& os, const primitives::Color& color);
-}
+std::ostream& operator<<(std::ostream& os, const primitives::Color& color);
+} // namespace primitives

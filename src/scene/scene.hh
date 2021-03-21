@@ -1,21 +1,21 @@
 #pragma once
 
-#include "object.hh"
-#include "light.hh"
 #include "camera.hh"
+#include "light.hh"
+#include "object.hh"
 
 #include <vector>
 
 namespace scene
 {
-    struct Scene
-    {
-        Scene(Camera camera);
+struct Scene
+{
+    Scene(Camera camera);
 
-        ~Scene() = default;
+    ~Scene() = default;
 
-        std::vector<Object*> objects;
-        std::vector<Light*> light_sources;
-        Camera camera;
-    };
-}
+    std::vector<Object*> objects;
+    std::vector<Light*>  light_sources;
+    Camera               camera;
+};
+} // namespace scene
