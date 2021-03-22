@@ -10,6 +10,8 @@ add_library(sources
         scene/sphere.cc
         scene/plane.cc
         scene/triangle.cc
+        scene/rectangle.cc
+        scene/cube.cc
         scene/uniform_texture.cc
         scene/image_texture.cc
         scene/perlin_texture.cc

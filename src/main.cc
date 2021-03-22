@@ -2,10 +2,12 @@
 #include "scene/blob.hh"
 #include "scene/bump_mapping_texture.hh"
 #include "scene/camera.hh"
+#include "scene/cube.hh"
 #include "scene/image_texture.hh"
 #include "scene/perlin_texture.hh"
 #include "scene/plane.hh"
 #include "scene/point_light.hh"
+#include "scene/rectangle.hh"
 #include "scene/scene.hh"
 #include "scene/sphere.hh"
 #include "scene/triangle.hh"
@@ -23,7 +25,7 @@ int main(void)
     double alpha = beta * 16. / 9.;
 
     Scene scene(Camera(Point3(0., 0., 0.),
-                       Point3(0., 0., 1.),
+                       Point3(0., -0.2, 1.),
                        Point3(0., 1., 0.),
                        alpha,
                        beta,
@@ -43,8 +45,8 @@ int main(void)
         TextureMaterialCaracteristics{0.005, 0.30, 1., 0.05, Color(150, 0, 0)},
         PerlinTextureType::WOOD,
         std::vector<Color>{Color(90, 70, 0), Color(0, 0, 0)});
-    scene.objects.emplace_back(
-        new Sphere(perlin_wood_texture, Point3(0., 2.5, 15.), 2.));
+    // scene.objects.emplace_back(
+    //     new Sphere(perlin_wood_texture, Point3(0., 2.5, 15.), 2.));
 
     PerlinTexture perlin_texture(
         5,
@@ -76,8 +78,8 @@ int main(void)
     ImageTexture sphere_billiard_texture(
         *Image::load_from_ppm("../textures/8_billiard_ball"),
         TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color()});
-    scene.objects.emplace_back(
-        new Sphere(sphere_billiard_texture, Point3(0., -2.5, 15.), 2.));
+    // scene.objects.emplace_back(
+    //     new Sphere(sphere_billiard_texture, Point3(0., -2.5, 15.), 2.));
 
     // UniformTexture uniform_texture_red(TextureMaterialCaracteristics{0.005,
     // 0.30, 1., 0.30, Color(150, 0, 0)}); Blob blob(primitives::Point3(-1.,
@@ -102,9 +104,22 @@ int main(void)
 
     std::cout << "Rendering " << scene.objects.size() << " objects"
               << std::endl;
+    // scene.objects.emplace_back(new Plane(
+    //     uniform_texture_blue, Point3(0., -5.0, 0.), Vector3(0, 1, 0)));
+
+    // scene.objects.emplace_back(new Triangle(uniform_texture_blue,
+    //                                         Point3(-3.0, 2.4, 15.),
+    //                                         Point3(3.0, 2.4, 15.),
+    //                                         Point3(-3.0, 2.0, 5.)));
+
+    // scene.objects.emplace_back(new Rectangle(uniform_texture_blue,
+    //                                          Point3(1.0, 0., 15.),
+    //                                          Point3(1.0, 2.5, 15.),
+    //                                          Point3(-1.0, 2.5, 15.),
+    //                                          Point3(-1.0, 0., 15.)));
 
     scene.objects.emplace_back(
-        new Plane(uniform_texture_blue, Point3(0., -5., 0.), Vector3(0, 1, 0)));
+        new Cube(uniform_texture_blue, Point3(0.0, -2.5, 10.), 2.0));
 
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));

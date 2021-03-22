@@ -15,7 +15,8 @@ class Sphere : public Object
     ray_intersection(const primitives::Point3&  A,
                      const primitives::Vector3& v) const override;
 
-    primitives::Vector3 get_normal(const primitives::Point3& A) const override;
+    primitives::Vector3 get_normal(const primitives::Point3&  A,
+                                   const primitives::Vector3& v) const override;
 
     primitives::Point3
     get_planar_projection(const primitives::Point3& A) const override;

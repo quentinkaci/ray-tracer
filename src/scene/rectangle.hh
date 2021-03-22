@@ -1,16 +1,18 @@
 #pragma once
 
 #include "object.hh"
+#include "triangle.hh"
 
 namespace scene
 {
-class Triangle : public Object
+class Rectangle : public Object
 {
   public:
-    Triangle(const TextureMaterial&    texture_material,
-             const primitives::Point3& p0,
-             const primitives::Point3& p1,
-             const primitives::Point3& p2);
+    Rectangle(const TextureMaterial&    texture_material,
+              const primitives::Point3& p0,
+              const primitives::Point3& p1,
+              const primitives::Point3& p2,
+              const primitives::Point3& p3);
 
     std::optional<double>
     ray_intersection(const primitives::Point3&  A,
@@ -24,11 +26,11 @@ class Triangle : public Object
     TextureMaterialCaracteristics
     get_texture(const primitives::Point3& A) const override;
 
+    primitives::Point3 pos_;
+
   private:
-    primitives::Point3 p0_;
+    Triangle triangle1_;
 
-    primitives::Point3 p1_;
-
-    primitives::Point3 p2_;
+    Triangle triangle2_;
 };
 } // namespace scene

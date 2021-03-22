@@ -21,7 +21,7 @@ std::optional<double>
 Triangle::ray_intersection(const primitives::Point3&  A,
                            const primitives::Vector3& v) const
 {
-    primitives::Vector3 normal = get_normal(A);
+    primitives::Vector3 normal = get_normal(A, v);
 
     double normal_dot_ray = normal.dot(v);
     if (fabs(normal_dot_ray) < EPSILON)
@@ -59,11 +59,15 @@ Triangle::ray_intersection(const primitives::Point3&  A,
     return lambda;
 }
 
-primitives::Vector3 Triangle::get_normal(const primitives::Point3&) const
+primitives::Vector3 Triangle::get_normal(const primitives::Point3&,
+                                         const primitives::Vector3& v) const
 {
     primitives::Vector3 u0(p1_ - p0_);
     primitives::Vector3 u1(p2_ - p0_);
-    return u0.cross(u1).normalize();
+    primitives::Vector3 normal = u0.cross(u1).normalize();
+    if (v.dot(normal) > 0)
+        normal = normal * -1.0;
+    return normal;
 }
 
 primitives::Point3

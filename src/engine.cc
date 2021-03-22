@@ -153,7 +153,8 @@ Engine::cast_ray(const primitives::Point3&  A,
     primitives::Vector3 object_color(
         hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b);
 
-    primitives::Vector3 normal = closest_object->get_computed_normal(hitpoint);
+    primitives::Vector3 normal =
+        closest_object->get_computed_normal(hitpoint, v);
     primitives::Vector3 reflected_ray =
         (v - normal * v.dot(normal) * 2).normalize();
     primitives::Point3 offset_hitpoint =

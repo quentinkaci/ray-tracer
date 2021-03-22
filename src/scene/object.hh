@@ -16,10 +16,12 @@ class Object
     ray_intersection(const primitives::Point3&  A,
                      const primitives::Vector3& v) const = 0;
 
-    primitives::Vector3 get_computed_normal(const primitives::Point3& A) const;
+    primitives::Vector3 get_computed_normal(const primitives::Point3&  A,
+                                            const primitives::Vector3& v) const;
 
     virtual primitives::Vector3
-    get_normal(const primitives::Point3& A) const = 0;
+    get_normal(const primitives::Point3&  A,
+               const primitives::Vector3& v) const = 0;
 
     // Z component of result is useless because a planar projection is in 2D
     virtual primitives::Point3

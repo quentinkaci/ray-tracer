@@ -40,7 +40,8 @@ Sphere::ray_intersection(const primitives::Point3&  A,
     return std::nullopt;
 }
 
-primitives::Vector3 Sphere::get_normal(const primitives::Point3& A) const
+primitives::Vector3 Sphere::get_normal(const primitives::Point3& A,
+                                       const primitives::Vector3&) const
 {
     return primitives::Vector3((A - center_) / radius_);
 }
