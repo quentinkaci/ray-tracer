@@ -38,16 +38,30 @@ primitives::Vector3 Rectangle::get_normal(const primitives::Point3&  A,
 }
 
 primitives::Point3
-Rectangle::get_planar_projection(const primitives::Point3&) const
+Rectangle::get_planar_projection(const primitives::Point3& A) const
 {
-    // FIXME Uniform texture
-    return primitives::Point3();
+    primitives::Vector3 normal = get_normal(A, primitives::Vector3(0, 0, 0));
+
+    primitives::Vector3 e1 =
+        normal.cross(primitives::Vector3(1, 0, 0)).normalize();
+
+    if (e1 == primitives::Vector3(0, 0, 0))
+    {
+        e1 = normal.cross(primitives::Vector3(0, 0, 1)).normalize();
+    }
+
+    primitives::Vector3 e2 = normal.cross(e1).normalize();
+
+    double u = e1.dot(A);
+    double v = e2.dot(A);
+
+    return primitives::Point3(u, v, 0);
 }
 
 TextureMaterialCaracteristics
-Rectangle::get_texture(const primitives::Point3&) const
+Rectangle::get_texture(const primitives::Point3& A) const
 {
-    // FIXME Uniform texture
-    return Object::texture_material_.get_caracteristics(primitives::Point3());
+    return Object::texture_material_.get_caracteristics(
+        get_planar_projection(A));
 }
 } // namespace scene

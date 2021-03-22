@@ -29,6 +29,8 @@ struct Vector3
     double z;
 };
 
+bool operator==(const Vector3& lhs, const Vector3& rhs);
+
 Vector3 operator*(const Vector3& v, const double& n);
 
 Vector3 operator/(const Vector3& v, const double& n);

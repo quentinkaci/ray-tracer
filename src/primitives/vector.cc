@@ -44,6 +44,11 @@ Vector3 Vector3::normalize() const
     return Vector3(x / length, y / length, z / length);
 }
 
+bool operator==(const Vector3& lhs, const Vector3& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+}
+
 Vector3 operator*(const Vector3& v, const double& n)
 {
     return Vector3(v.x * n, v.y * n, v.z * n);

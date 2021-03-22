@@ -59,15 +59,25 @@ primitives::Vector3 Cube::get_normal(const primitives::Point3&  A,
     return primitives::Vector3();
 }
 
-primitives::Point3 Cube::get_planar_projection(const primitives::Point3&) const
+primitives::Point3
+Cube::get_planar_projection(const primitives::Point3& A) const
 {
-    // FIXME Uniform texture
+    for (Rectangle r : rectangles_)
+    {
+        primitives::Vector3 normal = r.get_normal(A, primitives::Vector3());
+        primitives::Vector3 A_pos  = A - r.pos_;
+        if (A_pos.dot(normal) == 0)
+            return r.get_planar_projection(A);
+    }
+
+    // Should not happen as hitpoint is on one of the 6 sides.
     return primitives::Point3();
 }
 
-TextureMaterialCaracteristics Cube::get_texture(const primitives::Point3&) const
+TextureMaterialCaracteristics
+Cube::get_texture(const primitives::Point3& A) const
 {
-    // FIXME Uniform texture
-    return Object::texture_material_.get_caracteristics(primitives::Point3());
+    return Object::texture_material_.get_caracteristics(
+        get_planar_projection(A));
 }
 } // namespace scene

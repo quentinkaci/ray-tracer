@@ -78,9 +78,8 @@ Triangle::get_planar_projection(const primitives::Point3&) const
 }
 
 TextureMaterialCaracteristics
-Triangle::get_texture(const primitives::Point3&) const
+Triangle::get_texture(const primitives::Point3& A) const
 {
-    // FIXME Uniform texture
-    return Object::texture_material_.get_caracteristics(primitives::Point3());
+    return Object::texture_material_.get_caracteristics(A);
 }
 } // namespace scene
