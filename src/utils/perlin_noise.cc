@@ -1,13 +1,20 @@
+#include <algorithm>
+#include <random>
+
 #include "perlin_noise.hh"
 
 namespace utils
 {
 PerlinNoise::PerlinNoise()
 {
-    // Duplicate the values of PERMUTATION array to avoid buffer overflow
+    // Duplicate the values to avoid buffer overflow
     // when computing hash later on.
     for (uint x = 0; x < 512; x++)
-        permutations_[x] = PERMUTATION[x % 256];
+        hash_.push_back(x % 256);
+
+    // Shuffle hash table values
+    std::shuffle(
+        hash_.begin(), hash_.end(), std::default_random_engine(PERLIN_SEED));
 }
 
 double PerlinNoise::get(double x, double y, double z) const
@@ -24,22 +31,21 @@ double PerlinNoise::get(double x, double y, double z) const
 
     // ------
     // Part 1
-    // Find hash values for each of the 8 corners
+    // Find hash values for each of the 8 corners of the cube
     // ------
 
     uint xi = static_cast<uint>(x) % 256;
     uint yi = static_cast<uint>(y) % 256;
     uint zi = static_cast<uint>(z) % 256;
 
-    uint aaa, aba, aab, abb, baa, bba, bab, bbb;
-    aaa = permutations_[permutations_[permutations_[xi] + yi] + zi];
-    aba = permutations_[permutations_[permutations_[xi] + yi + 1] + zi];
-    aab = permutations_[permutations_[permutations_[xi] + yi] + zi + 1];
-    abb = permutations_[permutations_[permutations_[xi] + yi + 1] + zi + 1];
-    baa = permutations_[permutations_[permutations_[xi + 1] + yi] + zi];
-    bba = permutations_[permutations_[permutations_[xi + 1] + yi + 1] + zi];
-    bab = permutations_[permutations_[permutations_[xi + 1] + yi] + zi + 1];
-    bbb = permutations_[permutations_[permutations_[xi + 1] + yi + 1] + zi + 1];
+    uint aaa = hash_[hash_[hash_[xi] + yi] + zi];
+    uint aba = hash_[hash_[hash_[xi] + yi + 1] + zi];
+    uint aab = hash_[hash_[hash_[xi] + yi] + zi + 1];
+    uint abb = hash_[hash_[hash_[xi] + yi + 1] + zi + 1];
+    uint baa = hash_[hash_[hash_[xi + 1] + yi] + zi];
+    uint bba = hash_[hash_[hash_[xi + 1] + yi + 1] + zi];
+    uint bab = hash_[hash_[hash_[xi + 1] + yi] + zi + 1];
+    uint bbb = hash_[hash_[hash_[xi + 1] + yi + 1] + zi + 1];
 
     // ------
     // Part 2
@@ -50,14 +56,24 @@ double PerlinNoise::get(double x, double y, double z) const
     double v = fade(yf);
     double w = fade(zf);
 
-    double x1 = lerp(grad(aaa, xf, yf, zf), grad(baa, xf - 1, yf, zf), u);
-    double x2 =
-        lerp(grad(aba, xf, yf - 1, zf), grad(bba, xf - 1, yf - 1, zf), u);
+    double aaa_grad = grad(aaa, xf, yf, zf);
+    double baa_grad = grad(baa, xf - 1, yf, zf);
+    double x1       = lerp(aaa_grad, baa_grad, u);
+
+    double aba_grad = grad(aba, xf, yf - 1, zf);
+    double bba_grad = grad(bba, xf - 1, yf - 1, zf);
+    double x2       = lerp(aba_grad, bba_grad, u);
+
     double y1 = lerp(x1, x2, v);
 
-    x1 = lerp(grad(aab, xf, yf, zf - 1), grad(bab, xf - 1, yf, zf - 1), u);
-    x2 = lerp(
-        grad(abb, xf, yf - 1, zf - 1), grad(bbb, xf - 1, yf - 1, zf - 1), u);
+    double aab_grad = grad(aab, xf, yf, zf - 1);
+    double bab_grad = grad(bab, xf - 1, yf, zf - 1);
+    x1              = lerp(aab_grad, bab_grad, u);
+
+    double abb_grad = grad(abb, xf, yf - 1, zf - 1);
+    double bbb_grad = grad(bbb, xf - 1, yf - 1, zf - 1);
+    x2              = lerp(abb_grad, bbb_grad, u);
+
     double y2 = lerp(x1, x2, v);
 
     return (1 + lerp(y1, y2, w)) / 2;
@@ -69,7 +85,8 @@ double PerlinNoise::get_octave(double x,
                                uint   octaves,
                                double persistence) const
 {
-    double res       = 0;
+    double res = 0;
+
     double frequency = 1;
     double amplitude = 1;
     double max_value = 0;
@@ -99,7 +116,10 @@ double PerlinNoise::fade(double value) const
 
 double PerlinNoise::grad(uint hash, double x, double y, double z) const
 {
-    switch (hash & 0xF) // % 12
+    // Depending on hash value, compute the dot product between vector
+    // (x, y, z) and a unit vector (eg: (1, -1, 0)).
+
+    switch (hash & 0xF)
     {
     case 0x0:
         return x + y;

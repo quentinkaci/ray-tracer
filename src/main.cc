@@ -25,7 +25,7 @@ int main(void)
     double alpha = beta * 16. / 9.;
 
     Scene scene(Camera(Point3(0., 0., 0.),
-                       Point3(0., -0.2, 1.),
+                       Point3(0., 0, 1.),
                        Point3(0., 1., 0.),
                        alpha,
                        beta,
@@ -45,8 +45,8 @@ int main(void)
         TextureMaterialCaracteristics{0.005, 0.30, 1., 0.05, Color(150, 0, 0)},
         PerlinTextureType::WOOD,
         std::vector<Color>{Color(90, 70, 0), Color(0, 0, 0)});
-    // scene.objects.emplace_back(
-    //     new Sphere(perlin_wood_texture, Point3(0., 2.5, 15.), 2.));
+    scene.objects.emplace_back(
+        new Sphere(perlin_wood_texture, Point3(0., 2.5, 15.), 2.));
 
     PerlinTexture perlin_texture(
         5,
@@ -119,7 +119,7 @@ int main(void)
     //                                          Point3(-1.0, 0., 15.)));
 
     scene.objects.emplace_back(
-        new Cube(uniform_texture_blue, Point3(0.0, -2.5, 10.), 2.0));
+        new Cube(uniform_texture_blue, Point3(0.0, -2., 12.), 2.0));
 
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
