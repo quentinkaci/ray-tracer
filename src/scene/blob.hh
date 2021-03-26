@@ -14,7 +14,7 @@ namespace scene
 
         virtual ~Blob() = default;
 
-        void add(primitives::Point3 pos, double value);
+        void add(primitives::Point3 pos);
 
         void run(Scene& scene) const;
 
@@ -23,7 +23,7 @@ namespace scene
 
         void add_cube_segmentation(Scene& scene, const primitives::Point3& p) const;
 
-        std::vector<std::tuple<primitives::Point3, double>> energy_points_;
+        std::vector<primitives::Point3> energy_points_;
 
         primitives::Point3 origin_;
 
