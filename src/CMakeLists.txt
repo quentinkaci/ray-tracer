@@ -8,6 +8,7 @@ add_library(sources
         scene/point_light.cc
         scene/scene.cc
         scene/sphere.cc
+        scene/plane.cc
         scene/triangle.cc
         scene/uniform_texture.cc
         scene/image_texture.cc
