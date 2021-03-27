@@ -5,6 +5,7 @@
 #include "primitives/color.hh"
 
 #include <optional>
+#include <random>
 
 namespace engine
 {
@@ -21,5 +22,7 @@ namespace engine
         scene::Scene scene_;
 
         const scene::Object* last_reflected_object_ = nullptr;
+
+        std::default_random_engine re_;
     };
 }

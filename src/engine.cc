@@ -3,20 +3,31 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
-#include <random>
 
-#define RECURSION_LIMIT 5
 #define EPSILON 0.0001
 
-#define MAX_RAY_PER_PIXEL 50
+// Reflection
+#define RECURSION_LIMIT 3
+
+// Anti-aliasing
+#define MAX_RAY_PER_PIXEL 25
 #define AA_THRESHOLD 10
+
+// Ambient color
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
+
+// Soft shadow
+#define NB_RAY_SOFT_SHADOW 25
 
 namespace engine
 {
     Engine::Engine(const scene::Scene& scene)
         : scene_(scene)
-    {}
+    {
+        std::random_device rd;
+        unsigned seed = rd();
+        re_ = std::default_random_engine(seed);
+    }
 
     static double gradient(const primitives::Color& color, const primitives::Vector3& vector)
     {
@@ -34,10 +45,6 @@ namespace engine
         std::uniform_real_distribution<double> unif_x(- unit_x / 2., unit_x / 2.);
         std::uniform_real_distribution<double> unif_y(- unit_y / 2., unit_y / 2.);
 
-        std::random_device rd;
-        unsigned seed = rd();
-        std::default_random_engine re(seed);
-
         utils::Image res(height, width);
 
         for (uint j = 0; j < height; ++j)
@@ -50,7 +57,7 @@ namespace engine
                 if (!primary_intensity.has_value())
                     primary_intensity = BACKGROUND_COLOR;
 
-                primitives::Vector3 average_intensity = primary_intensity.value();
+                primitives::Vector3 interpolated_intensity = primary_intensity.value();
 
                 std::vector<primitives::Color> neighbours;
 
@@ -70,33 +77,30 @@ namespace engine
                 uint k = 1;
                 for (; k < MAX_RAY_PER_PIXEL; ++k)
                 {
-                    primitives::Vector3 cur_average_intensity = average_intensity / (double)k;
-
                     bool over_threshold = false;
                     for (const auto& neighbour : neighbours)
-                        over_threshold |= gradient(neighbour, cur_average_intensity) > AA_THRESHOLD;
+                        over_threshold |= gradient(neighbour, interpolated_intensity) > AA_THRESHOLD;
 
                     if (!over_threshold)
                         break;
 
                     primitives::Vector3 random_vector = pixels_vector[i + j * width];
-                    random_vector.x += unif_x(re);
-                    random_vector.y += unif_y(re);
+                    random_vector.x += unif_x(re_);
+                    random_vector.y += unif_y(re_);
                     random_vector.normalize();
 
                     std::optional<primitives::Vector3> new_intensity = cast_ray(origin, random_vector);
                     if (!new_intensity.has_value())
                         new_intensity = BACKGROUND_COLOR;
 
-                    average_intensity = average_intensity + new_intensity.value();
+                    interpolated_intensity = (interpolated_intensity * ((double)MAX_RAY_PER_PIXEL - 1.) + new_intensity.value())
+                                            / (double)MAX_RAY_PER_PIXEL;
                 }
 
-                average_intensity = average_intensity / (double)k;
-
                 primitives::Color pixel_color = primitives::Color(
-                                            std::clamp(average_intensity.x, 0., 255.),
-                                            std::clamp(average_intensity.y, 0., 255.),
-                                            std::clamp(average_intensity.z, 0., 255.));
+                                            std::clamp(interpolated_intensity.x, 0., 255.),
+                                            std::clamp(interpolated_intensity.y, 0., 255.),
+                                            std::clamp(interpolated_intensity.z, 0., 255.));
 
                 res.pixel(i, j) = pixel_color;
             }
@@ -137,16 +141,31 @@ namespace engine
 
         primitives::Vector3 res;
 
+        std::uniform_real_distribution<double> unif_x(- 0.5, 0.5);
+        std::uniform_real_distribution<double> unif_y(- 0.5, 0.5);
+        std::uniform_real_distribution<double> unif_z(- 0.5, 0.5);
+
         for (const scene::Light* light : scene_.light_sources)
         {
             primitives::Vector3 light_ray(light->get_center() - hitpoint);
             light_ray = light_ray.normalize();
 
-            // Take shadow into account
-            std::optional<primitives::Vector3> light_check = cast_ray(offset_hitpoint, light_ray, RECURSION_LIMIT);
-            // Obstacle betweem hitpoint and light
-            if (light_check.has_value())
-                continue;
+            double shadow_coef = 0.;
+
+            for (uint k = 0; k < NB_RAY_SOFT_SHADOW; ++k)
+            {
+                primitives::Point3 jittered_light = light->get_center()
+                    + primitives::Point3(unif_x(re_), unif_y(re_), unif_z(re_));
+
+                primitives::Vector3 random_light_ray(jittered_light - hitpoint);
+                random_light_ray = random_light_ray.normalize();
+
+                // Take shadow into account
+                std::optional<primitives::Vector3> light_check = cast_ray(offset_hitpoint, random_light_ray, RECURSION_LIMIT);
+                // Obstacle betweem hitpoint and light
+                if (light_check.has_value())
+                    ++shadow_coef;
+            }
 
             primitives::Color lc = light->get_caracteristics().color;
             primitives::Vector3 light_color(lc.r, lc.g, lc.b);
@@ -158,6 +177,10 @@ namespace engine
             // Add specular component
             res = res + light_color * hitpoint_desc.ks
                     * pow(std::max(reflected_ray.dot(light_ray), 0.), hitpoint_desc.ns);
+
+            // Apply shadow
+            res = res - primitives::Vector3(150, 150, 150) * (shadow_coef / NB_RAY_SOFT_SHADOW);
+            res = primitives::Vector3(std::max(res.x, 0.), std::max(res.y, 0.), std::max(res.z, 0.));
         }
 
         last_reflected_object_ = closest_object;
