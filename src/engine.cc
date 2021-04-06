@@ -7,17 +7,24 @@
 #define EPSILON 0.0001
 
 // Reflection
-#define RECURSION_LIMIT 3
+#define RECURSION_LIMIT 5
 
 // Anti-aliasing
-#define MAX_RAY_PER_PIXEL 25
+#define NB_RAY_AA 20
 #define AA_THRESHOLD 10
 
 // Ambient color
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 // Soft shadow
-#define NB_RAY_SOFT_SHADOW 25
+#define NB_RAY_SOFT_SHADOW 20
+#define MIN_RANGE_SOFT_SHADOW -1
+#define MAX_RANGE_SOFT_SHADOW 1
+
+// Depth of field
+#define NB_RAY_DOF 20
+#define FOCAL_DISTANCE 10
+#define APERTURE_SIZE 250
 
 namespace engine
 {
@@ -45,8 +52,13 @@ utils::Image Engine::run(uint height, uint width)
     double unit_x = scene_.camera.get_unit_x(width);
     double unit_y = scene_.camera.get_unit_y(height);
 
-    std::uniform_real_distribution<double> unif_x(-unit_x / 2., unit_x / 2.);
-    std::uniform_real_distribution<double> unif_y(-unit_y / 2., unit_y / 2.);
+    std::uniform_real_distribution<double> aa_unif_x(-unit_x / 2., unit_x / 2.);
+    std::uniform_real_distribution<double> aa_unif_y(-unit_y / 2., unit_y / 2.);
+
+    std::uniform_real_distribution<double> dof_unif_x(-unit_x / 2.,
+                                                      unit_x / 2.);
+    std::uniform_real_distribution<double> dof_unif_y(-unit_y / 2.,
+                                                      unit_y / 2.);
 
     utils::Image res(height, width);
 
@@ -54,17 +66,6 @@ utils::Image Engine::run(uint height, uint width)
     {
         for (uint i = 0; i < width; ++i)
         {
-            const primitives::Vector3& pixel_vector =
-                pixels_vector[i + j * width];
-
-            std::optional<primitives::Vector3> primary_intensity =
-                cast_ray(origin, pixel_vector);
-            if (!primary_intensity.has_value())
-                primary_intensity = BACKGROUND_COLOR;
-
-            primitives::Vector3 interpolated_intensity =
-                primary_intensity.value();
-
             std::vector<primitives::Color> neighbours;
 
             if (j > 0)
@@ -80,39 +81,59 @@ utils::Image Engine::run(uint height, uint width)
             if (i > 0)
                 neighbours.emplace_back(res.get_pixel(i - 1, j));
 
-            uint k = 1;
-            for (; k < MAX_RAY_PER_PIXEL; ++k)
+            primitives::Vector3 aa_intensity;
+
+            uint k = 0;
+            while (k < NB_RAY_AA)
             {
+                primitives::Vector3 random_vector =
+                    pixels_vector[i + j * width];
+                random_vector.x += aa_unif_x(re_);
+                random_vector.y += aa_unif_y(re_);
+                random_vector = random_vector.normalize();
+
+                primitives::Vector3 dof_intensity;
+                for (uint l = 0; l < NB_RAY_DOF; ++l)
+                {
+                    primitives::Vector3 focal_point =
+                        origin + random_vector * FOCAL_DISTANCE;
+
+                    primitives::Point3 jittered_origin(origin);
+                    jittered_origin.x += APERTURE_SIZE * dof_unif_x(re_);
+                    jittered_origin.y += APERTURE_SIZE * dof_unif_y(re_);
+
+                    primitives::Vector3 pixel_vector =
+                        focal_point - jittered_origin;
+
+                    std::optional<primitives::Vector3> intensity =
+                        cast_ray(jittered_origin, pixel_vector);
+                    if (!intensity.has_value())
+                        intensity = BACKGROUND_COLOR;
+
+                    dof_intensity = dof_intensity + intensity.value();
+                }
+
+                dof_intensity = dof_intensity / NB_RAY_DOF;
+
+                aa_intensity = aa_intensity + dof_intensity;
+
+                ++k;
+
                 bool over_threshold = false;
                 for (const auto& neighbour : neighbours)
                     over_threshold |=
-                        gradient(neighbour, interpolated_intensity) >
-                        AA_THRESHOLD;
+                        gradient(neighbour, aa_intensity) > AA_THRESHOLD;
 
                 if (!over_threshold)
                     break;
-
-                primitives::Vector3 random_vector =
-                    pixels_vector[i + j * width];
-                random_vector.x += unif_x(re_);
-                random_vector.y += unif_y(re_);
-                random_vector.normalize();
-
-                std::optional<primitives::Vector3> new_intensity =
-                    cast_ray(origin, random_vector);
-                if (!new_intensity.has_value())
-                    new_intensity = BACKGROUND_COLOR;
-
-                interpolated_intensity =
-                    (interpolated_intensity * ((double)MAX_RAY_PER_PIXEL - 1.) +
-                     new_intensity.value()) /
-                    (double)MAX_RAY_PER_PIXEL;
             }
 
-            primitives::Color pixel_color = primitives::Color(
-                std::clamp(interpolated_intensity.x, 0., 255.),
-                std::clamp(interpolated_intensity.y, 0., 255.),
-                std::clamp(interpolated_intensity.z, 0., 255.));
+            aa_intensity = aa_intensity / k;
+
+            primitives::Color pixel_color =
+                primitives::Color(std::clamp(aa_intensity.x, 0., 255.),
+                                  std::clamp(aa_intensity.y, 0., 255.),
+                                  std::clamp(aa_intensity.z, 0., 255.));
 
             res.pixel(i, j) = pixel_color;
         }
@@ -162,9 +183,12 @@ Engine::cast_ray(const primitives::Point3&  A,
 
     primitives::Vector3 res;
 
-    std::uniform_real_distribution<double> unif_x(-0.5, 0.5);
-    std::uniform_real_distribution<double> unif_y(-0.5, 0.5);
-    std::uniform_real_distribution<double> unif_z(-0.5, 0.5);
+    std::uniform_real_distribution<double> unif_x(MIN_RANGE_SOFT_SHADOW,
+                                                  MAX_RANGE_SOFT_SHADOW);
+    std::uniform_real_distribution<double> unif_y(MIN_RANGE_SOFT_SHADOW,
+                                                  MAX_RANGE_SOFT_SHADOW);
+    std::uniform_real_distribution<double> unif_z(MIN_RANGE_SOFT_SHADOW,
+                                                  MAX_RANGE_SOFT_SHADOW);
 
     for (const scene::Light* light : scene_.light_sources)
     {
@@ -185,7 +209,7 @@ Engine::cast_ray(const primitives::Point3&  A,
             // Take shadow into account
             std::optional<primitives::Vector3> light_check =
                 cast_ray(offset_hitpoint, random_light_ray, RECURSION_LIMIT);
-            // Obstacle betweem hitpoint and light
+            // Obstacle between hitpoint and light
             if (light_check.has_value())
                 ++shadow_coef;
         }
@@ -203,10 +227,7 @@ Engine::cast_ray(const primitives::Point3&  A,
                             hitpoint_desc.ns);
 
         // Apply shadow
-        res = res - primitives::Vector3(150, 150, 150) *
-                        (shadow_coef / NB_RAY_SOFT_SHADOW);
-        res = primitives::Vector3(
-            std::max(res.x, 0.), std::max(res.y, 0.), std::max(res.z, 0.));
+        res = res * (1 - (shadow_coef / NB_RAY_SOFT_SHADOW));
     }
 
     last_reflected_object_ = closest_object;
