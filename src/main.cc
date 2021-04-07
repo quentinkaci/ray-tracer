@@ -16,10 +16,10 @@
 
 using namespace primitives;
 using namespace scene;
-using namespace engine;
+using namespace core;
 using namespace utils;
 
-int main(void)
+int main()
 {
     // FOV 70
     double beta  = 35.;
@@ -45,7 +45,7 @@ int main(void)
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
 
-    Engine engine(scene);
+    Engine engine(Options{}, scene);
     Image  image = engine.run(1080, 1920);
 
     image.save_to_ppm("rendered_scene");

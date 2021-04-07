@@ -4,15 +4,17 @@
 #include "scene/scene.hh"
 #include "utils/image.hh"
 
+#include "options.hh"
+
 #include <optional>
 #include <random>
 
-namespace engine
+namespace core
 {
 class Engine
 {
   public:
-    Engine(const scene::Scene& scene);
+    Engine(const Options& options, const scene::Scene& scene);
 
     utils::Image run(uint height, uint width);
 
@@ -28,13 +30,15 @@ class Engine
                           const primitives::Vector3&            vector,
                           const std::vector<primitives::Color>& neighbours);
 
-    int compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
-                            const scene::Light*        light,
-                            const primitives::Vector3& light_ray);
+    unsigned int compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
+                                     const scene::Light*        light,
+                                     const primitives::Vector3& light_ray);
 
     std::optional<primitives::Vector3> cast_ray(const primitives::Point3&  A,
                                                 const primitives::Vector3& v,
                                                 uint depth = 0);
+
+    Options options_;
 
     scene::Scene scene_;
 
@@ -52,4 +56,4 @@ class Engine
     std::uniform_real_distribution<double> soft_shadow_unif_y_;
     std::uniform_real_distribution<double> soft_shadow_unif_z_;
 };
-} // namespace engine
+} // namespace core

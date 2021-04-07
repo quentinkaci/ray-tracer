@@ -12,9 +12,9 @@ target_compile_options(common_options INTERFACE
         )
 
 target_compile_options(common_options INTERFACE
-            "-O0"
-            "-g3"
-            )
+        "-O0"
+        "-g3"
+        )
 
 target_include_directories(common_options INTERFACE
         src/

@@ -6,33 +6,11 @@
 
 #define EPSILON 0.0001
 
-// Reflection
-#define REFLECTION_LIMIT 5
-
-// Anti-aliasing
-#define AA_ENABLED true
-#define NB_RAY_AA 20
-#define AA_THRESHOLD 10
-
-// Ambient color
-#define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
-
-// Soft shadow
-#define SOFT_SHADOW_ENABLED true
-#define NB_RAY_SOFT_SHADOW 20
-#define MIN_RANGE_SOFT_SHADOW -1
-#define MAX_RANGE_SOFT_SHADOW 1
-
-// Depth of field
-#define DOF_ENABLED true
-#define NB_RAY_DOF 20
-#define FOCAL_DISTANCE 10
-#define APERTURE_SIZE 250
-
-namespace engine
+namespace core
 {
-Engine::Engine(const scene::Scene& scene)
-    : scene_(scene)
+Engine::Engine(const Options& options, const scene::Scene& scene)
+    : options_(options)
+    , scene_(scene)
 {
     std::random_device rd;
     unsigned           seed = rd();
@@ -55,46 +33,47 @@ void Engine::init_distributions(uint height, uint width)
         std::uniform_real_distribution<double>(-unit_y / 2., unit_y / 2.);
 
     soft_shadow_unif_x_ = std::uniform_real_distribution<double>(
-        MIN_RANGE_SOFT_SHADOW, MAX_RANGE_SOFT_SHADOW);
+        options_.min_range_soft_shadow, options_.max_range_soft_shadow);
     soft_shadow_unif_y_ = std::uniform_real_distribution<double>(
-        MIN_RANGE_SOFT_SHADOW, MAX_RANGE_SOFT_SHADOW);
+        options_.min_range_soft_shadow, options_.max_range_soft_shadow);
     soft_shadow_unif_z_ = std::uniform_real_distribution<double>(
-        MIN_RANGE_SOFT_SHADOW, MAX_RANGE_SOFT_SHADOW);
+        options_.min_range_soft_shadow, options_.max_range_soft_shadow);
 }
 
 primitives::Vector3
 Engine::compute_depth_of_field(const primitives::Point3&  origin,
                                const primitives::Vector3& vector)
 {
-    if (!DOF_ENABLED)
+    if (!options_.dof_enabled)
     {
         std::optional<primitives::Vector3> intensity = cast_ray(origin, vector);
         if (!intensity.has_value())
-            intensity = BACKGROUND_COLOR;
+            intensity = options_.background_color;
 
         return intensity.value();
     }
 
     primitives::Vector3 dof_intensity;
-    for (uint l = 0; l < NB_RAY_DOF; ++l)
+    for (uint l = 0; l < options_.nb_ray_dof; ++l)
     {
-        primitives::Vector3 focal_point = origin + vector * FOCAL_DISTANCE;
+        primitives::Vector3 focal_point =
+            origin + vector * options_.focal_distance;
 
         primitives::Point3 jittered_origin(origin);
-        jittered_origin.x += APERTURE_SIZE * dof_unif_x_(re_);
-        jittered_origin.y += APERTURE_SIZE * dof_unif_y_(re_);
+        jittered_origin.x += options_.aperture_size * dof_unif_x_(re_);
+        jittered_origin.y += options_.aperture_size * dof_unif_y_(re_);
 
         primitives::Vector3 pixel_vector = focal_point - jittered_origin;
 
         std::optional<primitives::Vector3> intensity =
             cast_ray(jittered_origin, pixel_vector);
         if (!intensity.has_value())
-            intensity = BACKGROUND_COLOR;
+            intensity = options_.background_color;
 
         dof_intensity = dof_intensity + intensity.value();
     }
 
-    return dof_intensity / NB_RAY_DOF;
+    return dof_intensity / options_.nb_ray_dof;
 }
 
 static double gradient(const primitives::Color&   color,
@@ -109,13 +88,13 @@ Engine::compute_anti_aliasing(const primitives::Point3&             origin,
                               const primitives::Vector3&            vector,
                               const std::vector<primitives::Color>& neighbours)
 {
-    if (!AA_ENABLED)
+    if (!options_.aa_enabled)
         return compute_depth_of_field(origin, vector);
 
     primitives::Vector3 aa_intensity;
 
     uint k = 0;
-    while (k < NB_RAY_AA)
+    while (k < options_.nb_ray_aa)
     {
         primitives::Vector3 random_vector = vector;
         random_vector.x += aa_unif_x_(re_);
@@ -131,7 +110,8 @@ Engine::compute_anti_aliasing(const primitives::Point3&             origin,
 
         bool over_threshold = false;
         for (const auto& neighbour : neighbours)
-            over_threshold |= gradient(neighbour, aa_intensity) > AA_THRESHOLD;
+            over_threshold |=
+                gradient(neighbour, aa_intensity) > options_.aa_threshold;
 
         if (!over_threshold)
             break;
@@ -184,24 +164,25 @@ utils::Image Engine::run(uint height, uint width)
     return res;
 }
 
-int Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
-                                const scene::Light*        light,
-                                const primitives::Vector3& light_ray)
+unsigned int
+Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
+                            const scene::Light*        light,
+                            const primitives::Vector3& light_ray)
 {
-    if (!SOFT_SHADOW_ENABLED)
+    if (!options_.soft_shadow_enabled)
     {
         // Take shadow into account
         std::optional<primitives::Vector3> light_check =
-            cast_ray(offset_hitpoint, light_ray, REFLECTION_LIMIT);
+            cast_ray(offset_hitpoint, light_ray, options_.reflection_limit);
         // Obstacle between hitpoint and light
         if (light_check.has_value())
-            return NB_RAY_SOFT_SHADOW;
+            return options_.nb_ray_soft_shadow;
 
         return 0;
     }
 
     int res = 0;
-    for (uint k = 0; k < NB_RAY_SOFT_SHADOW; ++k)
+    for (uint k = 0; k < options_.nb_ray_soft_shadow; ++k)
     {
         primitives::Point3 jittered_light =
             light->get_center() + primitives::Point3(soft_shadow_unif_x_(re_),
@@ -212,8 +193,8 @@ int Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
         random_light_ray = random_light_ray.normalize();
 
         // Take shadow into account
-        std::optional<primitives::Vector3> light_check =
-            cast_ray(offset_hitpoint, random_light_ray, REFLECTION_LIMIT);
+        std::optional<primitives::Vector3> light_check = cast_ray(
+            offset_hitpoint, random_light_ray, options_.reflection_limit);
         // Obstacle between hitpoint and light
         if (light_check.has_value())
             ++res;
@@ -245,7 +226,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
         (depth == 1 && last_reflected_object_ == closest_object))
         return std::nullopt;
 
-    if (depth >= REFLECTION_LIMIT)
+    if (depth >= options_.reflection_limit)
         return primitives::Vector3();
 
     primitives::Point3 hitpoint =
@@ -285,7 +266,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
                             hitpoint_desc.ns);
 
         // Apply shadow
-        res = res * (1 - (shadow_coef / NB_RAY_SOFT_SHADOW));
+        res = res * (1 - (shadow_coef / options_.nb_ray_soft_shadow));
     }
 
     last_reflected_object_ = closest_object;
@@ -298,4 +279,4 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     return res;
 }
-} // namespace engine
+} // namespace core

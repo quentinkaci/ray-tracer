@@ -1,3 +1,5 @@
+find_package(nlohmann_json 3.2.0 REQUIRED)
+
 add_library(sources
         primitives/color.cc
         primitives/point.cc
@@ -21,28 +23,30 @@ add_library(sources
 
         utils/image.cc
         utils/perlin_noise.cc
+        utils/parser.cc
 
         engine.cc
-)
+        )
 
 set_target_properties(sources PROPERTIES
         CXX_STANDARD 17
-)
+        )
 
 target_link_libraries(sources PRIVATE
         common_options
-)
+        )
 
 add_executable(ray-tracer
         main.cc
-)
+        )
 
 set_target_properties(ray-tracer PROPERTIES
         CXX_STANDARD 17
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+        )
 
 target_link_libraries(ray-tracer PRIVATE
         common_options
         sources
-)
+        nlohmann_json::nlohmann_json
+        )
