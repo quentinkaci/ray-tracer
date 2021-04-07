@@ -1,8 +1,11 @@
 #pragma once
 
-#include "src/options.hh"
+#include "options.hh"
+#include "scene/scene.hh"
 
 namespace utils
 {
-void parse_json(const std::string& filename);
+void parse_json(const std::string& filename,
+                core::Options&     options,
+                scene::Scene&      scene);
 } // namespace utils

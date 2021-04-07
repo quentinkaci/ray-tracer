@@ -13,13 +13,14 @@
 #include "scene/sphere.hh"
 #include "scene/triangle.hh"
 #include "scene/uniform_texture.hh"
+#include "utils/parser.hh"
 
 using namespace primitives;
 using namespace scene;
 using namespace core;
 using namespace utils;
 
-int main()
+int main(int argc, char* argv[])
 {
     // FOV 70
     double beta  = 35.;
@@ -45,7 +46,11 @@ int main()
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
 
-    Engine engine(Options{}, scene);
+    Options options;
+    if (argc > 1)
+        parse_json(argv[1], options, scene);
+
+    Engine engine(options, scene);
     Image  image = engine.run(1080, 1920);
 
     image.save_to_ppm("rendered_scene");

@@ -6,6 +6,10 @@ namespace core
 {
 struct Options
 {
+    // Ambient color
+    primitives::Vector3 background_color =
+        primitives::Vector3(102., 178., 255.);
+
     // Reflection
     unsigned int reflection_limit = 5;
 
@@ -13,10 +17,6 @@ struct Options
     bool         aa_enabled   = true;
     unsigned int nb_ray_aa    = 20;
     unsigned int aa_threshold = 10;
-
-    // Ambient color
-    primitives::Vector3 background_color =
-        primitives::Vector3(102., 178., 255.);
 
     // Soft shadow
     bool         soft_shadow_enabled   = true;

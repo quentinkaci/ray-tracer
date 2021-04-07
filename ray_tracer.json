@@ -1,0 +1,21 @@
+{
+  "options": {
+    "reflection_limit": 1,
+    "anti_aliasing": {
+      "nb_ray": 1,
+      "threshold": 10
+    },
+    "soft_shadow": {
+      "nb_ray": 1,
+      "min_range": -1,
+      "max_range": 1
+    },
+    "depth_of_field": {
+      "nb_ray": 1,
+      "focal_distance": 10,
+      "aperture_size": 250
+    }
+  },
+  "scene": {
+  }
+}
