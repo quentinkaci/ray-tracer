@@ -40,7 +40,7 @@ int main(void)
     UniformTexture sphere_uniform_texture_green(
         TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(0, 150, 0)});
     scene.objects.emplace_back(
-        new Sphere(sphere_uniform_texture_green, Point3(-4., -1, 60), 5.));
+        new Sphere(sphere_uniform_texture_green, Point3(-4., -1, 20), 5.));
 
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));

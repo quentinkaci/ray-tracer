@@ -18,7 +18,7 @@
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 // Soft shadow
-#define SOFT_SHADOW_ENABLED false
+#define SOFT_SHADOW_ENABLED true
 #define NB_RAY_SOFT_SHADOW 20
 #define MIN_RANGE_SOFT_SHADOW -1
 #define MAX_RANGE_SOFT_SHADOW 1
@@ -39,11 +39,27 @@ Engine::Engine(const scene::Scene& scene)
     re_                     = std::default_random_engine(seed);
 }
 
-static double gradient(const primitives::Color&   color,
-                       const primitives::Vector3& vector)
+void Engine::init_distributions(uint height, uint width)
 {
-    return sqrt(pow(color.r - vector.x, 2) + pow(color.g - vector.y, 2) +
-                pow(color.b - vector.z, 2));
+    double unit_x = scene_.camera.get_unit_x(width);
+    double unit_y = scene_.camera.get_unit_y(height);
+
+    aa_unif_x_ =
+        std::uniform_real_distribution<double>(-unit_x / 2., unit_x / 2.);
+    aa_unif_y_ =
+        std::uniform_real_distribution<double>(-unit_y / 2., unit_y / 2.);
+
+    dof_unif_x_ =
+        std::uniform_real_distribution<double>(-unit_x / 2., unit_x / 2.);
+    dof_unif_y_ =
+        std::uniform_real_distribution<double>(-unit_y / 2., unit_y / 2.);
+
+    soft_shadow_unif_x_ = std::uniform_real_distribution<double>(
+        MIN_RANGE_SOFT_SHADOW, MAX_RANGE_SOFT_SHADOW);
+    soft_shadow_unif_y_ = std::uniform_real_distribution<double>(
+        MIN_RANGE_SOFT_SHADOW, MAX_RANGE_SOFT_SHADOW);
+    soft_shadow_unif_z_ = std::uniform_real_distribution<double>(
+        MIN_RANGE_SOFT_SHADOW, MAX_RANGE_SOFT_SHADOW);
 }
 
 primitives::Vector3
@@ -79,6 +95,13 @@ Engine::compute_depth_of_field(const primitives::Point3&  origin,
     }
 
     return dof_intensity / NB_RAY_DOF;
+}
+
+static double gradient(const primitives::Color&   color,
+                       const primitives::Vector3& vector)
+{
+    return sqrt(pow(color.r - vector.x, 2) + pow(color.g - vector.y, 2) +
+                pow(color.b - vector.z, 2));
 }
 
 primitives::Vector3
@@ -123,18 +146,7 @@ utils::Image Engine::run(uint height, uint width)
         scene_.camera.get_pixels_vector(height, width);
     primitives::Point3 origin = scene_.camera.get_origin();
 
-    double unit_x = scene_.camera.get_unit_x(width);
-    double unit_y = scene_.camera.get_unit_y(height);
-
-    aa_unif_x_ =
-        std::uniform_real_distribution<double>(-unit_x / 2., unit_x / 2.);
-    aa_unif_y_ =
-        std::uniform_real_distribution<double>(-unit_y / 2., unit_y / 2.);
-
-    dof_unif_x_ =
-        std::uniform_real_distribution<double>(-unit_x / 2., unit_x / 2.);
-    dof_unif_y_ =
-        std::uniform_real_distribution<double>(-unit_y / 2., unit_y / 2.);
+    init_distributions(height, width);
 
     utils::Image res(height, width);
 
@@ -167,6 +179,44 @@ utils::Image Engine::run(uint height, uint width)
 
             res.pixel(i, j) = pixel_color;
         }
+    }
+
+    return res;
+}
+
+int Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
+                                const scene::Light*        light,
+                                const primitives::Vector3& light_ray)
+{
+    if (!SOFT_SHADOW_ENABLED)
+    {
+        // Take shadow into account
+        std::optional<primitives::Vector3> light_check =
+            cast_ray(offset_hitpoint, light_ray, REFLECTION_LIMIT);
+        // Obstacle between hitpoint and light
+        if (light_check.has_value())
+            return NB_RAY_SOFT_SHADOW;
+
+        return 0;
+    }
+
+    int res = 0;
+    for (uint k = 0; k < NB_RAY_SOFT_SHADOW; ++k)
+    {
+        primitives::Point3 jittered_light =
+            light->get_center() + primitives::Point3(soft_shadow_unif_x_(re_),
+                                                     soft_shadow_unif_y_(re_),
+                                                     soft_shadow_unif_z_(re_));
+
+        primitives::Vector3 random_light_ray(jittered_light - offset_hitpoint);
+        random_light_ray = random_light_ray.normalize();
+
+        // Take shadow into account
+        std::optional<primitives::Vector3> light_check =
+            cast_ray(offset_hitpoint, random_light_ray, REFLECTION_LIMIT);
+        // Obstacle between hitpoint and light
+        if (light_check.has_value())
+            ++res;
     }
 
     return res;
@@ -214,39 +264,13 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     primitives::Vector3 res;
 
-    std::uniform_real_distribution<double> unif_x(MIN_RANGE_SOFT_SHADOW,
-                                                  MAX_RANGE_SOFT_SHADOW);
-    std::uniform_real_distribution<double> unif_y(MIN_RANGE_SOFT_SHADOW,
-                                                  MAX_RANGE_SOFT_SHADOW);
-    std::uniform_real_distribution<double> unif_z(MIN_RANGE_SOFT_SHADOW,
-                                                  MAX_RANGE_SOFT_SHADOW);
-
     for (const scene::Light* light : scene_.light_sources)
     {
         primitives::Vector3 light_ray(light->get_center() - hitpoint);
         light_ray = light_ray.normalize();
 
-        double shadow_coef = 0.;
-
-        if (SOFT_SHADOW_ENABLED)
-        {
-            for (uint k = 0; k < NB_RAY_SOFT_SHADOW; ++k)
-            {
-                primitives::Point3 jittered_light =
-                    light->get_center() +
-                    primitives::Point3(unif_x(re_), unif_y(re_), unif_z(re_));
-
-                primitives::Vector3 random_light_ray(jittered_light - hitpoint);
-                random_light_ray = random_light_ray.normalize();
-
-                // Take shadow into account
-                std::optional<primitives::Vector3> light_check = cast_ray(
-                    offset_hitpoint, random_light_ray, REFLECTION_LIMIT);
-                // Obstacle between hitpoint and light
-                if (light_check.has_value())
-                    ++shadow_coef;
-            }
-        }
+        double shadow_coef =
+            compute_soft_shadow(offset_hitpoint, light, light_ray);
 
         primitives::Color   lc = light->get_caracteristics().color;
         primitives::Vector3 light_color(lc.r, lc.g, lc.b);

@@ -17,6 +17,8 @@ class Engine
     utils::Image run(uint height, uint width);
 
   private:
+    void init_distributions(uint height, uint width);
+
     primitives::Vector3
     compute_depth_of_field(const primitives::Point3&  origin,
                            const primitives::Vector3& vector);
@@ -25,6 +27,10 @@ class Engine
     compute_anti_aliasing(const primitives::Point3&             origin,
                           const primitives::Vector3&            vector,
                           const std::vector<primitives::Color>& neighbours);
+
+    int compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
+                            const scene::Light*        light,
+                            const primitives::Vector3& light_ray);
 
     std::optional<primitives::Vector3> cast_ray(const primitives::Point3&  A,
                                                 const primitives::Vector3& v,
@@ -41,5 +47,9 @@ class Engine
 
     std::uniform_real_distribution<double> aa_unif_x_;
     std::uniform_real_distribution<double> aa_unif_y_;
+
+    std::uniform_real_distribution<double> soft_shadow_unif_x_;
+    std::uniform_real_distribution<double> soft_shadow_unif_y_;
+    std::uniform_real_distribution<double> soft_shadow_unif_z_;
 };
 } // namespace engine
