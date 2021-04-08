@@ -94,7 +94,7 @@ static void parse_lights(const json& j, scene::Scene& scene)
         primitives::Color  color    = parse_color(light.at("color"));
 
         scene.light_sources.emplace_back(
-            new scene::PointLight(position, color));
+            std::make_shared<scene::PointLight>(position, color));
     }
 }
 
@@ -133,7 +133,7 @@ parse_textures(const json& j)
     return res;
 }
 
-scene::Sphere* parse_sphere(
+std::shared_ptr<scene::Sphere> parse_sphere(
     const json& j,
     const std::unordered_map<std::string,
                              const std::shared_ptr<scene::TextureMaterial>>&
@@ -144,7 +144,8 @@ scene::Sphere* parse_sphere(
 
     std::string texture = j.at("texture");
 
-    return new scene::Sphere(*textures_map.at(texture), center, radius);
+    return std::make_shared<scene::Sphere>(
+        *textures_map.at(texture), center, radius);
 }
 
 static void parse_objects(

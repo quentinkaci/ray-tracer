@@ -165,9 +165,9 @@ utils::Image Engine::run(uint height, uint width)
 }
 
 unsigned int
-Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
-                            const scene::Light*        light,
-                            const primitives::Vector3& light_ray)
+Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
+                            const std::shared_ptr<scene::Light>& light,
+                            const primitives::Vector3&           light_ray)
 {
     if (!options_.soft_shadow_enabled)
     {
@@ -208,10 +208,10 @@ Engine::cast_ray(const primitives::Point3&  origin,
                  const primitives::Vector3& vector,
                  uint                       depth)
 {
-    double               min_lambda = std::numeric_limits<double>::infinity();
-    const scene::Object* closest_object = nullptr;
+    double min_lambda = std::numeric_limits<double>::infinity();
+    std::shared_ptr<scene::Object> closest_object = nullptr;
 
-    for (const scene::Object* object : scene_.objects)
+    for (const auto& object : scene_.objects)
     {
         std::optional<double> lambda = object->ray_intersection(origin, vector);
         if (lambda.has_value() && lambda.value() < min_lambda)
@@ -245,7 +245,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     primitives::Vector3 res;
 
-    for (const scene::Light* light : scene_.light_sources)
+    for (const auto& light : scene_.light_sources)
     {
         primitives::Vector3 cur_intensity;
 

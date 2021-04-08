@@ -30,8 +30,8 @@ class Engine
                           const primitives::Vector3&            vector,
                           const std::vector<primitives::Color>& neighbours);
 
-    unsigned int compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
-                                     const scene::Light*        light,
+    unsigned int compute_soft_shadow(const primitives::Point3& offset_hitpoint,
+                                     const std::shared_ptr<scene::Light>& light,
                                      const primitives::Vector3& light_ray);
 
     std::optional<primitives::Vector3> cast_ray(const primitives::Point3&  A,
@@ -42,7 +42,7 @@ class Engine
 
     scene::Scene scene_;
 
-    const scene::Object* last_reflected_object_ = nullptr;
+    std::shared_ptr<scene::Object> last_reflected_object_ = nullptr;
 
     std::default_random_engine re_;
 
