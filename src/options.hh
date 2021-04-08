@@ -11,7 +11,8 @@ struct Options
         primitives::Vector3(102., 178., 255.);
 
     // Reflection
-    unsigned int reflection_limit = 5;
+    bool         reflection_enabled = true;
+    unsigned int reflection_depth   = 5;
 
     // Anti-aliasing
     bool         aa_enabled   = true;

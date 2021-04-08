@@ -173,7 +173,7 @@ Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
     {
         // Take shadow into account
         std::optional<primitives::Vector3> light_check =
-            cast_ray(offset_hitpoint, light_ray, options_.reflection_limit);
+            cast_ray(offset_hitpoint, light_ray, options_.reflection_depth);
         // Obstacle between hitpoint and light
         if (light_check.has_value())
             return options_.nb_ray_soft_shadow;
@@ -194,7 +194,7 @@ Engine::compute_soft_shadow(const primitives::Point3&  offset_hitpoint,
 
         // Take shadow into account
         std::optional<primitives::Vector3> light_check = cast_ray(
-            offset_hitpoint, random_light_ray, options_.reflection_limit);
+            offset_hitpoint, random_light_ray, options_.reflection_depth);
         // Obstacle between hitpoint and light
         if (light_check.has_value())
             ++res;
@@ -226,7 +226,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
         (depth == 1 && last_reflected_object_ == closest_object))
         return std::nullopt;
 
-    if (depth >= options_.reflection_limit)
+    if (depth >= options_.reflection_depth)
         return primitives::Vector3();
 
     primitives::Point3 hitpoint =
@@ -247,6 +247,8 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     for (const scene::Light* light : scene_.light_sources)
     {
+        primitives::Vector3 cur_intensity;
+
         primitives::Vector3 light_ray(light->get_center() - hitpoint);
         light_ray = light_ray.normalize();
 
@@ -257,25 +259,34 @@ Engine::cast_ray(const primitives::Point3&  origin,
         primitives::Vector3 light_color(lc.r, lc.g, lc.b);
 
         // Add diffuse component
-        res = res + object_color * light_color * hitpoint_desc.kd *
-                        std::max(normal.dot(light_ray), 0.);
+        cur_intensity = cur_intensity + object_color * light_color *
+                                            hitpoint_desc.kd *
+                                            std::max(normal.dot(light_ray), 0.);
 
         // Add specular component
-        res = res + light_color * hitpoint_desc.ks *
-                        pow(std::max(reflected_ray.dot(light_ray), 0.),
-                            hitpoint_desc.ns);
+        cur_intensity =
+            cur_intensity + light_color * hitpoint_desc.ks *
+                                pow(std::max(reflected_ray.dot(light_ray), 0.),
+                                    hitpoint_desc.ns);
 
         // Apply shadow
-        res = res * (1 - (shadow_coef / options_.nb_ray_soft_shadow));
+        cur_intensity =
+            cur_intensity * (1 - (shadow_coef / options_.nb_ray_soft_shadow));
+
+        res = res + cur_intensity;
     }
 
     last_reflected_object_ = closest_object;
 
     // Add reflection
-    std::optional<primitives::Vector3> reflection_contribution =
-        cast_ray(offset_hitpoint, reflected_ray, depth + 1);
-    if (reflection_contribution.has_value())
-        res = res + reflection_contribution.value() * hitpoint_desc.reflection;
+    if (options_.reflection_enabled)
+    {
+        std::optional<primitives::Vector3> reflection_contribution =
+            cast_ray(offset_hitpoint, reflected_ray, depth + 1);
+        if (reflection_contribution.has_value())
+            res = res +
+                  reflection_contribution.value() * hitpoint_desc.reflection;
+    }
 
     return res;
 }

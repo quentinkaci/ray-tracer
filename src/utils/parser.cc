@@ -9,7 +9,14 @@ namespace utils
 {
 static void parse_options(const json& j, core::Options& options)
 {
-    options.reflection_limit = j.at("reflection_limit");
+    if (!j.contains("reflection"))
+        options.reflection_enabled = false;
+    else
+    {
+        options.reflection_depth = j.at("reflection").at("depth");
+        if (options.reflection_depth <= 0)
+            throw std::logic_error("Reflection depth must be greater than 0");
+    }
 
     if (!j.contains("anti_aliasing"))
         options.aa_enabled = false;
