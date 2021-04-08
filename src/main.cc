@@ -43,9 +43,6 @@ int main(int argc, char* argv[])
     scene.objects.emplace_back(
         new Sphere(sphere_uniform_texture_green, Point3(-4., -1, 20), 5.));
 
-    scene.light_sources.emplace_back(
-        new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));
-
     Options options;
     if (argc > 1)
         parse_json(argv[1], options, scene);

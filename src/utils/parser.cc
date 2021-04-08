@@ -1,5 +1,7 @@
 #include "parser.hh"
 
+#include "scene/point_light.hh"
+
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -45,14 +47,50 @@ static void parse_options(const json& j, core::Options& options)
     }
 }
 
+static primitives::Point3 parse_position(const json& j)
+{
+    double x = j.at("x");
+    double y = j.at("y");
+    double z = j.at("z");
+
+    return primitives::Point3(x, y, z);
+}
+
+static primitives::Color parse_color(const json& j)
+{
+    unsigned char r = j.at("r");
+    unsigned char g = j.at("g");
+    unsigned char b = j.at("b");
+
+    return primitives::Color(r, g, b);
+}
+
+static void parse_lights(const json& j, scene::Scene& scene)
+{
+    for (const auto& light : j)
+    {
+        primitives::Point3 position = parse_position(light.at("position"));
+        primitives::Color  color    = parse_color(light.at("color"));
+
+        scene.light_sources.emplace_back(
+            new scene::PointLight(position, color));
+    }
+}
+
+static void parse_scene(const json& j, scene::Scene& scene)
+{
+    parse_lights(j.at("lights"), scene);
+}
+
 void parse_json(const std::string& filename,
                 core::Options&     options,
-                scene::Scene&)
+                scene::Scene&      scene)
 {
     std::ifstream file(filename);
     json          j;
     file >> j;
 
     parse_options(j.at("options"), options);
+    parse_scene(j.at("scene"), scene);
 }
 } // namespace utils
