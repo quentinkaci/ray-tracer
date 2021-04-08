@@ -10,7 +10,7 @@ namespace scene
 {
 struct Scene
 {
-    Scene(Camera camera);
+    Scene() = default;
 
     ~Scene() = default;
 

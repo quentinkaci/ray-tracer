@@ -8,7 +8,6 @@ add_library(sources
         scene/camera.cc
         scene/object.cc
         scene/point_light.cc
-        scene/scene.cc
         scene/sphere.cc
         scene/plane.cc
         scene/triangle.cc

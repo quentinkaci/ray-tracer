@@ -22,16 +22,7 @@ using namespace utils;
 
 int main(int argc, char* argv[])
 {
-    // FOV 70
-    double beta  = 35.;
-    double alpha = beta * 16. / 9.;
-
-    Scene scene(Camera(Point3(0., 0., 0.),
-                       Point3(0., 0, 1.),
-                       Point3(0., 1., 0.),
-                       alpha,
-                       beta,
-                       1.));
+    Scene scene;
 
     UniformTexture sphere_uniform_texture_red(
         TextureMaterialCaracteristics{0.005, 0.30, 1., 0.30, Color(150, 0, 0)});

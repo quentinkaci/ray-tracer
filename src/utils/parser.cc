@@ -1,5 +1,6 @@
 #include "parser.hh"
 
+#include "scene/camera.hh"
 #include "scene/point_light.hh"
 
 #include <fstream>
@@ -77,8 +78,22 @@ static void parse_lights(const json& j, scene::Scene& scene)
     }
 }
 
+static void parse_camera(const json& j, scene::Scene& scene)
+{
+    primitives::Point3 origin = parse_position(j.at("origin"));
+    primitives::Point3 target = parse_position(j.at("target"));
+    primitives::Point3 up     = parse_position(j.at("up"));
+
+    double x_fov = j.at("x_fov");
+    double y_fov = j.at("y_fov");
+    double z_min = j.at("z_min");
+
+    scene.camera = scene::Camera(origin, target, up, x_fov, y_fov, z_min);
+}
+
 static void parse_scene(const json& j, scene::Scene& scene)
 {
+    parse_camera(j.at("camera"), scene);
     parse_lights(j.at("lights"), scene);
 }
 
