@@ -3,6 +3,7 @@
 #include "primitives/vector.hh"
 #include "texture_material.hh"
 
+#include <memory>
 #include <optional>
 
 namespace scene
@@ -10,7 +11,7 @@ namespace scene
 class Object
 {
   public:
-    Object(const TextureMaterial& texture_material);
+    explicit Object(std::shared_ptr<TextureMaterial> texture_material);
 
     virtual std::optional<double>
     ray_intersection(const primitives::Point3&  A,
@@ -31,6 +32,6 @@ class Object
     get_texture(const primitives::Point3& A) const = 0;
 
   protected:
-    const TextureMaterial& texture_material_;
+    const std::shared_ptr<TextureMaterial> texture_material_;
 };
 } // namespace scene

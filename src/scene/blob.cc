@@ -6,11 +6,11 @@
 
 namespace scene
 {
-Blob::Blob(const primitives::Point3& origin,
-           double                    delta,
-           uint                      size,
-           double                    threshold,
-           const TextureMaterial&    texture_material)
+Blob::Blob(const primitives::Point3&               origin,
+           double                                  delta,
+           uint                                    size,
+           double                                  threshold,
+           const std::shared_ptr<TextureMaterial>& texture_material)
     : origin_(origin)
     , delta_(delta)
     , size_(size)

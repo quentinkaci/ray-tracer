@@ -6,10 +6,10 @@
 
 namespace scene
 {
-Triangle::Triangle(const TextureMaterial&    texture_material,
-                   const primitives::Point3& p0,
-                   const primitives::Point3& p1,
-                   const primitives::Point3& p2)
+Triangle::Triangle(const std::shared_ptr<TextureMaterial>& texture_material,
+                   const primitives::Point3&               p0,
+                   const primitives::Point3&               p1,
+                   const primitives::Point3&               p2)
     : Object(texture_material)
     , p0_(p0)
     , p1_(p1)
@@ -80,6 +80,6 @@ Triangle::get_planar_projection(const primitives::Point3&) const
 TextureMaterialCaracteristics
 Triangle::get_texture(const primitives::Point3& A) const
 {
-    return Object::texture_material_.get_caracteristics(A);
+    return Object::texture_material_->get_caracteristics(A);
 }
 } // namespace scene

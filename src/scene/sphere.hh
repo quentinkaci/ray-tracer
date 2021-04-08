@@ -2,14 +2,16 @@
 
 #include "object.hh"
 
+#include <memory>
+
 namespace scene
 {
 class Sphere : public Object
 {
   public:
-    Sphere(const TextureMaterial&    texture_material,
-           const primitives::Point3& center,
-           const double              radius);
+    Sphere(const std::shared_ptr<TextureMaterial>& texture_material,
+           const primitives::Point3&               center,
+           const double                            radius);
 
     std::optional<double>
     ray_intersection(const primitives::Point3&  A,

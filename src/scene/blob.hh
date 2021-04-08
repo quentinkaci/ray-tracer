@@ -10,11 +10,11 @@ namespace scene
 class Blob
 {
   public:
-    explicit Blob(const primitives::Point3& origin,
-                  double                    delta,
-                  uint                      size,
-                  double                    threshold,
-                  const TextureMaterial&    texture_material);
+    explicit Blob(const primitives::Point3&               origin,
+                  double                                  delta,
+                  uint                                    size,
+                  double                                  threshold,
+                  const std::shared_ptr<TextureMaterial>& texture_material);
 
     virtual ~Blob() = default;
 
@@ -37,6 +37,6 @@ class Blob
 
     double threshold_;
 
-    const TextureMaterial& texture_material_;
+    const std::shared_ptr<TextureMaterial>& texture_material_;
 };
 } // namespace scene

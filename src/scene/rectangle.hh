@@ -8,11 +8,11 @@ namespace scene
 class Rectangle : public Object
 {
   public:
-    Rectangle(const TextureMaterial&    texture_material,
-              const primitives::Point3& p0,
-              const primitives::Point3& p1,
-              const primitives::Point3& p2,
-              const primitives::Point3& p3);
+    Rectangle(const std::shared_ptr<TextureMaterial>& texture_material,
+              const primitives::Point3&               p0,
+              const primitives::Point3&               p1,
+              const primitives::Point3&               p2,
+              const primitives::Point3&               p3);
 
     std::optional<double>
     ray_intersection(const primitives::Point3&  A,

@@ -2,11 +2,12 @@
 #include "bump_mapping_texture.hh"
 
 #include <typeinfo>
+#include <utility>
 
 namespace scene
 {
-Object::Object(const TextureMaterial& texture_material)
-    : texture_material_(texture_material)
+Object::Object(std::shared_ptr<TextureMaterial> texture_material)
+    : texture_material_(std::move(texture_material))
 {
 }
 
@@ -16,10 +17,10 @@ Object::get_computed_normal(const primitives::Point3&  A,
 {
     primitives::Vector3 normal = get_normal(A, v);
 
-    if (typeid(texture_material_) == typeid(BumpMappingTexture))
+    if (typeid(*texture_material_) == typeid(BumpMappingTexture))
     {
-        const BumpMappingTexture& texture =
-            dynamic_cast<const BumpMappingTexture&>(texture_material_);
+        const auto& texture =
+            dynamic_cast<const BumpMappingTexture&>(*texture_material_);
 
         primitives::Point3  planar_projection = get_planar_projection(A);
         primitives::Vector3 pertubation =

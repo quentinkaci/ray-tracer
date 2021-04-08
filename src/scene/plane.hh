@@ -7,9 +7,9 @@ namespace scene
 class Plane : public Object
 {
   public:
-    Plane(const TextureMaterial&     texture_material,
-          const primitives::Point3&  pos,
-          const primitives::Vector3& normal);
+    Plane(const std::shared_ptr<TextureMaterial>& texture_material,
+          const primitives::Point3&               pos,
+          const primitives::Vector3&              normal);
 
     std::optional<double>
     ray_intersection(const primitives::Point3&  A,

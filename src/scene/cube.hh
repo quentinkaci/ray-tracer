@@ -10,9 +10,9 @@ namespace scene
 class Cube : public Object
 {
   public:
-    Cube(const TextureMaterial&    texture_material,
-         const primitives::Point3& pos,
-         double                    size);
+    Cube(const std::shared_ptr<TextureMaterial>& texture_material,
+         const primitives::Point3&               pos,
+         double                                  size);
 
     std::optional<double>
     ray_intersection(const primitives::Point3&  A,

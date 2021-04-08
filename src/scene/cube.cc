@@ -7,9 +7,9 @@
 
 namespace scene
 {
-Cube::Cube(const TextureMaterial&    texture_material,
-           const primitives::Point3& pos,
-           double                    size)
+Cube::Cube(const std::shared_ptr<TextureMaterial>& texture_material,
+           const primitives::Point3&               pos,
+           double                                  size)
     : Object(texture_material)
 {
     auto a1 = pos + primitives::Point3(size / 2, size / 2, -size / 2);
@@ -77,7 +77,7 @@ Cube::get_planar_projection(const primitives::Point3& A) const
 TextureMaterialCaracteristics
 Cube::get_texture(const primitives::Point3& A) const
 {
-    return Object::texture_material_.get_caracteristics(
+    return Object::texture_material_->get_caracteristics(
         get_planar_projection(A));
 }
 } // namespace scene

@@ -7,10 +7,10 @@ namespace scene
 class Triangle : public Object
 {
   public:
-    Triangle(const TextureMaterial&    texture_material,
-             const primitives::Point3& p0,
-             const primitives::Point3& p1,
-             const primitives::Point3& p2);
+    Triangle(const std::shared_ptr<TextureMaterial>& texture_material,
+             const primitives::Point3&               p0,
+             const primitives::Point3&               p1,
+             const primitives::Point3&               p2);
 
     std::optional<double>
     ray_intersection(const primitives::Point3&  A,

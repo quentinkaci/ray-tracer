@@ -1,7 +1,11 @@
 #include "parser.hh"
 
+#include "scene/bump_mapping_texture.hh"
 #include "scene/camera.hh"
+#include "scene/image_texture.hh"
+#include "scene/perlin_texture.hh"
 #include "scene/point_light.hh"
+#include "scene/procedural_texture.hh"
 #include "scene/sphere.hh"
 #include "scene/uniform_texture.hh"
 
@@ -111,6 +115,91 @@ std::shared_ptr<scene::UniformTexture> parse_uniform_texture(const json& j)
         scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
 }
 
+std::shared_ptr<scene::ImageTexture> parse_image_texture(const json& j)
+{
+    double kd         = j.at("kd");
+    double ks         = j.at("ks");
+    double ns         = j.at("ns");
+    double reflection = j.at("reflection");
+
+    std::string image = j.at("image");
+
+    return std::make_shared<scene::ImageTexture>(
+        *Image::load_from_ppm(image),
+        scene::TextureMaterialCaracteristics{
+            kd, ks, ns, reflection, primitives::Color()});
+}
+
+std::shared_ptr<scene::BumpMappingTexture>
+parse_bump_mapping_texture(const json& j)
+{
+    double kd         = j.at("kd");
+    double ks         = j.at("ks");
+    double ns         = j.at("ns");
+    double reflection = j.at("reflection");
+
+    primitives::Color color = parse_color(j.at("color"));
+
+    double octave      = j.at("octave");
+    double persistence = j.at("persistence");
+    double intensity   = j.at("intensity");
+
+    return std::make_shared<scene::BumpMappingTexture>(
+        octave,
+        persistence,
+        intensity,
+        scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
+}
+
+std::shared_ptr<scene::ProceduralTexture>
+parse_procedural_texture(const json& j)
+{
+    double kd         = j.at("kd");
+    double ks         = j.at("ks");
+    double ns         = j.at("ns");
+    double reflection = j.at("reflection");
+
+    primitives::Color color = parse_color(j.at("color"));
+
+    return std::make_shared<scene::ProceduralTexture>(
+        scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
+}
+
+std::shared_ptr<scene::PerlinTexture> parse_perlin_texture(const json& j)
+{
+    double kd         = j.at("kd");
+    double ks         = j.at("ks");
+    double ns         = j.at("ns");
+    double reflection = j.at("reflection");
+
+    double octave      = j.at("octave");
+    double persistence = j.at("persistence");
+
+    std::string              effect = j.at("effect");
+    scene::PerlinTextureType type;
+    if (effect == "none")
+        type = scene::DEFAULT;
+    else if (effect == "wood")
+        type = scene::WOOD;
+    else if (effect == "marble")
+        type = scene::MARBLE;
+    else
+        throw std::logic_error(effect +
+                               " is not a valid effect for perlin texture");
+
+    std::vector<primitives::Color> colors;
+    for (const auto& color : j.at("colors"))
+        colors.emplace_back(parse_color(color));
+
+    return std::make_shared<scene::PerlinTexture>(
+        octave,
+        persistence,
+        scene::TextureMaterialCaracteristics{
+            kd, ks, ns, reflection, primitives::Color()},
+        type,
+        colors);
+}
+
 static std::unordered_map<std::string,
                           const std::shared_ptr<scene::TextureMaterial>>
 parse_textures(const json& j)
@@ -126,6 +215,14 @@ parse_textures(const json& j)
         std::string type = texture.at("type");
         if (type == "uniform")
             res.emplace(name, parse_uniform_texture(texture));
+        else if (type == "image")
+            res.emplace(name, parse_image_texture(texture));
+        else if (type == "bump_mapping")
+            res.emplace(name, parse_bump_mapping_texture(texture));
+        else if (type == "procedural")
+            res.emplace(name, parse_procedural_texture(texture));
+        else if (type == "perlin")
+            res.emplace(name, parse_perlin_texture(texture));
         else
             throw std::logic_error(type + " is an invalid texture type");
     }
@@ -145,7 +242,7 @@ std::shared_ptr<scene::Sphere> parse_sphere(
     std::string texture = j.at("texture");
 
     return std::make_shared<scene::Sphere>(
-        *textures_map.at(texture), center, radius);
+        textures_map.at(texture), center, radius);
 }
 
 static void parse_objects(

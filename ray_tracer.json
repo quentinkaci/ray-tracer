@@ -19,7 +19,7 @@
     },
     "depth_of_field": {
       "nb_ray": 1,
-      "focal_distance": 10,
+      "focal_distance": 40,
       "aperture_size": 250
     }
   },
@@ -73,8 +73,33 @@
         }
       },
       {
-        "name": "sphere_uniform_texture_green",
-        "type": "uniform",
+        "name": "sphere_procedural_texture_blue",
+        "type": "procedural",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 150
+        }
+      },
+      {
+        "name": "sphere_billiard_texture",
+        "type": "image",
+        "image": "../textures/8_billiard_ball",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30
+      },
+      {
+        "name": "sphere_bump_texture_green",
+        "type": "bump_mapping",
+        "octave": 6,
+        "persistence": 10,
+        "intensity": 2,
         "kd": 0.005,
         "ks": 0.30,
         "ns": 1,
@@ -84,6 +109,29 @@
           "g": 150,
           "b": 0
         }
+      },
+      {
+        "name": "sphere_wood_texture",
+        "type": "perlin",
+        "effect": "wood",
+        "octave": 3,
+        "persistence": 8,
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.05,
+        "colors": [
+          {
+            "r": 90,
+            "g": 70,
+            "b": 0
+          },
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0
+          }
+        ]
       }
     ],
     "objects": [
@@ -91,19 +139,49 @@
         "type": "sphere",
         "texture": "sphere_uniform_texture_red",
         "center": {
-          "x": 1,
+          "x": 0,
           "y": 1,
-          "z": 10
+          "z": 30
         },
         "radius": 2
       },
       {
         "type": "sphere",
-        "texture": "sphere_uniform_texture_green",
+        "texture": "sphere_procedural_texture_blue",
         "center": {
-          "x": -4,
+          "x": -1,
+          "y": -5,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "sphere_wood_texture",
+        "center": {
+          "x": 5,
+          "y": 5,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "sphere_billiard_texture",
+        "center": {
+          "x": -15,
           "y": -1,
-          "z": 20
+          "z": 40
+        },
+        "radius": 5
+      },
+      {
+        "type": "sphere",
+        "texture": "sphere_bump_texture_green",
+        "center": {
+          "x": 10,
+          "y": -5,
+          "z": 40
         },
         "radius": 5
       }

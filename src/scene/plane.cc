@@ -6,9 +6,9 @@
 
 namespace scene
 {
-Plane::Plane(const TextureMaterial&     texture_material,
-             const primitives::Point3&  pos,
-             const primitives::Vector3& normal)
+Plane::Plane(const std::shared_ptr<TextureMaterial>& texture_material,
+             const primitives::Point3&               pos,
+             const primitives::Vector3&              normal)
     : Object(texture_material)
     , pos_(pos)
     , normal_(normal)
@@ -62,7 +62,7 @@ Plane::get_planar_projection(const primitives::Point3& A) const
 TextureMaterialCaracteristics
 Plane::get_texture(const primitives::Point3& A) const
 {
-    return Object::texture_material_.get_caracteristics(
+    return Object::texture_material_->get_caracteristics(
         get_planar_projection(A));
 }
 } // namespace scene

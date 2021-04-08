@@ -4,9 +4,9 @@
 
 namespace scene
 {
-Sphere::Sphere(const TextureMaterial&    texture_material,
-               const primitives::Point3& center,
-               const double              radius)
+Sphere::Sphere(const std::shared_ptr<TextureMaterial>& texture_material,
+               const primitives::Point3&               center,
+               const double                            radius)
     : Object(texture_material)
     , center_(center)
     , radius_(radius)
@@ -60,7 +60,7 @@ Sphere::get_planar_projection(const primitives::Point3& A) const
 TextureMaterialCaracteristics
 Sphere::get_texture(const primitives::Point3& A) const
 {
-    return Object::texture_material_.get_caracteristics(
+    return Object::texture_material_->get_caracteristics(
         get_planar_projection(A));
 }
 } // namespace scene
