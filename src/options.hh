@@ -11,8 +11,9 @@ struct Options
         primitives::Vector3(102., 178., 255.);
 
     // Rendering
-    unsigned int rendering_height = 1080;
-    unsigned int rendering_width  = 1920;
+    unsigned int rendering_height          = 1080;
+    unsigned int rendering_width           = 1920;
+    std::string  rendering_output_filename = "scene";
 
     // Reflection
     bool         reflection_enabled = true;

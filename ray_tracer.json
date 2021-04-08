@@ -2,7 +2,8 @@
   "options": {
     "rendering": {
       "height": 1080,
-      "width": 1920
+      "width": 1920,
+      "output_filename": "rendered_scene"
     },
     "reflection": {
       "depth": 1
@@ -55,6 +56,56 @@
           "g": 255,
           "b": 255
         }
+      }
+    ],
+    "textures": [
+      {
+        "name": "sphere_uniform_texture_red",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 150,
+          "g": 0,
+          "b": 0
+        }
+      },
+      {
+        "name": "sphere_uniform_texture_green",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 0,
+          "g": 150,
+          "b": 0
+        }
+      }
+    ],
+    "objects": [
+      {
+        "type": "sphere",
+        "texture": "sphere_uniform_texture_red",
+        "center": {
+          "x": 1,
+          "y": 1,
+          "z": 10
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "sphere_uniform_texture_green",
+        "center": {
+          "x": -4,
+          "y": -1,
+          "z": 20
+        },
+        "radius": 5
       }
     ]
   }
