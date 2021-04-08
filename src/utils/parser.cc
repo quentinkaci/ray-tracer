@@ -12,6 +12,9 @@ namespace utils
 {
 static void parse_options(const json& j, core::Options& options)
 {
+    options.rendering_height = j.at("rendering").at("height");
+    options.rendering_width  = j.at("rendering").at("width");
+
     if (!j.contains("reflection"))
         options.reflection_enabled = false;
     else

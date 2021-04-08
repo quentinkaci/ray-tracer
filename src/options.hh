@@ -10,6 +10,10 @@ struct Options
     primitives::Vector3 background_color =
         primitives::Vector3(102., 178., 255.);
 
+    // Rendering
+    unsigned int rendering_height = 1080;
+    unsigned int rendering_width  = 1920;
+
     // Reflection
     bool         reflection_enabled = true;
     unsigned int reflection_depth   = 5;

@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         parse_json(argv[1], options, scene);
 
     Engine engine(options, scene);
-    Image  image = engine.run(1080, 1920);
+    Image image = engine.run(options.rendering_height, options.rendering_width);
 
     image.save_to_ppm("rendered_scene");
 
