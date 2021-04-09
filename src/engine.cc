@@ -12,14 +12,14 @@
 #define RECURSION_LIMIT 3
 
 // Anti-aliasing
-#define MAX_RAY_PER_PIXEL 25
-#define AA_THRESHOLD 10
+#define MAX_RAY_PER_PIXEL 1
+#define AA_THRESHOLD -1
 
 // Ambient color
 #define BACKGROUND_COLOR primitives::Vector3(102., 178., 255.)
 
 // Soft shadow
-#define NB_RAY_SOFT_SHADOW 25
+#define NB_RAY_SOFT_SHADOW 1
 
 namespace engine
 {
@@ -208,8 +208,11 @@ Engine::cast_ray(const primitives::Point3&  A,
             primitives::Vector3 random_light_ray(jittered_light - hitpoint);
             random_light_ray = random_light_ray.normalize();
 
+            auto light_check =
+                cast_ray_light_check(offset_hitpoint, random_light_ray);
+
             // Obstacle betweem hitpoint and light
-            if (cast_ray_light_check(offset_hitpoint, random_light_ray))
+            if (light_check)
                 ++shadow_coef;
         }
 
