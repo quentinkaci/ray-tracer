@@ -2,11 +2,15 @@
 
 #include "scene/bump_mapping_texture.hh"
 #include "scene/camera.hh"
+#include "scene/cube.hh"
 #include "scene/image_texture.hh"
 #include "scene/perlin_texture.hh"
+#include "scene/plane.hh"
 #include "scene/point_light.hh"
 #include "scene/procedural_texture.hh"
+#include "scene/rectangle.hh"
 #include "scene/sphere.hh"
+#include "scene/transparent_texture.hh"
 #include "scene/uniform_texture.hh"
 
 #include <fstream>
@@ -17,11 +21,44 @@ using json = nlohmann::json;
 
 namespace utils
 {
+static primitives::Point3 parse_position(const json& j)
+{
+    double x = j.at("x");
+    double y = j.at("y");
+    double z = j.at("z");
+
+    return primitives::Point3(x, y, z);
+}
+
+static primitives::Vector3 parse_vector(const json& j)
+{
+    double x = j.at("x");
+    double y = j.at("y");
+    double z = j.at("z");
+
+    return primitives::Vector3(x, y, z);
+}
+
+static primitives::Color parse_color(const json& j)
+{
+    unsigned char r = j.at("r");
+    unsigned char g = j.at("g");
+    unsigned char b = j.at("b");
+
+    return primitives::Color(r, g, b);
+}
+
 static void parse_options(const json& j, core::Options& options)
 {
     options.rendering_height          = j.at("rendering").at("height");
     options.rendering_width           = j.at("rendering").at("width");
     options.rendering_output_filename = j.at("rendering").at("output_filename");
+
+    if (j.contains("ambient"))
+    {
+        auto color            = parse_color(j.at("ambient").at("color"));
+        options.ambient_color = primitives::Vector3(color.r, color.g, color.b);
+    }
 
     if (!j.contains("reflection"))
         options.reflection_enabled = false;
@@ -57,24 +94,6 @@ static void parse_options(const json& j, core::Options& options)
         options.focal_distance = j.at("depth_of_field").at("focal_distance");
         options.aperture_size  = j.at("depth_of_field").at("aperture_size");
     }
-}
-
-static primitives::Point3 parse_position(const json& j)
-{
-    double x = j.at("x");
-    double y = j.at("y");
-    double z = j.at("z");
-
-    return primitives::Point3(x, y, z);
-}
-
-static primitives::Color parse_color(const json& j)
-{
-    unsigned char r = j.at("r");
-    unsigned char g = j.at("g");
-    unsigned char b = j.at("b");
-
-    return primitives::Color(r, g, b);
 }
 
 static void parse_camera(const json& j, scene::Scene& scene)
@@ -200,6 +219,20 @@ std::shared_ptr<scene::PerlinTexture> parse_perlin_texture(const json& j)
         colors);
 }
 
+std::shared_ptr<scene::TransparentTexture>
+parse_transparent_texture(const json& j)
+{
+    double kd         = j.at("kd");
+    double ks         = j.at("ks");
+    double ns         = j.at("ns");
+    double reflection = j.at("reflection");
+
+    primitives::Color color = parse_color(j.at("color"));
+
+    return std::make_shared<scene::TransparentTexture>(
+        scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
+}
+
 static std::unordered_map<std::string,
                           const std::shared_ptr<scene::TextureMaterial>>
 parse_textures(const json& j)
@@ -223,6 +256,8 @@ parse_textures(const json& j)
             res.emplace(name, parse_procedural_texture(texture));
         else if (type == "perlin")
             res.emplace(name, parse_perlin_texture(texture));
+        else if (type == "transparent")
+            res.emplace(name, parse_transparent_texture(texture));
         else
             throw std::logic_error(type + " is an invalid texture type");
     }
@@ -245,6 +280,69 @@ std::shared_ptr<scene::Sphere> parse_sphere(
         textures_map.at(texture), center, radius);
 }
 
+std::shared_ptr<scene::Cube> parse_cube(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+        textures_map)
+{
+    double             size     = j.at("size");
+    primitives::Point3 position = parse_position(j.at("position"));
+
+    std::string texture = j.at("texture");
+
+    return std::make_shared<scene::Cube>(
+        textures_map.at(texture), position, size);
+}
+
+std::shared_ptr<scene::Plane> parse_plane(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+        textures_map)
+{
+    primitives::Vector3 normal   = parse_vector(j.at("normal"));
+    primitives::Point3  position = parse_position(j.at("position"));
+
+    std::string texture = j.at("texture");
+
+    return std::make_shared<scene::Plane>(
+        textures_map.at(texture), position, normal);
+}
+
+std::shared_ptr<scene::Rectangle> parse_rectangle(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+        textures_map)
+{
+    primitives::Point3 p1 = parse_position(j.at("p1"));
+    primitives::Point3 p2 = parse_position(j.at("p2"));
+    primitives::Point3 p3 = parse_position(j.at("p3"));
+    primitives::Point3 p4 = parse_position(j.at("p4"));
+
+    std::string texture = j.at("texture");
+
+    return std::make_shared<scene::Rectangle>(
+        textures_map.at(texture), p1, p2, p3, p4);
+}
+
+std::shared_ptr<scene::Triangle> parse_triangle(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+        textures_map)
+{
+    primitives::Point3 p1 = parse_position(j.at("p1"));
+    primitives::Point3 p2 = parse_position(j.at("p2"));
+    primitives::Point3 p3 = parse_position(j.at("p3"));
+
+    std::string texture = j.at("texture");
+
+    return std::make_shared<scene::Triangle>(
+        textures_map.at(texture), p1, p2, p3);
+}
+
 static void parse_objects(
     const json&   j,
     scene::Scene& scene,
@@ -257,6 +355,14 @@ static void parse_objects(
         std::string type = object.at("type");
         if (type == "sphere")
             scene.objects.emplace_back(parse_sphere(object, textures_map));
+        else if (type == "cube")
+            scene.objects.emplace_back(parse_cube(object, textures_map));
+        else if (type == "plane")
+            scene.objects.emplace_back(parse_plane(object, textures_map));
+        else if (type == "rectangle")
+            scene.objects.emplace_back(parse_rectangle(object, textures_map));
+        else if (type == "triangle")
+            scene.objects.emplace_back(parse_triangle(object, textures_map));
         else
             throw std::logic_error(type + " is an invalid object type");
     }

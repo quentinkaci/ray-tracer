@@ -5,6 +5,13 @@
       "width": 1920,
       "output_filename": "rendered_scene"
     },
+    "ambient": {
+      "color": {
+        "r": 128,
+        "g": 178,
+        "b": 255
+      }
+    },
     "reflection": {
       "depth": 1
     },
@@ -60,7 +67,7 @@
     ],
     "textures": [
       {
-        "name": "sphere_uniform_texture_red",
+        "name": "uniform_texture_red",
         "type": "uniform",
         "kd": 0.005,
         "ks": 0.30,
@@ -73,7 +80,7 @@
         }
       },
       {
-        "name": "sphere_procedural_texture_blue",
+        "name": "procedural_texture_blue",
         "type": "procedural",
         "kd": 0.005,
         "ks": 0.30,
@@ -86,7 +93,7 @@
         }
       },
       {
-        "name": "sphere_billiard_texture",
+        "name": "billiard_texture",
         "type": "image",
         "image": "../textures/8_billiard_ball",
         "kd": 0.005,
@@ -95,7 +102,7 @@
         "reflection": 0.30
       },
       {
-        "name": "sphere_bump_texture_green",
+        "name": "bump_texture_green",
         "type": "bump_mapping",
         "octave": 6,
         "persistence": 10,
@@ -111,7 +118,7 @@
         }
       },
       {
-        "name": "sphere_wood_texture",
+        "name": "wood_texture",
         "type": "perlin",
         "effect": "wood",
         "octave": 3,
@@ -132,12 +139,25 @@
             "b": 0
           }
         ]
+      },
+      {
+        "name": "transparent_texture",
+        "type": "transparent",
+        "kd": 0,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 1,
+        "color": {
+          "r": 10,
+          "g": 10,
+          "b": 200
+        }
       }
     ],
     "objects": [
       {
         "type": "sphere",
-        "texture": "sphere_uniform_texture_red",
+        "texture": "uniform_texture_red",
         "center": {
           "x": 0,
           "y": 1,
@@ -147,7 +167,7 @@
       },
       {
         "type": "sphere",
-        "texture": "sphere_procedural_texture_blue",
+        "texture": "procedural_texture_blue",
         "center": {
           "x": -1,
           "y": -5,
@@ -157,7 +177,7 @@
       },
       {
         "type": "sphere",
-        "texture": "sphere_wood_texture",
+        "texture": "wood_texture",
         "center": {
           "x": 5,
           "y": 5,
@@ -167,7 +187,7 @@
       },
       {
         "type": "sphere",
-        "texture": "sphere_billiard_texture",
+        "texture": "billiard_texture",
         "center": {
           "x": -15,
           "y": -1,
@@ -177,13 +197,37 @@
       },
       {
         "type": "sphere",
-        "texture": "sphere_bump_texture_green",
+        "texture": "bump_texture_green",
         "center": {
           "x": 10,
           "y": -5,
           "z": 40
         },
         "radius": 5
+      },
+      {
+        "type": "plane",
+        "texture": "uniform_texture_red",
+        "position": {
+          "x": 0,
+          "y": -10,
+          "z": 0
+        },
+        "normal": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        }
+      },
+      {
+        "type": "sphere",
+        "texture": "transparent_texture",
+        "center": {
+          "x": -5,
+          "y": 2,
+          "z": 30
+        },
+        "radius": 2
       }
     ]
   }

@@ -50,7 +50,7 @@ Engine::compute_depth_of_field(const primitives::Point3&  origin,
     {
         std::optional<primitives::Vector3> intensity = cast_ray(origin, vector);
         if (!intensity.has_value())
-            intensity = options_.background_color;
+            intensity = options_.ambient_color;
 
         return intensity.value();
     }
@@ -70,7 +70,7 @@ Engine::compute_depth_of_field(const primitives::Point3&  origin,
         std::optional<primitives::Vector3> intensity =
             cast_ray(jittered_origin, pixel_vector);
         if (!intensity.has_value())
-            intensity = options_.background_color;
+            intensity = options_.ambient_color;
 
         dof_intensity = dof_intensity + intensity.value();
     }
@@ -242,11 +242,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
     // No object in ray direction or same object that reflect in himself
     if (closest_object == nullptr ||
         (depth == 2 && last_reflected_object_ == closest_object))
-    {
-        auto t = 0.5 * (vector.normalize().y + 1.0);
-        return primitives::Vector3(255, 255, 255) * (1.0 - t) +
-               primitives::Vector3(128, 178, 255) * t;
-    }
+        return options_.ambient_color;
 
     if (depth >= options_.reflection_depth)
         return primitives::Vector3();
