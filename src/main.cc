@@ -11,6 +11,7 @@
 #include "scene/rectangle.hh"
 #include "scene/scene.hh"
 #include "scene/sphere.hh"
+#include "scene/transparent_texture.hh"
 #include "scene/triangle.hh"
 #include "scene/uniform_texture.hh"
 
@@ -85,45 +86,35 @@ int main(void)
     scene.objects.emplace_back(
         new Sphere(sphere_billiard_texture, Point3(0., -2.5, 15.), 2.));
 
-    // UniformTexture uniform_texture_red(TextureMaterialCaracteristics{0.005,
-    // 0.30, 1., 0.30, Color(150, 0, 0)}); Blob blob(primitives::Point3(-1.,
-    // -1., 4.), 0.05, 2, 400, uniform_texture_red);
-    // blob.add(primitives::Point3(0., 0., 5.));
+    UniformTexture uniform_texture_red(
+        TextureMaterialCaracteristics{0.005, 0.30, 1., 0., Color(150, 0, 0)});
 
-    UniformTexture uniform_texture_blue(TextureMaterialCaracteristics{
-        0.005, 0.30, 1., 0.30, Color(10, 10, 200)});
-    // Blob blob(primitives::Point3(0., -5., 0.), 0.1, 10, 9.9,
-    // uniform_texture_blue); blob.add(primitives::Point3(0., -2.5, 8.), 10);
-    // blob.run(scene);
+    UniformTexture uniform_texture_green(TextureMaterialCaracteristics{
+        0.005, 0.30, 1., 0., Color(153, 168, 30)});
 
-    // scene.objects.emplace_back(new Sphere(uniform_texture_red, Point3(-1.,
-    // -1., 5.), 0.1)); scene.objects.emplace_back(new
-    // Sphere(uniform_texture_red, Point3(-1., 1., 5.), 0.1));
-    // scene.objects.emplace_back(new Sphere(uniform_texture_red, Point3(1.,
-    // -1., 5.), 0.1)); scene.objects.emplace_back(new
-    // Sphere(uniform_texture_red, Point3(1., 1., 5.), 0.1));
+    UniformTexture uniform_texture_blue(
+        TextureMaterialCaracteristics{0.005, 0.30, 1., 0., Color(10, 10, 200)});
 
-    scene.objects.emplace_back(
-        new Plane(uniform_texture_blue, Point3(0., -5., 0.), Vector3(0, 1, 0)));
+    TransparentTexture transparent_texture(
+        TextureMaterialCaracteristics{0., 0., 0., 1., Color(10, 10, 200)});
+
+    // scene.objects.emplace_back(
+    //     new Sphere(uniform_texture_blue, Point3(-2.5, 0., 10.), 1.0));
+
+    // scene.objects.emplace_back(
+    //     new Sphere(uniform_texture_red, Point3(2.5, 0., 10.), 1.0));
+
+    // scene.objects.emplace_back(
+    //     new Sphere(transparent_texture, Point3(0., 0., 10.), 0.8));
+
+    // scene.objects.emplace_back(new Plane(
+    // uniform_texture_green, Point3(0., -1.5, 0.), Vector3(0, 1, 0)));
+
+    // scene.objects.emplace_back(
+    //     new Sphere(uniform_texture_green, Point3(0., -11, 20.), 10.));
 
     std::cout << "Rendering " << scene.objects.size() << " objects"
               << std::endl;
-    // scene.objects.emplace_back(new Plane(
-    //     uniform_texture_blue, Point3(0., -5.0, 0.), Vector3(0, 1, 0)));
-
-    // scene.objects.emplace_back(new Triangle(perlin_marble_texture,
-    //                                         Point3(-2.0, 0.0, 15.),
-    //                                         Point3(-2.0, 2.0, 15.),
-    //                                         Point3(2.0, 2.0, 15.)));
-
-    // scene.objects.emplace_back(new Rectangle(uniform_texture_blue,
-    //                                          Point3(1.0, 0., 15.),
-    //                                          Point3(1.0, 2.5, 15.),
-    //                                          Point3(-1.0, 2.5, 15.),
-    //                                          Point3(-1.0, 0., 15.)));
-
-    scene.objects.emplace_back(
-        new Cube(proc_texture, Point3(0.0, -4, 12.), 2.0));
 
     scene.light_sources.emplace_back(
         new PointLight(Point3(10., 10., -10.), Color(255, 255, 255)));

@@ -14,6 +14,7 @@ add_library(sources
         scene/cube.cc
         scene/uniform_texture.cc
         scene/procedural_texture.cc
+        scene/transparent_texture.cc
         scene/image_texture.cc
         scene/perlin_texture.cc
         scene/blob.cc

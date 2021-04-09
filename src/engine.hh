@@ -21,6 +21,9 @@ class Engine
                                                 const primitives::Vector3& v,
                                                 uint depth = 0);
 
+    bool cast_ray_light_check(const primitives::Point3&  A,
+                              const primitives::Vector3& v);
+
     scene::Scene scene_;
 
     const scene::Object* last_reflected_object_ = nullptr;

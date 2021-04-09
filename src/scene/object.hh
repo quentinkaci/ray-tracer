@@ -27,8 +27,10 @@ class Object
     virtual primitives::Point3
     get_planar_projection(const primitives::Point3& A) const = 0;
 
+    virtual const TextureMaterial& get_texture() const;
+
     virtual TextureMaterialCaracteristics
-    get_texture(const primitives::Point3& A) const = 0;
+    get_texture_info(const primitives::Point3& A) const = 0;
 
   protected:
     const TextureMaterial& texture_material_;

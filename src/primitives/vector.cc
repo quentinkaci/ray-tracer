@@ -37,6 +37,11 @@ Point3 Vector3::get_destination() const { return Point3(x, y, z); }
 
 double Vector3::norm() const { return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)); }
 
+double Vector3::norm_squared() const
+{
+    return pow(x, 2) + pow(y, 2) + pow(z, 2);
+}
+
 Vector3 Vector3::normalize() const
 {
     double length = norm();
@@ -47,6 +52,11 @@ Vector3 Vector3::normalize() const
 bool operator==(const Vector3& lhs, const Vector3& rhs)
 {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+}
+
+bool operator!=(const Vector3& lhs, const Vector3& rhs)
+{
+    return !(lhs == rhs);
 }
 
 Vector3 operator*(const Vector3& v, const double& n)

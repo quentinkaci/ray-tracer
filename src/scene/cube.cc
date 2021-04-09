@@ -75,7 +75,7 @@ Cube::get_planar_projection(const primitives::Point3& A) const
 }
 
 TextureMaterialCaracteristics
-Cube::get_texture(const primitives::Point3& A) const
+Cube::get_texture_info(const primitives::Point3& A) const
 {
     return Object::texture_material_.get_caracteristics(
         get_planar_projection(A));
