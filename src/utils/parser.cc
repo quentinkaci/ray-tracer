@@ -1,5 +1,6 @@
 #include "parser.hh"
 
+#include "scene/blob.hh"
 #include "scene/bump_mapping_texture.hh"
 #include "scene/camera.hh"
 #include "scene/cube.hh"
@@ -346,6 +347,27 @@ std::shared_ptr<scene::Triangle> parse_triangle(
         textures_map.at(texture), p1, p2, p3);
 }
 
+std::shared_ptr<scene::Blob> parse_blobs(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+        textures_map)
+{
+    primitives::Point3 center    = parse_position(j.at("center"));
+    std::string        texture   = j.at("texture");
+    double             delta     = j.at("delta");
+    uint               size      = j.at("size");
+    double             threshold = j.at("threshold");
+
+    auto res = std::make_shared<scene::Blob>(
+        center, delta, size, threshold, textures_map.at(texture));
+
+    for (const auto& p : j.at("points"))
+        res->add(parse_position(p));
+
+    return res;
+}
+
 static void parse_objects(
     const json&   j,
     scene::Scene& scene,
@@ -366,6 +388,8 @@ static void parse_objects(
             scene.objects.emplace_back(parse_rectangle(object, textures_map));
         else if (type == "triangle")
             scene.objects.emplace_back(parse_triangle(object, textures_map));
+        else if (type == "blobs")
+            parse_blobs(object, textures_map)->run(scene);
         else
             throw std::logic_error(type + " is an invalid object type");
     }

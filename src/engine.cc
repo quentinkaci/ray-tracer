@@ -161,12 +161,12 @@ utils::Image Engine::run(uint height, uint width)
         }
 
         // Print progress bar
-        int progress = 30.0 * (width + j * width) / (width * height);
+        int progress = 25.0 * (width + j * width) / (width * height);
         std::cout << "Rendering scene (" << scene_.objects.size()
-                  << " objects) [";
+                  << " object(s)) [";
         for (int p = 0; p < progress; p++)
             std::cout << (p == progress - 1 ? ">" : "=");
-        for (int p = 0; p < 30 - progress; p++)
+        for (int p = 0; p < 25 - progress; p++)
             std::cout << ".";
         std::cout << "] "
                   << std::ceil(100.0 * (width + j * width) / (width * height))

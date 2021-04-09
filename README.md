@@ -17,6 +17,7 @@ cmake .. && make
 
 ---
 
-- [ ] Blob in config, volume englobant
+- [ ] Blob: volume englobant
 - [ ] Fix cubes, triangle/rectangle UV mapping
 - [ ] Billboard / skybox (?)
+- [ ] Save to .PNG (?)
