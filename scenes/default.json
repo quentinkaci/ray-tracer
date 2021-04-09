@@ -5,29 +5,20 @@
       "width": 1920,
       "output_filename": "rendered_scene"
     },
-    "ambient": {
-      "color": {
+    "background": {
+      "gradient_color_top": {
         "r": 128,
         "g": 178,
+        "b": 255
+      },
+      "gradient_color_bottom": {
+        "r": 255,
+        "g": 255,
         "b": 255
       }
     },
     "reflection": {
-      "depth": 1
-    },
-    "anti_aliasing": {
-      "nb_ray": 1,
-      "threshold": 10
-    },
-    "soft_shadow": {
-      "nb_ray": 1,
-      "min_range": -1,
-      "max_range": 1
-    },
-    "depth_of_field": {
-      "nb_ray": 1,
-      "focal_distance": 40,
-      "aperture_size": 250
+      "depth": 5
     }
   },
   "scene": {

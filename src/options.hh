@@ -6,8 +6,9 @@ namespace core
 {
 struct Options
 {
-    // Ambient color
-    primitives::Vector3 ambient_color;
+    // Background gradient colors
+    primitives::Vector3 bg_color_top;
+    primitives::Vector3 bg_color_bottom;
 
     // Rendering
     unsigned int rendering_height          = 1080;

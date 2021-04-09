@@ -49,9 +49,6 @@ Engine::compute_depth_of_field(const primitives::Point3&  origin,
     if (!options_.dof_enabled)
     {
         std::optional<primitives::Vector3> intensity = cast_ray(origin, vector);
-        if (!intensity.has_value())
-            intensity = options_.ambient_color;
-
         return intensity.value();
     }
 
@@ -69,8 +66,6 @@ Engine::compute_depth_of_field(const primitives::Point3&  origin,
 
         std::optional<primitives::Vector3> intensity =
             cast_ray(jittered_origin, pixel_vector);
-        if (!intensity.has_value())
-            intensity = options_.ambient_color;
 
         dof_intensity = dof_intensity + intensity.value();
     }
@@ -204,14 +199,16 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
 bool Engine::cast_ray_light_check(const primitives::Point3&  A,
                                   const primitives::Vector3& v)
 {
+
     double min_lambda = std::numeric_limits<double>::infinity();
     std::shared_ptr<scene::Object> closest_object = nullptr;
 
     for (const auto& object : scene_.objects)
     {
         std::optional<double> lambda = object->ray_intersection(A, v);
+
         if (lambda.has_value() && lambda.value() < min_lambda &&
-            typeid(object->get_texture()) != typeid(scene::TransparentTexture))
+            typeid(*object->get_texture()) != typeid(scene::TransparentTexture))
         {
             min_lambda     = lambda.value();
             closest_object = object;
@@ -242,7 +239,10 @@ Engine::cast_ray(const primitives::Point3&  origin,
     // No object in ray direction or same object that reflect in himself
     if (closest_object == nullptr ||
         (depth == 2 && last_reflected_object_ == closest_object))
-        return options_.ambient_color;
+    {
+        auto t = 0.5 * (vector.normalize().y + 1.0);
+        return options_.bg_color_bottom * (1.0 - t) + options_.bg_color_top * t;
+    }
 
     if (depth >= options_.reflection_depth)
         return primitives::Vector3();
@@ -296,13 +296,13 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     last_reflected_object_ = closest_object;
 
-    // Add reflection
+    // Add reflection / refraction
     if (options_.reflection_enabled)
     {
         primitives::Vector3 scattered_ray =
             closest_object->get_texture()->get_scattered_ray(vector, normal);
 
-        if (typeid(closest_object->get_texture()) ==
+        if (typeid(*closest_object->get_texture()) ==
             typeid(scene::TransparentTexture))
         {
             offset_hitpoint =

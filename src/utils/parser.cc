@@ -54,10 +54,13 @@ static void parse_options(const json& j, core::Options& options)
     options.rendering_width           = j.at("rendering").at("width");
     options.rendering_output_filename = j.at("rendering").at("output_filename");
 
-    if (j.contains("ambient"))
+    if (j.contains("background"))
     {
-        auto color            = parse_color(j.at("ambient").at("color"));
-        options.ambient_color = primitives::Vector3(color.r, color.g, color.b);
+        auto c1 = parse_color(j.at("background").at("gradient_color_top"));
+        auto c2 = parse_color(j.at("background").at("gradient_color_bottom"));
+
+        options.bg_color_top    = primitives::Vector3(c1.r, c1.g, c1.b);
+        options.bg_color_bottom = primitives::Vector3(c2.r, c2.g, c2.b);
     }
 
     if (!j.contains("reflection"))
