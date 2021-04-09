@@ -78,7 +78,7 @@ Triangle::get_planar_projection(const primitives::Point3&) const
 }
 
 TextureMaterialCaracteristics
-Triangle::get_texture(const primitives::Point3& A) const
+Triangle::get_texture_info(const primitives::Point3& A) const
 {
     return Object::texture_material_->get_caracteristics(A);
 }

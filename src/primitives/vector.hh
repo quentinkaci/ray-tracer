@@ -20,6 +20,8 @@ struct Vector3
 
     double norm() const;
 
+    double norm_squared() const;
+
     Vector3 normalize() const;
 
     Point3 get_destination() const;
@@ -30,6 +32,8 @@ struct Vector3
 };
 
 bool operator==(const Vector3& lhs, const Vector3& rhs);
+
+bool operator!=(const Vector3& lhs, const Vector3& rhs);
 
 Vector3 operator*(const Vector3& v, const double& n);
 

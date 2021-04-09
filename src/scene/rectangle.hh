@@ -24,7 +24,7 @@ class Rectangle : public Object
     primitives::Point3 get_planar_projection(const primitives::Point3& A) const;
 
     TextureMaterialCaracteristics
-    get_texture(const primitives::Point3& A) const override;
+    get_texture_info(const primitives::Point3& A) const override;
 
     primitives::Point3 pos_;
 

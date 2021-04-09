@@ -11,6 +11,8 @@ Object::Object(std::shared_ptr<TextureMaterial> texture_material)
 {
 }
 
+const std::shared_ptr<TextureMaterial>& Object::get_texture() const { return texture_material_; }
+
 primitives::Vector3
 Object::get_computed_normal(const primitives::Point3&  A,
                             const primitives::Vector3& v) const

@@ -1,8 +1,10 @@
 #include "engine.hh"
+#include "scene/transparent_texture.hh"
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <typeinfo>
 
 #define EPSILON 0.0001
 
@@ -172,10 +174,8 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
     if (!options_.soft_shadow_enabled)
     {
         // Take shadow into account
-        std::optional<primitives::Vector3> light_check =
-            cast_ray(offset_hitpoint, light_ray, options_.reflection_depth);
         // Obstacle between hitpoint and light
-        if (light_check.has_value())
+        if (cast_ray_light_check(offset_hitpoint, light_ray))
             return options_.nb_ray_soft_shadow;
 
         return 0;
@@ -193,14 +193,32 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
         random_light_ray = random_light_ray.normalize();
 
         // Take shadow into account
-        std::optional<primitives::Vector3> light_check = cast_ray(
-            offset_hitpoint, random_light_ray, options_.reflection_depth);
         // Obstacle between hitpoint and light
-        if (light_check.has_value())
+        if (cast_ray_light_check(offset_hitpoint, random_light_ray))
             ++res;
     }
 
     return res;
+}
+
+bool Engine::cast_ray_light_check(const primitives::Point3&  A,
+                                  const primitives::Vector3& v)
+{
+    double min_lambda = std::numeric_limits<double>::infinity();
+    std::shared_ptr<scene::Object> closest_object = nullptr;
+
+    for (const auto& object : scene_.objects)
+    {
+        std::optional<double> lambda = object->ray_intersection(A, v);
+        if (lambda.has_value() && lambda.value() < min_lambda &&
+            typeid(object->get_texture()) != typeid(scene::TransparentTexture))
+        {
+            min_lambda     = lambda.value();
+            closest_object = object;
+        }
+    }
+
+    return closest_object != nullptr;
 }
 
 std::optional<primitives::Vector3>
@@ -223,8 +241,12 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     // No object in ray direction or same object that reflect in himself
     if (closest_object == nullptr ||
-        (depth == 1 && last_reflected_object_ == closest_object))
-        return std::nullopt;
+        (depth == 2 && last_reflected_object_ == closest_object))
+    {
+        auto t = 0.5 * (vector.normalize().y + 1.0);
+        return primitives::Vector3(255, 255, 255) * (1.0 - t) +
+               primitives::Vector3(128, 178, 255) * t;
+    }
 
     if (depth >= options_.reflection_depth)
         return primitives::Vector3();
@@ -232,7 +254,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
     primitives::Point3 hitpoint =
         origin + (vector * min_lambda).get_destination();
     const scene::TextureMaterialCaracteristics& hitpoint_desc =
-        closest_object->get_texture(hitpoint);
+        closest_object->get_texture_info(hitpoint);
     primitives::Vector3 object_color(
         hitpoint_desc.color.r, hitpoint_desc.color.g, hitpoint_desc.color.b);
 
@@ -281,8 +303,19 @@ Engine::cast_ray(const primitives::Point3&  origin,
     // Add reflection
     if (options_.reflection_enabled)
     {
+        primitives::Vector3 scattered_ray =
+            closest_object->get_texture()->get_scattered_ray(vector, normal);
+
+        if (typeid(closest_object->get_texture()) ==
+            typeid(scene::TransparentTexture))
+        {
+            offset_hitpoint =
+                hitpoint + (vector.normalize() * EPSILON).get_destination();
+        }
+
         std::optional<primitives::Vector3> reflection_contribution =
-            cast_ray(offset_hitpoint, reflected_ray, depth + 1);
+            cast_ray(offset_hitpoint, scattered_ray, depth + 1);
+
         if (reflection_contribution.has_value())
             res = res +
                   reflection_contribution.value() * hitpoint_desc.reflection;

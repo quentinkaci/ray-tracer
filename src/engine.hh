@@ -38,6 +38,9 @@ class Engine
                                                 const primitives::Vector3& v,
                                                 uint depth = 0);
 
+    bool cast_ray_light_check(const primitives::Point3&  A,
+                              const primitives::Vector3& v);
+
     Options options_;
 
     scene::Scene scene_;

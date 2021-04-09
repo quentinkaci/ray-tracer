@@ -24,7 +24,7 @@ class Sphere : public Object
     get_planar_projection(const primitives::Point3& A) const override;
 
     TextureMaterialCaracteristics
-    get_texture(const primitives::Point3& A) const override;
+    get_texture_info(const primitives::Point3& A) const override;
 
   private:
     primitives::Point3 center_;
