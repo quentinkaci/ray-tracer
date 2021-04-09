@@ -19,5 +19,8 @@ int main(int argc, char* argv[])
 
     image.save_to_ppm(options.rendering_output_filename);
 
+    std::cout << "Output image: '" << options.rendering_output_filename
+              << ".ppm'" << std::endl;
+
     return 0;
 }

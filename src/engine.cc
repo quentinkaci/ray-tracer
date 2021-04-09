@@ -2,6 +2,7 @@
 #include "scene/transparent_texture.hh"
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <limits>
 #include <typeinfo>
@@ -127,6 +128,8 @@ utils::Image Engine::run(uint height, uint width)
 
     utils::Image res(height, width);
 
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     for (uint j = 0; j < height; ++j)
     {
         for (uint i = 0; i < width; ++i)
@@ -156,7 +159,27 @@ utils::Image Engine::run(uint height, uint width)
 
             res.pixel(i, j) = pixel_color;
         }
+
+        // Print progress bar
+        int progress = 30.0 * (width + j * width) / (width * height);
+        std::cout << "Rendering scene (" << scene_.objects.size()
+                  << " objects) [";
+        for (int p = 0; p < progress; p++)
+            std::cout << (p == progress - 1 ? ">" : "=");
+        for (int p = 0; p < 30 - progress; p++)
+            std::cout << ".";
+        std::cout << "] "
+                  << std::ceil(100.0 * (width + j * width) / (width * height))
+                  << "%"
+                  << "\r" << std::flush;
     }
+
+    auto stop_time = std::chrono::high_resolution_clock::now();
+    auto duration  = std::chrono::duration_cast<std::chrono::seconds>(
+        stop_time - start_time);
+
+    std::cout << std::endl
+              << "Rendering time: " << duration.count() << "s" << std::endl;
 
     return res;
 }

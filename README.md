@@ -12,12 +12,11 @@ cmake .. && make
 
 ## To-Do
 
-- [ ] Progress bar
-- [ ] Fix cubes, triangle/rectangle UV mapping
-- [ ] Volume englobant
+- [ ] Optims
+- [ ] Create fancy scenes/textures
 
 ---
 
-- [ ] Create fancy scenes/textures
-- [ ] Optims
+- [ ] Blob in config, volume englobant
+- [ ] Fix cubes, triangle/rectangle UV mapping
 - [ ] Billboard / skybox (?)
