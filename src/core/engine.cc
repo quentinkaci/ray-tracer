@@ -7,13 +7,14 @@
 #include <execution>
 #include <limits>
 #include <typeinfo>
+#include <utility>
 
 #define EPSILON 0.0001
 
 namespace core
 {
-Engine::Engine(const Options& options, const scene::Scene& scene)
-    : options_(options)
+Engine::Engine(Options options, const scene::Scene& scene)
+    : options_(std::move(options))
     , scene_(scene)
 {
     std::random_device rd;
@@ -263,23 +264,22 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
 bool Engine::cast_ray_light_check(const primitives::Point3&  A,
                                   const primitives::Vector3& v)
 {
-
     double min_lambda = std::numeric_limits<double>::infinity();
-    std::shared_ptr<scene::Object> closest_object = nullptr;
+    bool   res        = false;
 
     for (const auto& object : scene_.objects)
     {
-        std::optional<double> lambda = object->ray_intersection(A, v);
+        auto lambda = object->ray_intersection(A, v);
 
         if (lambda.has_value() && lambda.value() < min_lambda &&
             typeid(*object->get_texture()) != typeid(scene::TransparentTexture))
         {
-            min_lambda     = lambda.value();
-            closest_object = object;
+            min_lambda = lambda.value();
+            res        = true;
         }
     }
 
-    return closest_object != nullptr;
+    return res;
 }
 
 std::optional<primitives::Vector3>
@@ -292,7 +292,8 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
     for (const auto& object : scene_.objects)
     {
-        std::optional<double> lambda = object->ray_intersection(origin, vector);
+        auto lambda = object->ray_intersection(origin, vector);
+
         if (lambda.has_value() && lambda.value() < min_lambda)
         {
             min_lambda     = lambda.value();
@@ -301,8 +302,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
     }
 
     // No object in ray direction or same object that reflect in himself
-    if (closest_object == nullptr ||
-        (depth == 2 && last_reflected_object_ == closest_object))
+    if (closest_object == nullptr)
     {
         auto t = 0.5 * (vector.normalize().y + 1.0);
         return options_.bg_color_bottom * (1.0 - t) + options_.bg_color_top * t;
@@ -357,8 +357,6 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
         res = res + cur_intensity;
     }
-
-    last_reflected_object_ = closest_object;
 
     // Add reflection / refraction
     if (options_.reflection_enabled)

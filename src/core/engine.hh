@@ -14,7 +14,7 @@ namespace core
 class Engine
 {
   public:
-    Engine(const Options& options, const scene::Scene& scene);
+    Engine(Options options, const scene::Scene& scene);
 
     utils::Image run(uint height, uint width);
 
@@ -44,8 +44,6 @@ class Engine
     Options options_;
 
     scene::Scene scene_;
-
-    std::shared_ptr<scene::Object> last_reflected_object_ = nullptr;
 
     std::default_random_engine re_;
 
