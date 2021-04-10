@@ -5,8 +5,10 @@
 namespace scene
 {
 TransparentTexture::TransparentTexture(
+    const double                         refractive_index,
     const TextureMaterialCaracteristics& caracteristic)
-    : caracteristic_(caracteristic)
+    : refractive_index_(refractive_index)
+    , caracteristic_(caracteristic)
 {
 }
 
@@ -23,7 +25,7 @@ TransparentTexture::get_scattered_ray(const primitives::Vector3& ray,
     primitives::Vector3 u       = ray.normalize();
     primitives::Vector3 normal_ = normal;
 
-    double ir = 1.5;
+    double ir = refractive_index_;
 
     if (ray.dot(normal) <= 0)
         ir = 1.0 / ir;

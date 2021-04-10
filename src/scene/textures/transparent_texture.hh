@@ -7,7 +7,8 @@ namespace scene
 class TransparentTexture : public TextureMaterial
 {
   public:
-    TransparentTexture(const TextureMaterialCaracteristics& caracteristic);
+    TransparentTexture(const double                         refractive_index,
+                       const TextureMaterialCaracteristics& caracteristic);
 
     TextureMaterialCaracteristics
     get_caracteristics(const primitives::Point3& point) const override;
@@ -17,6 +18,8 @@ class TransparentTexture : public TextureMaterial
                       const primitives::Vector3& normal) const override;
 
   private:
+    double refractive_index_;
+
     TextureMaterialCaracteristics caracteristic_;
 };
 } // namespace scene

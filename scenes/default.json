@@ -138,6 +138,7 @@
         "ks": 0,
         "ns": 0,
         "reflection": 1,
+        "refractive_index": 1.5,
         "color": {
           "r": 10,
           "g": 10,

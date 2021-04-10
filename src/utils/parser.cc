@@ -226,14 +226,16 @@ std::shared_ptr<scene::PerlinTexture> parse_perlin_texture(const json& j)
 std::shared_ptr<scene::TransparentTexture>
 parse_transparent_texture(const json& j)
 {
-    double kd         = j.at("kd");
-    double ks         = j.at("ks");
-    double ns         = j.at("ns");
-    double reflection = j.at("reflection");
+    double kd               = j.at("kd");
+    double ks               = j.at("ks");
+    double ns               = j.at("ns");
+    double reflection       = j.at("reflection");
+    double refractive_index = j.at("refractive_index");
 
     primitives::Color color = parse_color(j.at("color"));
 
     return std::make_shared<scene::TransparentTexture>(
+        refractive_index,
         scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
 }
 
