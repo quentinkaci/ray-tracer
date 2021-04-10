@@ -33,9 +33,10 @@ double Camera::get_unit_y(uint height) const
     return image_plane_height / height;
 }
 
-primitives::Vector3* Camera::get_pixels_vector(uint height, uint width) const
+std::vector<primitives::Vector3> Camera::get_pixels_vector(uint height,
+                                                           uint width) const
 {
-    primitives::Vector3* res = new primitives::Vector3[height * width];
+    std::vector<primitives::Vector3> res(height * width);
 
     primitives::Vector3 forward =
         primitives::Vector3(target_ - origin_).normalize();

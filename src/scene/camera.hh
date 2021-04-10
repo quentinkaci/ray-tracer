@@ -2,6 +2,8 @@
 
 #include "primitives/vector.hh"
 
+#include <vector>
+
 namespace scene
 {
 class Camera
@@ -24,7 +26,8 @@ class Camera
 
     double get_unit_y(uint height) const;
 
-    primitives::Vector3* get_pixels_vector(uint height, uint width) const;
+    std::vector<primitives::Vector3> get_pixels_vector(uint height,
+                                                       uint width) const;
 
   private:
     primitives::Point3 origin_ = {0, 0, 0};

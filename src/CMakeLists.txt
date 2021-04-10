@@ -1,4 +1,5 @@
 find_package(nlohmann_json 3.2.0 REQUIRED)
+find_package(TBB REQUIRED tbb)
 
 add_library(sources
         primitives/color.cc
@@ -49,4 +50,5 @@ target_link_libraries(ray-tracer PRIVATE
         common_options
         sources
         nlohmann_json::nlohmann_json
+        tbb
         )

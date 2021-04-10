@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
+#include <execution>
 #include <limits>
 #include <typeinfo>
 
@@ -120,7 +121,11 @@ Engine::compute_anti_aliasing(const primitives::Point3&             origin,
 
 utils::Image Engine::run(uint height, uint width)
 {
-    primitives::Vector3* pixels_vector =
+    std::vector<uint> positions;
+    for (uint i = 0; i < height * width; ++i)
+        positions.emplace_back(i);
+
+    std::vector<primitives::Vector3> pixels_vector =
         scene_.camera.get_pixels_vector(height, width);
     primitives::Point3 origin = scene_.camera.get_origin();
 
@@ -130,10 +135,15 @@ utils::Image Engine::run(uint height, uint width)
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    for (uint j = 0; j < height; ++j)
-    {
-        for (uint i = 0; i < width; ++i)
+    std::for_each(
+        std::execution::par_unseq,
+        positions.begin(),
+        positions.end(),
+        [&](uint position)
         {
+            uint i = position % width;
+            uint j = position / width;
+
             std::vector<primitives::Color> neighbours;
 
             if (j > 0)
@@ -158,21 +168,52 @@ utils::Image Engine::run(uint height, uint width)
                                   std::clamp(intensity.z, 0., 255.));
 
             res.pixel(i, j) = pixel_color;
-        }
+        });
 
-        // Print progress bar
-        int progress = 25.0 * (width + j * width) / (width * height);
-        std::cout << "Rendering scene (" << scene_.objects.size()
-                  << " object(s)) [";
-        for (int p = 0; p < progress; p++)
-            std::cout << (p == progress - 1 ? ">" : "=");
-        for (int p = 0; p < 25 - progress; p++)
-            std::cout << ".";
-        std::cout << "] "
-                  << std::ceil(100.0 * (width + j * width) / (width * height))
-                  << "%"
-                  << "\r" << std::flush;
-    }
+    //    for (uint j = 0; j < height; ++j)
+    //    {
+    //        for (uint i = 0; i < width; ++i)
+    //        {
+    //            std::vector<primitives::Color> neighbours;
+    //
+    //            if (j > 0)
+    //            {
+    //                if (i > 0)
+    //                    neighbours.emplace_back(res.get_pixel(i - 1, j - 1));
+    //                if (i < width - 1)
+    //                    neighbours.emplace_back(res.get_pixel(i + 1, j - 1));
+    //
+    //                neighbours.emplace_back(res.get_pixel(i, j - 1));
+    //            }
+    //
+    //            if (i > 0)
+    //                neighbours.emplace_back(res.get_pixel(i - 1, j));
+    //
+    //            primitives::Vector3 intensity = compute_anti_aliasing(
+    //                origin, pixels_vector[i + j * width], neighbours);
+    //
+    //            primitives::Color pixel_color =
+    //                primitives::Color(std::clamp(intensity.x, 0., 255.),
+    //                                  std::clamp(intensity.y, 0., 255.),
+    //                                  std::clamp(intensity.z, 0., 255.));
+    //
+    //            res.pixel(i, j) = pixel_color;
+    //        }
+    //
+    //        // Print progress bar
+    //        int progress = 25.0 * (width + j * width) / (width * height);
+    //        std::cout << "Rendering scene (" << scene_.objects.size()
+    //                  << " object(s)) [";
+    //        for (int p = 0; p < progress; p++)
+    //            std::cout << (p == progress - 1 ? ">" : "=");
+    //        for (int p = 0; p < 25 - progress; p++)
+    //            std::cout << ".";
+    //        std::cout << "] "
+    //                  << std::ceil(100.0 * (width + j * width) / (width *
+    //                  height))
+    //                  << "%"
+    //                  << "\r" << std::flush;
+    //    }
 
     auto stop_time = std::chrono::high_resolution_clock::now();
     auto duration  = std::chrono::duration_cast<std::chrono::seconds>(
