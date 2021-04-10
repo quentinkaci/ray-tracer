@@ -12,12 +12,15 @@ cmake .. && make
 
 ## To-Do
 
-- [ ] Optims
 - [ ] Create fancy scenes/textures
 
 ---
 
+- [ ] Cmake
 - [ ] Blob: volume englobant
 - [ ] Fix cubes, triangle/rectangle UV mapping
+
+---
+
 - [ ] Billboard / skybox (?)
 - [ ] Save to .PNG (?)

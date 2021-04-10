@@ -6,6 +6,7 @@
 
 #include "options.hh"
 
+#include <atomic>
 #include <optional>
 #include <random>
 
@@ -56,5 +57,7 @@ class Engine
     std::uniform_real_distribution<double> soft_shadow_unif_x_;
     std::uniform_real_distribution<double> soft_shadow_unif_y_;
     std::uniform_real_distribution<double> soft_shadow_unif_z_;
+
+    std::atomic<uint> progress_count_{0};
 };
 } // namespace core
