@@ -1,6 +1,6 @@
 #pragma once
 
-#include "options.hh"
+#include "core/options.hh"
 #include "scene/scene.hh"
 
 namespace utils

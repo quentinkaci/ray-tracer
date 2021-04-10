@@ -3,7 +3,7 @@
 #include "primitives/color.hh"
 #include "primitives/point.hh"
 #include "primitives/vector.hh"
-#include "types.hh"
+#include "utils/types.hh"
 
 namespace scene
 {

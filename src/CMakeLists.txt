@@ -6,26 +6,26 @@ add_library(sources
         primitives/vector.cc
 
         scene/camera.cc
-        scene/object.cc
+        scene/objects/object.cc
         scene/point_light.cc
-        scene/sphere.cc
-        scene/plane.cc
-        scene/triangle.cc
-        scene/rectangle.cc
-        scene/cube.cc
-        scene/uniform_texture.cc
-        scene/procedural_texture.cc
-        scene/transparent_texture.cc
-        scene/image_texture.cc
-        scene/perlin_texture.cc
+        scene/objects/sphere.cc
+        scene/objects/plane.cc
+        scene/objects/triangle.cc
+        scene/objects/rectangle.cc
+        scene/objects/cube.cc
+        scene/textures/uniform_texture.cc
+        scene/textures/procedural_texture.cc
+        scene/textures/transparent_texture.cc
+        scene/textures/image_texture.cc
+        scene/textures/perlin_texture.cc
         scene/blob.cc
-        scene/bump_mapping_texture.cc
+        scene/textures/bump_mapping_texture.cc
 
         utils/image.cc
         utils/perlin_noise.cc
         utils/parser.cc
 
-        engine.cc
+        core/engine.cc
         )
 
 set_target_properties(sources PROPERTIES

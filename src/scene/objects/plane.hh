@@ -1,6 +1,6 @@
 #pragma once
 
-#include "object.hh"
+#include "scene/objects/object.hh"
 
 namespace scene
 {

@@ -2,7 +2,7 @@
 
 #include "camera.hh"
 #include "light.hh"
-#include "object.hh"
+#include "scene/objects/object.hh"
 
 #include <memory>
 #include <vector>

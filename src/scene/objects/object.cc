@@ -1,5 +1,5 @@
 #include "object.hh"
-#include "bump_mapping_texture.hh"
+#include "scene/textures/bump_mapping_texture.hh"
 
 #include <typeinfo>
 #include <utility>

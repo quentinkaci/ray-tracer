@@ -1,7 +1,7 @@
 #pragma once
 
 #include "primitives/vector.hh"
-#include "texture_material.hh"
+#include "scene/textures/texture_material.hh"
 
 #include <memory>
 #include <optional>

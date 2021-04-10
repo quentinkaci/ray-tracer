@@ -1,5 +1,5 @@
 #include "engine.hh"
-#include "scene/transparent_texture.hh"
+#include "scene/textures/transparent_texture.hh"
 
 #include <algorithm>
 #include <chrono>

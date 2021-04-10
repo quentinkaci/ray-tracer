@@ -1,6 +1,6 @@
 #include "blob.hh"
 #include "marching_cubes.hh"
-#include "triangle.hh"
+#include "scene/objects/triangle.hh"
 
 #include <cmath>
 

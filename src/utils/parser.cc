@@ -1,18 +1,18 @@
 #include "parser.hh"
 
 #include "scene/blob.hh"
-#include "scene/bump_mapping_texture.hh"
 #include "scene/camera.hh"
-#include "scene/cube.hh"
-#include "scene/image_texture.hh"
-#include "scene/perlin_texture.hh"
-#include "scene/plane.hh"
+#include "scene/objects/cube.hh"
+#include "scene/objects/plane.hh"
+#include "scene/objects/rectangle.hh"
+#include "scene/objects/sphere.hh"
 #include "scene/point_light.hh"
-#include "scene/procedural_texture.hh"
-#include "scene/rectangle.hh"
-#include "scene/sphere.hh"
-#include "scene/transparent_texture.hh"
-#include "scene/uniform_texture.hh"
+#include "scene/textures/bump_mapping_texture.hh"
+#include "scene/textures/image_texture.hh"
+#include "scene/textures/perlin_texture.hh"
+#include "scene/textures/procedural_texture.hh"
+#include "scene/textures/transparent_texture.hh"
+#include "scene/textures/uniform_texture.hh"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
