@@ -7,14 +7,14 @@
     },
     "background": {
       "gradient_color_top": {
-        "r": 0,
-        "g": 0,
-        "b": 0
+        "r": 128,
+        "g": 178,
+        "b": 255
       },
       "gradient_color_bottom": {
-        "r": 0,
-        "g": 0,
-        "b": 0
+        "r": 255,
+        "g": 255,
+        "b": 255
       }
     },
     "reflection": {
@@ -24,9 +24,9 @@
   "scene": {
     "camera": {
       "origin": {
-        "x": 0,
+        "x": 7,
         "y": 0,
-        "z": 0
+        "z": -10
       },
       "target": {
         "x": 0,
@@ -61,8 +61,8 @@
         "name": "uniform_texture_red",
         "type": "uniform",
         "kd": 0.005,
-        "ks": 0.30,
-        "ns": 1,
+        "ks": 0,
+        "ns": 0,
         "reflection": 0.30,
         "color": {
           "r": 150,
@@ -84,22 +84,37 @@
         },
         "style": "checkerboard",
         "size": 1
+      },
+      {
+        "name": "dice_texture",
+        "type": "image",
+        "image": "../textures/numbers",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30
       }
     ],
     "objects": [
       {
-        "type": "plane",
-        "texture": "procedural_texture",
+        "type": "cube",
+        "texture": "dice_texture",
         "position": {
           "x": 0,
-          "y": -2.5,
-          "z": 0
+          "y": -4,
+          "z": 10
         },
-        "normal": {
-          "x": 0,
-          "y": 1,
-          "z": 0
-        }
+        "size": 1
+      },
+      {
+        "type": "sphere",
+        "texture": "uniform_texture_red",
+        "center": {
+          "x": -5,
+          "y": -2.5,
+          "z": 10
+        },
+        "radius": 1
       }
     ]
   }

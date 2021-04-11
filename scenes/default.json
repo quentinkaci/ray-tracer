@@ -81,7 +81,9 @@
           "r": 0,
           "g": 0,
           "b": 150
-        }
+        },
+        "style": "checkerboard",
+        "size": 0.2
       },
       {
         "name": "billiard_texture",

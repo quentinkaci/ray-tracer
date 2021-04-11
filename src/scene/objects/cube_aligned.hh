@@ -7,8 +7,19 @@
 
 namespace scene
 {
+enum CUBE_FACES
+{
+    FRONT = 0,
+    BACK,
+    TOP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
 class CubeAligned : public Object
 {
+
   public:
     CubeAligned(const std::shared_ptr<TextureMaterial>& texture_material,
                 const primitives::Point3&               pos,
@@ -26,7 +37,11 @@ class CubeAligned : public Object
     TextureMaterialCaracteristics
     get_texture_info(const primitives::Point3& A) const override;
 
+    CUBE_FACES get_cube_face(const primitives::Point3& A) const;
+
   private:
+    const primitives::Point3 pos_;
+    const double             size_;
     const primitives::Point3 min_;
     const primitives::Point3 max_;
 };

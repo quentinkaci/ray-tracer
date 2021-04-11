@@ -21,7 +21,8 @@ Blob::Blob(const primitives::Point3&               origin,
     primitives::Point3 cube_center(
         origin.x + size / 2, origin.y + size / 2, origin.z + size / 2);
 
-    englobing_object_ = std::make_shared<EnglobingObject>(cube_center, size);
+    englobing_object_ =
+        std::make_shared<EnglobingObject>(cube_center, size / 2);
 }
 
 void Blob::add(primitives::Point3 pos)

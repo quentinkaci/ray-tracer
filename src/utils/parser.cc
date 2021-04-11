@@ -149,7 +149,7 @@ std::shared_ptr<scene::ImageTexture> parse_image_texture(const json& j)
     std::string image = j.at("image");
 
     return std::make_shared<scene::ImageTexture>(
-        *Image::load_from_ppm(image),
+        Image::load_from_ppm(image),
         scene::TextureMaterialCaracteristics{
             kd, ks, ns, reflection, primitives::Color()});
 }

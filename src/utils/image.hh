@@ -14,7 +14,7 @@ struct Image
     ~Image();
 
     // Only load P3 ppm files
-    static Image* load_from_ppm(const std::string& filename);
+    static std::shared_ptr<Image> load_from_ppm(const std::string& filename);
 
     primitives::Color& pixel(const uint& i, const uint& j);
 

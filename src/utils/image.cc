@@ -12,9 +12,9 @@ Image::Image(uint height, uint width)
     pixels = new primitives::Color[width * height];
 }
 
-Image::~Image() { delete pixels; }
+Image::~Image() { delete[] pixels; }
 
-Image* Image::load_from_ppm(const std::string& filename)
+std::shared_ptr<Image> Image::load_from_ppm(const std::string& filename)
 {
     std::ifstream ifs(filename + ".ppm", std::ios_base::out);
     if (!ifs.is_open())
@@ -24,7 +24,10 @@ Image* Image::load_from_ppm(const std::string& filename)
 
     ifs >> buffer;
     if (buffer != "P3")
+    {
+        std::cerr << "Error: PPM format not handled." << std::endl;
         return nullptr;
+    }
 
     ifs >> buffer;
     uint width = std::stoul(buffer);
@@ -34,7 +37,7 @@ Image* Image::load_from_ppm(const std::string& filename)
     // Skip largest value of RGB
     ifs >> buffer;
 
-    Image* res = new Image(height, width);
+    auto res = std::make_shared<Image>(height, width);
 
     for (uint y = 0; y < height; ++y)
     {
