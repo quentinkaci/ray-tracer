@@ -3,12 +3,14 @@ project(raytracer LANGUAGES CXX)
 
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(TBB REQUIRED tbb)
+find_package(PNG REQUIRED)
 
 # ---
 # Set paths to sources
 # ---
 
-include_directories(src)
+include_directories(src
+                    ${PNG_INCLUDE_DIR})
 
 set(SRC
     src/primitives/color.cc
@@ -79,4 +81,5 @@ target_sources(raytracer PRIVATE ${SRC})
 target_link_libraries(raytracer PRIVATE
     nlohmann_json::nlohmann_json
     tbb
+    ${PNG_LIBRARY}
 )

@@ -17,7 +17,7 @@ class Engine
   public:
     Engine(Options options, const scene::Scene& scene);
 
-    utils::Image run(uint height, uint width);
+    void run(utils::Image& image);
 
   private:
     void init_distributions(uint height, uint width);

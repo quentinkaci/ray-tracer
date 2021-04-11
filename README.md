@@ -10,6 +10,27 @@ cmake .. && make
 ./ray-tracer ../scenes/default.json
 ```
 
+## Features
+
+- Objects: sphere, cubes, triangles, rectangles and blobs
+- Handle diffuse, reflection, refraction and specular lighting
+- Uniform, transparent, procedural and image textures
+- Bump mapping on textures
+- Configure scenes with JSON config files
+- Anti-Aliasing
+- Soft-shadows
+- Depth of field
+- Gamma correction
+- Multithreading
+- Load/save to .PNG and .PPM
+
+---
+
+**WIP**:
+
+- Skybox
+- Billboards
+
 ## To-Do
 
 - [ ] Create fancy scenes/textures

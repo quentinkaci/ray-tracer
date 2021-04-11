@@ -1,92 +1,42 @@
 #include "image.hh"
 
-#include <cstdio>
-#include <fstream>
+#include "image_png.hh"
+#include "image_ppm.hh"
 
 namespace utils
 {
-Image::Image(uint height, uint width)
-    : height(height)
-    , width(width)
-{
-    pixels = new primitives::Color[width * height];
-}
+Image::Image() {}
 
-Image::~Image() { delete[] pixels; }
-
-std::shared_ptr<Image> Image::load_from_ppm(const std::string& filename)
-{
-    std::ifstream ifs(filename + ".ppm", std::ios_base::out);
-    if (!ifs.is_open())
-        return nullptr;
-
-    std::string buffer;
-
-    ifs >> buffer;
-    if (buffer != "P3")
-    {
-        std::cerr << "Error: PPM format not handled." << std::endl;
-        return nullptr;
-    }
-
-    ifs >> buffer;
-    uint width = std::stoul(buffer);
-    ifs >> buffer;
-    uint height = std::stoul(buffer);
-
-    // Skip largest value of RGB
-    ifs >> buffer;
-
-    auto res = std::make_shared<Image>(height, width);
-
-    for (uint y = 0; y < height; ++y)
-    {
-        for (uint x = 0; x < width; ++x)
-        {
-            ifs >> buffer;
-            uchar r = std::stoul(buffer);
-            ifs >> buffer;
-            uchar g = std::stoul(buffer);
-            ifs >> buffer;
-            uchar b = std::stoul(buffer);
-
-            res->pixel(x, y) = primitives::Color(r, g, b);
-        }
-    }
-
-    ifs.close();
-
-    return res;
-}
+Image::~Image() { delete[] pixels_; }
 
 primitives::Color& Image::pixel(const uint& x, const uint& y)
 {
-    return pixels[x + y * width];
+    return pixels_[x + y * width_];
 }
 
 primitives::Color Image::get_pixel(const uint& x, const uint& y) const
 {
-    return pixels[x + y * width];
+    return pixels_[x + y * width_];
 }
 
-void Image::save_to_ppm(const std::string& filename)
+uint Image::get_width() const { return width_; }
+
+uint Image::get_height() const { return height_; }
+
+void Image::create(const uint width, const uint height)
 {
-    std::ofstream ofs(filename + ".ppm", std::ios_base::out);
-    ofs << "P3" << std::endl
-        << width << " " << height << std::endl
-        << "255" << std::endl;
+    height_ = height;
+    width_  = width;
+    pixels_ = new primitives::Color[width * height];
+}
 
-    for (uint y = 0; y < height; ++y)
-    {
-        for (uint x = 0; x < width; ++x)
-        {
-            primitives::Color c = pixel(x, y);
-            ofs << " " << std::to_string(c.r) << " " << std::to_string(c.g)
-                << " " << std::to_string(c.b) << " ";
-        }
-        ofs << std::endl;
-    }
-
-    ofs.close();
+std::shared_ptr<Image> create_image(const std::string& filename)
+{
+    auto ext = filename.substr(filename.size() - 4);
+    if (ext == ".ppm")
+        return std::make_shared<ImagePPM>();
+    else if (ext == ".png")
+        return std::make_shared<ImagePNG>();
+    return nullptr;
 }
 } // namespace utils

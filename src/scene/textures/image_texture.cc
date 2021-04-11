@@ -64,8 +64,9 @@ ImageTexture::get_caracteristics(const primitives::Point3& point) const
         }
     }
 
-    res.color = texture_image_->get_pixel(x * texture_image_->width,
-                                          (1 - y) * texture_image_->height);
+    res.color =
+        texture_image_->get_pixel(x * texture_image_->get_width(),
+                                  (1 - y) * texture_image_->get_height());
     return res;
 }
 } // namespace scene

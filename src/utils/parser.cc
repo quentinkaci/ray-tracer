@@ -1,5 +1,8 @@
 #include "parser.hh"
 
+#include "utils/image_png.hh"
+#include "utils/image_ppm.hh"
+
 #include "scene/blob.hh"
 #include "scene/camera.hh"
 #include "scene/objects/cube.hh"
@@ -147,10 +150,13 @@ std::shared_ptr<scene::ImageTexture> parse_image_texture(const json& j)
     double ns         = j.at("ns");
     double reflection = j.at("reflection");
 
-    std::string image = j.at("image");
+    std::string filename = j.at("image");
+
+    auto image = create_image(filename);
+    image->load(filename);
 
     return std::make_shared<scene::ImageTexture>(
-        Image::load_from_ppm(image),
+        image,
         scene::TextureMaterialCaracteristics{
             kd, ks, ns, reflection, primitives::Color()});
 }

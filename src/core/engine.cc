@@ -121,8 +121,11 @@ Engine::compute_anti_aliasing(const primitives::Point3&             origin,
     return aa_intensity / k;
 }
 
-utils::Image Engine::run(uint height, uint width)
+void Engine::run(utils::Image& image)
 {
+    uint width  = image.get_width();
+    uint height = image.get_height();
+
     std::vector<uint> positions;
     for (uint i = 0; i < height * width; ++i)
         positions.emplace_back(i);
@@ -132,8 +135,6 @@ utils::Image Engine::run(uint height, uint width)
     primitives::Point3 origin = scene_.camera.get_origin();
 
     init_distributions(height, width);
-
-    utils::Image res(height, width);
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
@@ -170,15 +171,15 @@ utils::Image Engine::run(uint height, uint width)
             if (j > 0)
             {
                 if (i > 0)
-                    neighbours.emplace_back(res.get_pixel(i - 1, j - 1));
+                    neighbours.emplace_back(image.get_pixel(i - 1, j - 1));
                 if (i < width - 1)
-                    neighbours.emplace_back(res.get_pixel(i + 1, j - 1));
+                    neighbours.emplace_back(image.get_pixel(i + 1, j - 1));
 
-                neighbours.emplace_back(res.get_pixel(i, j - 1));
+                neighbours.emplace_back(image.get_pixel(i, j - 1));
             }
 
             if (i > 0)
-                neighbours.emplace_back(res.get_pixel(i - 1, j));
+                neighbours.emplace_back(image.get_pixel(i - 1, j));
 
             primitives::Vector3 intensity = compute_anti_aliasing(
                 origin, pixels_vector[i + j * width], neighbours);
@@ -194,7 +195,7 @@ utils::Image Engine::run(uint height, uint width)
             color.g            = 255.0 * std::pow(color.g / 255.0, 1.0 / gamma);
             color.b            = 255.0 * std::pow(color.b / 255.0, 1.0 / gamma);
 
-            res.pixel(i, j) = color;
+            image.pixel(i, j) = color;
 
             ++progress_count_;
         });
@@ -207,8 +208,6 @@ utils::Image Engine::run(uint height, uint width)
 
     std::cout << std::endl
               << "Rendering time: " << duration.count() << "ms" << std::endl;
-
-    return res;
 }
 
 unsigned int

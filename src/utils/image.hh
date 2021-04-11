@@ -7,23 +7,31 @@
 
 namespace utils
 {
-struct Image
+class Image
 {
-    Image(uint height, uint width);
+  public:
+    explicit Image();
 
-    ~Image();
-
-    // Only load P3 ppm files
-    static std::shared_ptr<Image> load_from_ppm(const std::string& filename);
+    virtual ~Image();
 
     primitives::Color& pixel(const uint& i, const uint& j);
 
     primitives::Color get_pixel(const uint& x, const uint& y) const;
 
-    void save_to_ppm(const std::string& filename);
+    uint get_width() const;
 
-    uint               height;
-    uint               width;
-    primitives::Color* pixels = nullptr;
+    uint get_height() const;
+
+    void create(const uint width, const uint height);
+
+    virtual void save(const std::string& filename) = 0;
+    virtual void load(const std::string& filename) = 0;
+
+  protected:
+    uint               height_;
+    uint               width_;
+    primitives::Color* pixels_ = nullptr;
 };
+
+std::shared_ptr<Image> create_image(const std::string& filename);
 } // namespace utils

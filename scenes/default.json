@@ -3,7 +3,7 @@
     "rendering": {
       "height": 1080,
       "width": 1920,
-      "output_filename": "rendered_scene",
+      "output_filename": "rendered_scene.png",
       "gamma_correction": 1
     },
     "background": {
@@ -89,7 +89,7 @@
       {
         "name": "billiard_texture",
         "type": "image",
-        "image": "../textures/8_billiard_ball",
+        "image": "../textures/8_billiard_ball.ppm",
         "kd": 0.005,
         "ks": 0.30,
         "ns": 1,
