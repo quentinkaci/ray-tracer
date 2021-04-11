@@ -14,6 +14,7 @@ struct Options
     unsigned int rendering_height          = 1080;
     unsigned int rendering_width           = 1920;
     std::string  rendering_output_filename = "scene";
+    double       rendering_gamma           = 1.0;
 
     // Reflection
     bool         reflection_enabled = true;

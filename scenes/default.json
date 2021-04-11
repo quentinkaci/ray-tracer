@@ -3,7 +3,8 @@
     "rendering": {
       "height": 1080,
       "width": 1920,
-      "output_filename": "rendered_scene"
+      "output_filename": "rendered_scene",
+      "gamma_correction": 1
     },
     "background": {
       "gradient_color_top": {

@@ -54,7 +54,7 @@ Sphere::get_planar_projection(const primitives::Point3& A) const
     double u = (atan2(-relative_A.z, relative_A.x) + M_PI) / (2 * M_PI);
     double v = acos(-relative_A.y / radius_) / M_PI;
 
-    return primitives::Point3(u, 1 - v, 0);
+    return primitives::Point3(u, v, 0);
 }
 
 TextureMaterialCaracteristics

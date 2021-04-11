@@ -19,7 +19,10 @@ void ImageTexture::set_cube_texture(bool val) { cube_texture_ = val; }
 TextureMaterialCaracteristics
 ImageTexture::get_caracteristics(const primitives::Point3& point) const
 {
-    TextureMaterialCaracteristics caracteristic(caracteristic_);
+    TextureMaterialCaracteristics res(caracteristic_);
+
+    double x = point.x;
+    double y = point.y;
 
     // Handle 6 faces of a cube
     if (cube_texture_)
@@ -28,9 +31,6 @@ ImageTexture::get_caracteristics(const primitives::Point3& point) const
 
         double x_step = 1.0 / 4.0;
         double y_step = 1.0 / 3.0;
-
-        double x = 0;
-        double y = 0;
 
         if (face == CUBE_FACES::FRONT)
         {
@@ -62,14 +62,10 @@ ImageTexture::get_caracteristics(const primitives::Point3& point) const
             x = 3 * x_step + point.x / 4;
             y = 1 * y_step + point.y / 3;
         }
-
-        caracteristic.color = texture_image_->get_pixel(
-            x * texture_image_->width, (1 - y) * texture_image_->height);
-        return caracteristic;
     }
 
-    caracteristic.color = texture_image_->get_pixel(
-        point.x * texture_image_->width, point.y * texture_image_->height);
-    return caracteristic;
+    res.color = texture_image_->get_pixel(x * texture_image_->width,
+                                          (1 - y) * texture_image_->height);
+    return res;
 }
 } // namespace scene

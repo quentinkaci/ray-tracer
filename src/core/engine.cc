@@ -183,12 +183,18 @@ utils::Image Engine::run(uint height, uint width)
             primitives::Vector3 intensity = compute_anti_aliasing(
                 origin, pixels_vector[i + j * width], neighbours);
 
-            primitives::Color pixel_color =
+            primitives::Color color =
                 primitives::Color(std::clamp(intensity.x, 0., 255.),
                                   std::clamp(intensity.y, 0., 255.),
                                   std::clamp(intensity.z, 0., 255.));
 
-            res.pixel(i, j) = pixel_color;
+            // Gamma correction
+            const double gamma = options_.rendering_gamma;
+            color.r            = 255.0 * std::pow(color.r / 255.0, 1.0 / gamma);
+            color.g            = 255.0 * std::pow(color.g / 255.0, 1.0 / gamma);
+            color.b            = 255.0 * std::pow(color.b / 255.0, 1.0 / gamma);
+
+            res.pixel(i, j) = color;
 
             ++progress_count_;
         });
