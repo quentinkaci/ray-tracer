@@ -185,7 +185,12 @@ parse_procedural_texture(const json& j)
 
     primitives::Color color = parse_color(j.at("color"));
 
+    std::string style = j.at("style");
+    double      size  = j.at("size");
+
     return std::make_shared<scene::ProceduralTexture>(
+        style,
+        size,
         scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
 }
 

@@ -43,18 +43,9 @@ primitives::Vector3 Plane::get_normal(const primitives::Point3&,
 primitives::Point3
 Plane::get_planar_projection(const primitives::Point3& A) const
 {
-    primitives::Vector3 e1 =
-        normal_.cross(primitives::Vector3(1, 0, 0)).normalize();
-
-    if (e1 == primitives::Vector3(0, 0, 0))
-    {
-        e1 = normal_.cross(primitives::Vector3(0, 0, 1)).normalize();
-    }
-
-    primitives::Vector3 e2 = normal_.cross(e1).normalize();
-
-    double u = e1.dot(A);
-    double v = e2.dot(A);
+    double trash = 0;
+    double u     = std::modf(A.x, &trash);
+    double v     = std::modf(A.z, &trash);
 
     return primitives::Point3(u, v, 0);
 }

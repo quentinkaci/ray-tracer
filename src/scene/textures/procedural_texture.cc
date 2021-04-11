@@ -5,8 +5,12 @@
 namespace scene
 {
 ProceduralTexture::ProceduralTexture(
+    const std::string&                   style,
+    const double                         size,
     const TextureMaterialCaracteristics& caracteristic)
-    : caracteristic_(caracteristic)
+    : style_(style)
+    , size_(size)
+    , caracteristic_(caracteristic)
 {
 }
 
@@ -17,12 +21,28 @@ ProceduralTexture::get_caracteristics(const primitives::Point3& A) const
 {
     TextureMaterialCaracteristics res = caracteristic_;
 
-    float size = 2;
-    // float color = (std::sin(A.x * 2 * M_PI * size) + 1) * 0.5;
-    float color = (modulo(A.y * size) < 0.5) ^ (modulo(A.x * size) < 0.5);
+    if (style_ == "checkerboard")
+    {
+        double color =
+            (modulo(A.y * 1 / size_) < 0.5) ^ (modulo(A.x * 1 / size_) < 0.5);
+        res.color = primitives::Color(
+            color * res.color.r, color * res.color.g, color * res.color.b);
+    }
+    else if (style_ == "stripes")
+    {
+        double color = (std::sin(A.x * 2 * M_PI * 1 / size_) + 1) * 0.5;
+        res.color    = primitives::Color(
+            color * res.color.r, color * res.color.g, color * res.color.b);
+    }
+    else // style_ == "gradient"
+    {
+        double tx = (A.x + 1) * 0.5;
+        double ty = (A.y + 1) * 0.5;
+        double t  = (tx + ty) / 2;
+        res.color = primitives::Color(
+            t * res.color.r, t * res.color.g, t * res.color.b);
+    }
 
-    // res.color = primitives::Color(A.x * 255, A.y * 255, 0.5 * 255);
-    res.color = primitives::Color(color * 255, color * 255, color * 255);
     return res;
 }
 } // namespace scene
