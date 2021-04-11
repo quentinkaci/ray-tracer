@@ -3,6 +3,7 @@
 #include "scene/blob.hh"
 #include "scene/camera.hh"
 #include "scene/objects/cube.hh"
+#include "scene/objects/cube_aligned.hh"
 #include "scene/objects/plane.hh"
 #include "scene/objects/rectangle.hh"
 #include "scene/objects/sphere.hh"
@@ -286,7 +287,7 @@ std::shared_ptr<scene::Sphere> parse_sphere(
         textures_map.at(texture), center, radius);
 }
 
-std::shared_ptr<scene::Cube> parse_cube(
+std::shared_ptr<scene::CubeAligned> parse_cube(
     const json& j,
     const std::unordered_map<std::string,
                              const std::shared_ptr<scene::TextureMaterial>>&
@@ -297,7 +298,7 @@ std::shared_ptr<scene::Cube> parse_cube(
 
     std::string texture = j.at("texture");
 
-    return std::make_shared<scene::Cube>(
+    return std::make_shared<scene::CubeAligned>(
         textures_map.at(texture), position, size);
 }
 

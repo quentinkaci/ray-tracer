@@ -196,11 +196,11 @@ utils::Image Engine::run(uint height, uint width)
     show_progress_thread.join();
 
     auto stop_time = std::chrono::high_resolution_clock::now();
-    auto duration  = std::chrono::duration_cast<std::chrono::seconds>(
+    auto duration  = std::chrono::duration_cast<std::chrono::milliseconds>(
         stop_time - start_time);
 
     std::cout << std::endl
-              << "Rendering time: " << duration.count() << "s" << std::endl;
+              << "Rendering time: " << duration.count() << "ms" << std::endl;
 
     return res;
 }
@@ -258,6 +258,25 @@ bool Engine::cast_ray_light_check(const primitives::Point3&  A,
         }
     }
 
+    for (const auto& englobing_object : scene_.englobing_objects)
+    {
+        if (englobing_object->ray_intersection(A, v))
+        {
+            for (const auto& object : englobing_object->get_objects())
+            {
+                auto lambda = object->ray_intersection(A, v);
+
+                if (lambda.has_value() && lambda.value() < min_lambda &&
+                    typeid(*object->get_texture()) !=
+                        typeid(scene::TransparentTexture))
+                {
+                    min_lambda = lambda.value();
+                    res        = true;
+                }
+            }
+        }
+    }
+
     return res;
 }
 
@@ -277,6 +296,23 @@ Engine::cast_ray(const primitives::Point3&  origin,
         {
             min_lambda     = lambda.value();
             closest_object = object;
+        }
+    }
+
+    for (const auto& englobing_object : scene_.englobing_objects)
+    {
+        if (englobing_object->ray_intersection(origin, vector))
+        {
+            for (const auto& object : englobing_object->get_objects())
+            {
+                auto lambda = object->ray_intersection(origin, vector);
+
+                if (lambda.has_value() && lambda.value() < min_lambda)
+                {
+                    min_lambda     = lambda.value();
+                    closest_object = object;
+                }
+            }
         }
     }
 

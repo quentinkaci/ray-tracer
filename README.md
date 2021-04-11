@@ -13,15 +13,3 @@ cmake .. && make
 ## To-Do
 
 - [ ] Create fancy scenes/textures
-
----
-
-- [ ] Cmake
-- [ ] Blob: volume englobant
-
-
----
-
-- [ ] Fix cubes, triangle/rectangle UV mapping
-- [ ] Billboard / skybox (?)
-- [ ] Save to .PNG (?)

@@ -20,12 +20,12 @@ class Blob
 
     void add(primitives::Point3 pos);
 
-    void run(Scene& scene) const;
+    void run(Scene& scene);
 
   private:
     double get_potential(const primitives::Point3& point) const;
 
-    void add_cube_segmentation(Scene& scene, const primitives::Point3& p) const;
+    void add_cube_segmentation(const primitives::Point3& p);
 
     std::vector<primitives::Point3> energy_points_;
 
@@ -38,5 +38,7 @@ class Blob
     double threshold_;
 
     const std::shared_ptr<TextureMaterial>& texture_material_;
+
+    std::shared_ptr<EnglobingObject> englobing_object_;
 };
 } // namespace scene

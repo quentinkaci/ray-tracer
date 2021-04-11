@@ -17,6 +17,11 @@ Blob::Blob(const primitives::Point3&               origin,
     , threshold_(threshold)
     , texture_material_(texture_material)
 {
+    // Center of cube is in the middle but origin of blob is at bottom left
+    primitives::Point3 cube_center(
+        origin.x + size / 2, origin.y + size / 2, origin.z + size / 2);
+
+    englobing_object_ = std::make_shared<EnglobingObject>(cube_center, size);
 }
 
 void Blob::add(primitives::Point3 pos)
@@ -32,8 +37,7 @@ void Blob::add(primitives::Point3 pos)
     energy_points_.emplace_back(pos);
 }
 
-void Blob::add_cube_segmentation(Scene&                    scene,
-                                 const primitives::Point3& p) const
+void Blob::add_cube_segmentation(const primitives::Point3& p)
 {
     // Determine corners positions
     std::vector<primitives::Point3> corners;
@@ -79,7 +83,8 @@ void Blob::add_cube_segmentation(Scene&                    scene,
         primitives::Point3 b = vertices[i + 1];
         primitives::Point3 c = vertices[i + 2];
 
-        scene.objects.emplace_back(new Triangle(texture_material_, a, b, c));
+        englobing_object_->add_object(
+            std::make_shared<Triangle>(texture_material_, a, b, c));
     }
 }
 
@@ -99,7 +104,7 @@ double Blob::get_potential(const primitives::Point3& point) const
     return std::round(res);
 }
 
-void Blob::run(Scene& scene) const
+void Blob::run(Scene& scene)
 {
     double size = static_cast<double>(size_);
 
@@ -109,9 +114,11 @@ void Blob::run(Scene& scene) const
         {
             for (double z = origin_.z + size; z >= origin_.z; z -= delta_)
             {
-                add_cube_segmentation(scene, primitives::Point3(x, y, z));
+                add_cube_segmentation(primitives::Point3(x, y, z));
             }
         }
     }
+
+    scene.englobing_objects.push_back(englobing_object_);
 }
 } // namespace scene

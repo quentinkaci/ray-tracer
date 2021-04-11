@@ -16,13 +16,15 @@ set(SRC
     src/primitives/vector.cc
 
     src/scene/camera.cc
-    src/scene/objects/object.cc
     src/scene/point_light.cc
+    src/scene/objects/object.cc
+    src/scene/objects/englobing_object.cc
     src/scene/objects/sphere.cc
     src/scene/objects/plane.cc
     src/scene/objects/triangle.cc
     src/scene/objects/rectangle.cc
     src/scene/objects/cube.cc
+    src/scene/objects/cube_aligned.cc
     src/scene/textures/uniform_texture.cc
     src/scene/textures/procedural_texture.cc
     src/scene/textures/transparent_texture.cc

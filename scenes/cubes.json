@@ -1,0 +1,87 @@
+{
+  "options": {
+    "rendering": {
+      "height": 1080,
+      "width": 1920,
+      "output_filename": "rendered_scene"
+    },
+    "background": {
+      "gradient_color_top": {
+        "r": 18,
+        "g": 18,
+        "b": 255
+      },
+      "gradient_color_bottom": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "reflection": {
+      "depth": 5
+    }
+  },
+  "scene": {
+    "camera": {
+      "origin": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": -0.2,
+        "z": 1
+      },
+      "up": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "x_fov": 62.22,
+      "y_fov": 35,
+      "z_min": 1
+    },
+    "lights": [
+      {
+        "position": {
+          "x": 10,
+          "y": 10,
+          "z": -10
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        }
+      }
+    ],
+    "textures": [
+      {
+        "name": "uniform_texture_red",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 150,
+          "g": 0,
+          "b": 0
+        }
+      }
+    ],
+    "objects": [
+      {
+        "type": "cube",
+        "texture": "uniform_texture_red",
+        "position": {
+          "x": 0,
+          "y": -2.5,
+          "z": 10
+        },
+        "size": 1
+      }
+    ]
+  }
+}
