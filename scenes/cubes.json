@@ -45,6 +45,7 @@
     },
     "lights": [
       {
+        "type": "point",
         "position": {
           "x": 10,
           "y": 10,

@@ -8,14 +8,14 @@
     },
     "background": {
       "gradient_color_top": {
-        "r": 128,
-        "g": 178,
-        "b": 255
+        "r": 0,
+        "g": 0,
+        "b": 0
       },
       "gradient_color_bottom": {
-        "r": 255,
-        "g": 255,
-        "b": 255
+        "r": 0,
+        "g": 0,
+        "b": 0
       }
     },
     "reflection": {
@@ -45,6 +45,12 @@
     },
     "lights": [
       {
+        "type": "directional",
+        "direction": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
         "position": {
           "x": 10,
           "y": 10,

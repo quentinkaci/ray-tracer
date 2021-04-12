@@ -1,4 +1,5 @@
 #include "engine.hh"
+#include "scene/directional_light.hh"
 #include "scene/objects/skybox.hh"
 #include "scene/textures/transparent_texture.hh"
 
@@ -216,7 +217,20 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
                             const std::shared_ptr<scene::Light>& light,
                             const primitives::Vector3&           light_ray)
 {
-    if (!options_.soft_shadow_enabled)
+    // With a DirectionalLight, a shadow is created if light_ray and
+    // light.get_direction() are in the same orientation.
+    bool is_directional_light =
+        typeid(*light) == typeid(scene::DirectionalLight);
+    if (is_directional_light)
+    {
+        const auto& light_directional =
+            dynamic_cast<const scene::DirectionalLight&>(*light);
+
+        if (light_directional.get_direction().dot(light_ray) >= 0)
+            return options_.nb_ray_soft_shadow;
+    }
+
+    if (!options_.soft_shadow_enabled || is_directional_light)
     {
         // Take shadow into account
         // Obstacle between hitpoint and light
@@ -276,7 +290,8 @@ bool Engine::cast_ray_light_check(const primitives::Point3&  A,
 
                 if (lambda.has_value() && lambda.value() < min_lambda &&
                     typeid(*object->get_texture()) !=
-                        typeid(scene::TransparentTexture))
+                        typeid(scene::TransparentTexture) &&
+                    typeid(*object) != typeid(scene::Skybox))
                 {
                     min_lambda = lambda.value();
                     res        = true;
@@ -354,8 +369,7 @@ Engine::cast_ray(const primitives::Point3&  origin,
     {
         primitives::Vector3 cur_intensity;
 
-        primitives::Vector3 light_ray(light->get_center() - hitpoint);
-        light_ray = light_ray.normalize();
+        primitives::Vector3 light_ray = light->get_ray_to_light(hitpoint);
 
         double shadow_coef =
             compute_soft_shadow(offset_hitpoint, light, light_ray);

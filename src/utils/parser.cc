@@ -5,6 +5,7 @@
 
 #include "scene/blob.hh"
 #include "scene/camera.hh"
+#include "scene/directional_light.hh"
 #include "scene/objects/billboard.hh"
 #include "scene/objects/cube.hh"
 #include "scene/objects/cube_aligned.hh"
@@ -124,12 +125,25 @@ static void parse_lights(const json& j, scene::Scene& scene)
 {
     for (const auto& light : j)
     {
-        const primitives::Point3 position =
-            parse_position(light.at("position"));
         const primitives::Color color = parse_color(light.at("color"));
+        const std::string       type  = light.at("type");
 
-        scene.light_sources.emplace_back(
-            std::make_shared<scene::PointLight>(position, color));
+        if (type == "directional")
+        {
+            const primitives::Vector3 direction =
+                parse_vector(light.at("direction"));
+
+            scene.light_sources.emplace_back(
+                std::make_shared<scene::DirectionalLight>(color, direction));
+        }
+        else //(type == "point")
+        {
+            const primitives::Point3 position =
+                parse_position(light.at("position"));
+
+            scene.light_sources.emplace_back(
+                std::make_shared<scene::PointLight>(position, color));
+        }
     }
 }
 

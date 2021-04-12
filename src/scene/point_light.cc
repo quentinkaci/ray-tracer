@@ -15,4 +15,13 @@ const LightCaracteristics& PointLight::get_caracteristics() const
 }
 
 const primitives::Point3& PointLight::get_center() const { return position_; }
+
+const primitives::Vector3
+PointLight::get_ray_to_light(const primitives::Point3& point) const
+{
+    primitives::Vector3 ray(get_center() - point);
+    ray = ray.normalize();
+    return ray;
+}
+
 } // namespace scene
