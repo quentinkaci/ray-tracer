@@ -122,7 +122,7 @@ Engine::compute_anti_aliasing(const primitives::Point3&             origin,
     return aa_intensity / k;
 }
 
-void Engine::run(utils::Image& image)
+void Engine::render_image(utils::Image& image)
 {
     uint width  = image.get_width();
     uint height = image.get_height();
@@ -140,30 +140,34 @@ void Engine::run(utils::Image& image)
     auto start_time = std::chrono::high_resolution_clock::now();
 
     // Spawn thread to track progress
-    std::thread show_progress_thread([&]() {
-        while (progress_count_ < width * height)
+    std::thread show_progress_thread(
+        [&]()
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            while (progress_count_ < width * height)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-            int progress = 25.0 * (progress_count_) / (width * height);
-            std::cout << "Rendering scene (" << scene_.count_objects()
-                      << " object(s)) [";
-            for (int p = 0; p < progress; p++)
-                std::cout << (p == progress - 1 ? ">" : "=");
-            for (int p = 0; p < 25 - progress; p++)
-                std::cout << ".";
-            std::cout << "] "
-                      << std::ceil(100.0 * progress_count_ / (width * height))
-                      << "%"
-                      << "\r" << std::flush;
-        }
-    });
+                int progress = 25.0 * (progress_count_) / (width * height);
+                std::cout << "Rendering scene (" << scene_.count_objects()
+                          << " object(s)) [";
+                for (int p = 0; p < progress; p++)
+                    std::cout << (p == progress - 1 ? ">" : "=");
+                for (int p = 0; p < 25 - progress; p++)
+                    std::cout << ".";
+                std::cout << "] "
+                          << std::ceil(100.0 * progress_count_ /
+                                       (width * height))
+                          << "%"
+                          << "\r" << std::flush;
+            }
+        });
 
     std::for_each(
         std::execution::par_unseq,
         positions.begin(),
         positions.end(),
-        [&](uint position) {
+        [&](uint position)
+        {
             uint i = position % width;
             uint j = position / width;
 
@@ -190,12 +194,6 @@ void Engine::run(utils::Image& image)
                                   std::clamp(intensity.y, 0., 255.),
                                   std::clamp(intensity.z, 0., 255.));
 
-            // Gamma correction
-            const double gamma = options_.rendering_gamma;
-            color.r            = 255.0 * std::pow(color.r / 255.0, 1.0 / gamma);
-            color.g            = 255.0 * std::pow(color.g / 255.0, 1.0 / gamma);
-            color.b            = 255.0 * std::pow(color.b / 255.0, 1.0 / gamma);
-
             image.pixel(i, j) = color;
 
             ++progress_count_;
@@ -209,6 +207,73 @@ void Engine::run(utils::Image& image)
 
     std::cout << std::endl
               << "Rendering time: " << duration.count() << "ms" << std::endl;
+
+    progress_count_ = 0;
+}
+
+void Engine::compute_anaglyph_effect(utils::Image& image)
+{
+    utils::Image shifted_image(image);
+
+    scene::Camera saved_camera(scene_.camera);
+
+    scene_.camera.translate(options_.anaglyph_camera_translation);
+
+    render_image(shifted_image);
+
+    uint width  = image.get_width();
+    uint height = image.get_height();
+
+    for (uint j = 0; j < height; ++j)
+    {
+        for (uint i = 0; i < width; ++i)
+        {
+            primitives::Color left_pixel  = image.get_pixel(i, j);
+            primitives::Color right_pixel = shifted_image.get_pixel(i, j);
+
+            double red_pixel  = left_pixel.to_grayscale();
+            double cyan_pixel = right_pixel.to_grayscale();
+
+            image.pixel(i, j) =
+                primitives::Color(static_cast<uchar>(red_pixel),
+                                  static_cast<uchar>(cyan_pixel),
+                                  static_cast<uchar>(cyan_pixel));
+        }
+    }
+
+    scene_.camera = saved_camera;
+}
+
+void Engine::apply_gamma_correction(utils::Image& image) const
+{
+    uint width  = image.get_width();
+    uint height = image.get_height();
+
+    for (uint j = 0; j < height; ++j)
+    {
+        for (uint i = 0; i < width; ++i)
+        {
+            primitives::Color color = image.get_pixel(i, j);
+
+            // Gamma correction
+            const double gamma = options_.rendering_gamma;
+            color.r            = 255.0 * std::pow(color.r / 255.0, 1.0 / gamma);
+            color.g            = 255.0 * std::pow(color.g / 255.0, 1.0 / gamma);
+            color.b            = 255.0 * std::pow(color.b / 255.0, 1.0 / gamma);
+
+            image.pixel(i, j) = color;
+        }
+    }
+}
+
+void Engine::run(utils::Image& image)
+{
+    render_image(image);
+
+    if (options_.anaglyph_enabled)
+        compute_anaglyph_effect(image);
+
+    apply_gamma_correction(image);
 }
 
 unsigned int

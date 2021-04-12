@@ -7,7 +7,7 @@ namespace utils
 {
 Image::Image() {}
 
-Image::~Image() { delete[] pixels_; }
+Image::~Image() {}
 
 primitives::Color& Image::pixel(const uint& x, const uint& y)
 {
@@ -27,8 +27,12 @@ void Image::create(const uint width, const uint height)
 {
     height_ = height;
     width_  = width;
-    pixels_ = new primitives::Color[width * height];
+    pixels_ = std::vector<primitives::Color>(width * height);
 }
+
+void Image::save(const std::string&) {}
+
+void Image::load(const std::string&) {}
 
 std::shared_ptr<Image> create_image(const std::string& filename)
 {

@@ -12,6 +12,8 @@ struct Color
 
     Color();
 
+    uchar to_grayscale() const;
+
     uchar r;
     uchar g;
     uchar b;

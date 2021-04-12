@@ -33,7 +33,7 @@ class ImagePPM : public Image
 
         height_ = height;
         width_  = width;
-        pixels_ = new primitives::Color[width * height];
+        pixels_ = std::vector<primitives::Color>(width * height);
 
         for (uint y = 0; y < height; ++y)
         {

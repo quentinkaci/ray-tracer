@@ -4,6 +4,7 @@
 #include "types.hh"
 
 #include <memory>
+#include <vector>
 
 namespace utils
 {
@@ -24,13 +25,13 @@ class Image
 
     void create(const uint width, const uint height);
 
-    virtual void save(const std::string& filename) = 0;
-    virtual void load(const std::string& filename) = 0;
+    virtual void save(const std::string& filename);
+    virtual void load(const std::string& filename);
 
   protected:
-    uint               height_;
-    uint               width_;
-    primitives::Color* pixels_ = nullptr;
+    uint                           height_;
+    uint                           width_;
+    std::vector<primitives::Color> pixels_;
 };
 
 std::shared_ptr<Image> create_image(const std::string& filename);

@@ -20,6 +20,12 @@ class Engine
     void run(utils::Image& image);
 
   private:
+    void render_image(utils::Image& image);
+
+    void apply_gamma_correction(utils::Image& image) const;
+
+    void compute_anaglyph_effect(utils::Image& image);
+
     void init_distributions(uint height, uint width);
 
     primitives::Vector3

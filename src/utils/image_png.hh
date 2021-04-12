@@ -40,7 +40,7 @@ class ImagePNG : public Image
 
         width_  = png_get_image_width(png_ptr, info_ptr);
         height_ = png_get_image_height(png_ptr, info_ptr);
-        pixels_ = new primitives::Color[width_ * height_];
+        pixels_ = std::vector<primitives::Color>(width_ * height_);
 
         if (png_get_color_type(png_ptr, info_ptr) != PNG_COLOR_TYPE_RGB)
             throw "Error: PNG color type not supported.";

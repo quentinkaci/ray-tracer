@@ -13,6 +13,11 @@ Color::Color()
     : Color(0, 0, 0)
 {
 }
+uchar Color::to_grayscale() const
+{
+    return (uchar)(0.2989 * (double)r + 0.5870 * (double)g +
+                   0.1140 * (double)b);
+}
 
 bool operator==(const Color& lhs, const Color& rhs)
 {
