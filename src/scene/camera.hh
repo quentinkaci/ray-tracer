@@ -31,6 +31,8 @@ class Camera
     std::vector<primitives::Vector3> get_pixels_vector(uint height,
                                                        uint width) const;
 
+    void translate(const primitives::Point3& translation);
+
   private:
     primitives::Point3 origin_ = {0, 0, 0};
 

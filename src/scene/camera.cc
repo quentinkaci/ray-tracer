@@ -67,4 +67,9 @@ std::vector<primitives::Vector3> Camera::get_pixels_vector(uint height,
 
     return res;
 }
+
+void Camera::translate(const primitives::Point3& translation)
+{
+    origin_ = origin_ + translation;
+}
 } // namespace scene

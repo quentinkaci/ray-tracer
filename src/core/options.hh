@@ -16,6 +16,10 @@ struct Options
     std::string  rendering_output_filename = "scene";
     double       rendering_gamma           = 1.0;
 
+    // Anaglyph effect
+    bool               anaglyph_enabled            = false;
+    primitives::Point3 anaglyph_camera_translation = {0.015, 0, 0};
+
     // Reflection
     bool         reflection_enabled = true;
     unsigned int reflection_depth   = 5;

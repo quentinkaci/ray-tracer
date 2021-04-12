@@ -64,6 +64,13 @@ static void parse_options(const json& j, core::Options& options)
     options.rendering_output_filename = j.at("rendering").at("output_filename");
     options.rendering_gamma = j.at("rendering").at("gamma_correction");
 
+    if (j.contains("anaglyph"))
+    {
+        options.anaglyph_enabled = true;
+        options.anaglyph_camera_translation =
+            parse_position(j.at("anaglyph").at("camera_translation"));
+    }
+
     if (j.contains("background"))
     {
         auto c1 = parse_color(j.at("background").at("gradient_color_top"));
