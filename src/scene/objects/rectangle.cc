@@ -3,8 +3,6 @@
 
 #include <cmath>
 
-#define EPSILON 0.0001
-
 namespace scene
 {
 Rectangle::Rectangle(const std::shared_ptr<TextureMaterial>& texture_material,

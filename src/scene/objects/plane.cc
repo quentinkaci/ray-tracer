@@ -19,13 +19,13 @@ std::optional<double>
 Plane::ray_intersection(const primitives::Point3&  A,
                         const primitives::Vector3& v) const
 {
-    double normal_dot_v = normal_.dot(v);
+    const double normal_dot_v = normal_.dot(v);
 
     if (std::fabs(normal_dot_v) > PLANE_EPSILON)
     {
-        primitives::Vector3 pos_A = pos_ - A;
+        const primitives::Vector3 pos_A = pos_ - A;
 
-        double t = pos_A.dot(normal_) / normal_dot_v;
+        const double t = pos_A.dot(normal_) / normal_dot_v;
 
         if (t >= 0)
             return t;
@@ -43,9 +43,9 @@ primitives::Vector3 Plane::get_normal(const primitives::Point3&,
 primitives::Point3
 Plane::get_planar_projection(const primitives::Point3& A) const
 {
-    double trash = 0;
-    double u     = std::modf(A.x, &trash);
-    double v     = std::modf(A.z, &trash);
+    double       trash = 0;
+    const double u     = std::modf(A.x, &trash);
+    const double v     = std::modf(A.z, &trash);
 
     return primitives::Point3(u, v, 0);
 }

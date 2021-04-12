@@ -17,5 +17,9 @@ struct Color
     uchar b;
 };
 
+bool operator==(const Color& lhs, const Color& rhs);
+
+bool operator!=(const Color& lhs, const Color& rhs);
+
 std::ostream& operator<<(std::ostream& os, const primitives::Color& color);
 } // namespace primitives

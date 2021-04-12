@@ -21,6 +21,8 @@ Camera::Camera(const primitives::Point3& origin,
 
 primitives::Point3 Camera::get_origin() const { return origin_; }
 
+primitives::Point3 Camera::get_target() const { return target_; }
+
 double Camera::get_unit_x(uint width) const
 {
     double image_plane_width = 2 * z_min_ * tan(x_fov_ * 0.5 * M_PI / 180.0);

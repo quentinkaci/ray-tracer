@@ -22,6 +22,8 @@ class Camera
 
     primitives::Point3 get_origin() const;
 
+    primitives::Point3 get_target() const;
+
     double get_unit_x(uint width) const;
 
     double get_unit_y(uint height) const;

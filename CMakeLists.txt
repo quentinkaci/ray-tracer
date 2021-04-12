@@ -26,6 +26,7 @@ set(SRC
     src/scene/objects/plane.cc
     src/scene/objects/triangle.cc
     src/scene/objects/rectangle.cc
+    src/scene/objects/billboard.cc
     src/scene/objects/cube.cc
     src/scene/objects/cube_aligned.cc
     src/scene/textures/uniform_texture.cc

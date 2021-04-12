@@ -25,7 +25,7 @@ class Plane : public Object
     get_texture_info(const primitives::Point3& A) const override;
 
   private:
-    primitives::Point3  pos_;
-    primitives::Vector3 normal_;
+    const primitives::Point3  pos_;
+    const primitives::Vector3 normal_;
 };
 } // namespace scene

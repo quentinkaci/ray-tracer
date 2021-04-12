@@ -78,42 +78,40 @@ CubeAligned::ray_intersection(const primitives::Point3&  A,
 primitives::Vector3 CubeAligned::get_normal(const primitives::Point3& A,
                                             const primitives::Vector3&) const
 {
-    CUBE_FACES face = get_cube_face(A);
+    const primitives::Vector3 normals[6] = {primitives::Vector3(0, 0, -1),
+                                            primitives::Vector3(0, 0, 1),
 
-    primitives::Vector3 normals[6] = {primitives::Vector3(0, 0, -1),
-                                      primitives::Vector3(0, 0, 1),
+                                            primitives::Vector3(0, 1, 0),
+                                            primitives::Vector3(0, -1, 0),
 
-                                      primitives::Vector3(0, 1, 0),
-                                      primitives::Vector3(0, -1, 0),
+                                            primitives::Vector3(1, 0, 0),
+                                            primitives::Vector3(-1, 0, 0)};
 
-                                      primitives::Vector3(1, 0, 0),
-                                      primitives::Vector3(-1, 0, 0)};
-
-    return normals[face];
+    return normals[get_cube_face(A)];
 }
 
 CUBE_FACES CubeAligned::get_cube_face(const primitives::Point3& A) const
 {
-    CUBE_FACES          res   = CUBE_FACES::FRONT;
-    primitives::Vector3 point = A - center_pos_;
+    CUBE_FACES                res   = CUBE_FACES::FRONT;
+    const primitives::Vector3 point = A - center_pos_;
 
     double min_dist = std::numeric_limits<double>::max();
 
-    double distance_x = std::fabs(size_ - std::fabs(point.x));
+    const double distance_x = std::fabs(size_ - std::fabs(point.x));
     if (distance_x < min_dist)
     {
         res      = (point.x < 0) ? CUBE_FACES::RIGHT : CUBE_FACES::LEFT;
         min_dist = distance_x;
     }
 
-    double distance_y = std::fabs(size_ - std::fabs(point.y));
+    const double distance_y = std::fabs(size_ - std::fabs(point.y));
     if (distance_y < min_dist)
     {
         res      = (point.y < 0) ? CUBE_FACES::DOWN : CUBE_FACES::TOP;
         min_dist = distance_y;
     }
 
-    double distance_z = std::fabs(size_ - std::fabs(point.z));
+    const double distance_z = std::fabs(size_ - std::fabs(point.z));
     if (distance_z < min_dist)
     {
         res      = (point.z < 0) ? CUBE_FACES::FRONT : CUBE_FACES::BACK;
@@ -126,7 +124,7 @@ CUBE_FACES CubeAligned::get_cube_face(const primitives::Point3& A) const
 primitives::Point3
 CubeAligned::get_planar_projection(const primitives::Point3& A) const
 {
-    CUBE_FACES face = get_cube_face(A);
+    const CUBE_FACES face = get_cube_face(A);
 
     const primitives::Point3& point = (A - center_pos_) / size_;
 

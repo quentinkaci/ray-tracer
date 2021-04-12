@@ -5,6 +5,7 @@
 
 #include "scene/blob.hh"
 #include "scene/camera.hh"
+#include "scene/objects/billboard.hh"
 #include "scene/objects/cube.hh"
 #include "scene/objects/cube_aligned.hh"
 #include "scene/objects/plane.hh"
@@ -364,6 +365,23 @@ std::shared_ptr<scene::Rectangle> parse_rectangle(
         textures_map.at(texture), p1, p2, p3, p4);
 }
 
+std::shared_ptr<scene::Billboard> parse_billboard(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+                        textures_map,
+    const scene::Scene& scene)
+{
+    const primitives::Point3 pos    = parse_position(j.at("position"));
+    const double             width  = j.at("width");
+    const double             height = j.at("height");
+
+    const std::string texture = j.at("texture");
+
+    return std::make_shared<scene::Billboard>(
+        textures_map.at(texture), scene, pos, width, height);
+}
+
 std::shared_ptr<scene::Triangle> parse_triangle(
     const json& j,
     const std::unordered_map<std::string,
@@ -422,6 +440,9 @@ static void parse_objects(
             scene.objects.emplace_back(parse_plane(object, textures_map));
         else if (type == "rectangle")
             scene.objects.emplace_back(parse_rectangle(object, textures_map));
+        else if (type == "billboard")
+            scene.objects.emplace_back(
+                parse_billboard(object, textures_map, scene));
         else if (type == "triangle")
             scene.objects.emplace_back(parse_triangle(object, textures_map));
         else if (type == "blobs")
