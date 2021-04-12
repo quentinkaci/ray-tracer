@@ -1,0 +1,186 @@
+{
+  "options": {
+    "rendering": {
+      "height": 1080,
+      "width": 1920,
+      "output_filename": "rendered_scene.png",
+      "gamma_correction": 1
+    },
+    "background": {
+      "gradient_color_top": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "gradient_color_bottom": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "reflection": {
+      "depth": 5
+    }
+  },
+  "scene": {
+    "camera": {
+      "origin": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": -0.2,
+        "z": 1
+      },
+      "up": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "x_fov": 62.22,
+      "y_fov": 35,
+      "z_min": 1
+    },
+    "lights": [
+      {
+        "type": "spot",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "color": {
+          "r": 217,
+          "g": 190,
+          "b": 39
+        },
+        "direction": {
+          "x": 0,
+          "y": -0.2,
+          "z": 1
+        },
+        "angle": 0.18
+      },
+      {
+        "type": "point",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "color": {
+          "r": 50,
+          "g": 50,
+          "b": 50
+        }
+      }
+    ],
+    "textures": [
+      {
+        "name": "uniform_texture_red",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "color": {
+          "r": 150,
+          "g": 0,
+          "b": 0
+        }
+      },
+      {
+        "name": "uniform_texture_blue",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "color": {
+          "r": 240,
+          "g": 240,
+          "b": 240
+        }
+      },
+      {
+        "name": "billboard_texture",
+        "type": "image",
+        "image": "../textures/billboard.ppm",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0
+      }
+    ],
+    "objects": [
+      {
+        "type": "cube",
+        "texture": "uniform_texture_red",
+        "position": {
+          "x": 0,
+          "y": -4,
+          "z": 20
+        },
+        "size": 1
+      },
+      {
+        "type": "plane",
+        "texture": "uniform_texture_blue",
+        "position": {
+          "x": 0,
+          "y": -5,
+          "z": 0
+        },
+        "normal": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        }
+      },
+      {
+        "type": "plane",
+        "texture": "uniform_texture_blue",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 21
+        },
+        "normal": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        }
+      },
+      {
+        "type": "plane",
+        "texture": "uniform_texture_blue",
+        "position": {
+          "x": -4,
+          "y": 0,
+          "z": 0
+        },
+        "normal": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        }
+      },
+      {
+        "type": "plane",
+        "texture": "uniform_texture_blue",
+        "position": {
+          "x": 4,
+          "y": 0,
+          "z": 0
+        },
+        "normal": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ]
+  }
+}

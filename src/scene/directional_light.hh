@@ -21,10 +21,10 @@ class DirectionalLight : public Light
     get_ray_to_light(const primitives::Point3& point) const override;
 
   private:
-    primitives::Point3 position_;
+    const primitives::Point3 position_;
 
-    LightCaracteristics caracteristics_;
+    const LightCaracteristics caracteristics_;
 
-    primitives::Vector3 direction_;
+    const primitives::Vector3 direction_;
 };
 } // namespace scene

@@ -1,6 +1,7 @@
 #include "engine.hh"
 #include "scene/directional_light.hh"
 #include "scene/objects/skybox.hh"
+#include "scene/spot_light.hh"
 #include "scene/textures/transparent_texture.hh"
 
 #include <algorithm>
@@ -230,11 +231,30 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
             return options_.nb_ray_soft_shadow;
     }
 
+    // With a SpotLight, a shadow is created if the angle between light_ray and
+    // light.get_direction() is greater than a specific value.
+    bool is_spot_light = typeid(*light) == typeid(scene::SpotLight);
+    if (is_spot_light)
+    {
+        const auto& light_spot = dynamic_cast<const scene::SpotLight&>(*light);
+
+        // Rays must be in the same orientation
+        auto light_ray_inv = light_ray * -1.0;
+
+        const double theta = std::acos(
+            light_spot.get_direction().dot(light_ray_inv) /
+            (light_spot.get_direction().norm() * light_ray_inv.norm()));
+
+        if (std::fabs(theta) > light_spot.get_angle())
+            return options_.nb_ray_soft_shadow;
+    }
+
     if (!options_.soft_shadow_enabled || is_directional_light)
     {
         // Take shadow into account
         // Obstacle between hitpoint and light
-        if (cast_ray_light_check(offset_hitpoint, light_ray))
+        if (cast_ray_light_check(
+                offset_hitpoint, light_ray, light->get_center()))
             return options_.nb_ray_soft_shadow;
 
         return 0;
@@ -253,7 +273,8 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
 
         // Take shadow into account
         // Obstacle between hitpoint and light
-        if (cast_ray_light_check(offset_hitpoint, random_light_ray))
+        if (cast_ray_light_check(
+                offset_hitpoint, random_light_ray, light->get_center()))
             ++res;
     }
 
@@ -261,10 +282,12 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
 }
 
 bool Engine::cast_ray_light_check(const primitives::Point3&  A,
-                                  const primitives::Vector3& v)
+                                  const primitives::Vector3& v,
+                                  const primitives::Point3&  light_pos)
 {
-    double min_lambda = std::numeric_limits<double>::infinity();
-    bool   res        = false;
+    double min_lambda =
+        primitives::Vector3(light_pos - A).dot(v * -1.0) / v.dot(v * -1.0);
+    bool res = false;
 
     for (const auto& object : scene_.objects)
     {

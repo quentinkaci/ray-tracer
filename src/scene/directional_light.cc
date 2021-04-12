@@ -1,10 +1,14 @@
 #include "directional_light.hh"
 
+#include <limits>
+
 namespace scene
 {
 DirectionalLight::DirectionalLight(const primitives::Color&   color,
                                    const primitives::Vector3& direction)
-    : position_()
+    : position_(std::numeric_limits<double>::infinity(),
+                std::numeric_limits<double>::infinity(),
+                std::numeric_limits<double>::infinity())
     , caracteristics_{color}
     , direction_(direction)
 {

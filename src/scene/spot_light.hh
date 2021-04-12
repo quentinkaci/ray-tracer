@@ -5,11 +5,17 @@
 
 namespace scene
 {
-class PointLight : public Light
+class SpotLight : public Light
 {
   public:
-    PointLight(const primitives::Point3& position,
-               const primitives::Color&  color);
+    SpotLight(const primitives::Point3&  position,
+              const primitives::Color&   color,
+              const primitives::Vector3& direction,
+              const double               angle);
+
+    const primitives::Vector3& get_direction() const;
+
+    double get_angle() const;
 
     const LightCaracteristics& get_caracteristics() const override;
 
@@ -22,5 +28,9 @@ class PointLight : public Light
     const primitives::Point3 position_;
 
     const LightCaracteristics caracteristics_;
+
+    const primitives::Vector3 direction_;
+
+    const double angle_;
 };
 } // namespace scene

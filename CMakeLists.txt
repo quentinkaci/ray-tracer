@@ -20,6 +20,7 @@ set(SRC
     src/scene/camera.cc
     src/scene/point_light.cc
     src/scene/directional_light.cc
+    src/scene/spot_light.cc
     src/scene/objects/object.cc
     src/scene/objects/englobing_object.cc
     src/scene/objects/sphere.cc

@@ -14,6 +14,7 @@
 #include "scene/objects/skybox.hh"
 #include "scene/objects/sphere.hh"
 #include "scene/point_light.hh"
+#include "scene/spot_light.hh"
 #include "scene/textures/bump_mapping_texture.hh"
 #include "scene/textures/image_texture.hh"
 #include "scene/textures/perlin_texture.hh"
@@ -135,6 +136,19 @@ static void parse_lights(const json& j, scene::Scene& scene)
 
             scene.light_sources.emplace_back(
                 std::make_shared<scene::DirectionalLight>(color, direction));
+        }
+        else if (type == "spot")
+        {
+            const primitives::Point3 position =
+                parse_position(light.at("position"));
+
+            const primitives::Vector3 direction =
+                parse_vector(light.at("direction"));
+
+            const double angle = light.at("angle");
+
+            scene.light_sources.emplace_back(std::make_shared<scene::SpotLight>(
+                position, color, direction, angle));
         }
         else //(type == "point")
         {
