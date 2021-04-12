@@ -16,7 +16,7 @@ cmake .. && make
 - Handle diffuse, reflection, refraction and specular lighting
 - Uniform, transparent, procedural and image textures
 - Bump mapping on textures
-- Point and directional lights
+- Point, directional and spot lights
 - Configure scenes with JSON config files
 - Anti-Aliasing
 - Soft-shadows
@@ -26,3 +26,4 @@ cmake .. && make
 - Load/save to .PNG and .PPM
 - Skybox
 - Billboards
+- Anaglyph rendering
