@@ -9,6 +9,7 @@
 #include "scene/objects/cube_aligned.hh"
 #include "scene/objects/plane.hh"
 #include "scene/objects/rectangle.hh"
+#include "scene/objects/skybox.hh"
 #include "scene/objects/sphere.hh"
 #include "scene/point_light.hh"
 #include "scene/textures/bump_mapping_texture.hh"
@@ -28,27 +29,27 @@ namespace utils
 {
 static primitives::Point3 parse_position(const json& j)
 {
-    double x = j.at("x");
-    double y = j.at("y");
-    double z = j.at("z");
+    const double x = j.at("x");
+    const double y = j.at("y");
+    const double z = j.at("z");
 
     return primitives::Point3(x, y, z);
 }
 
 static primitives::Vector3 parse_vector(const json& j)
 {
-    double x = j.at("x");
-    double y = j.at("y");
-    double z = j.at("z");
+    const double x = j.at("x");
+    const double y = j.at("y");
+    const double z = j.at("z");
 
     return primitives::Vector3(x, y, z);
 }
 
 static primitives::Color parse_color(const json& j)
 {
-    unsigned char r = j.at("r");
-    unsigned char g = j.at("g");
-    unsigned char b = j.at("b");
+    const unsigned char r = j.at("r");
+    const unsigned char g = j.at("g");
+    const unsigned char b = j.at("b");
 
     return primitives::Color(r, g, b);
 }
@@ -107,13 +108,13 @@ static void parse_options(const json& j, core::Options& options)
 
 static void parse_camera(const json& j, scene::Scene& scene)
 {
-    primitives::Point3 origin = parse_position(j.at("origin"));
-    primitives::Point3 target = parse_position(j.at("target"));
-    primitives::Point3 up     = parse_position(j.at("up"));
+    const primitives::Point3 origin = parse_position(j.at("origin"));
+    const primitives::Point3 target = parse_position(j.at("target"));
+    const primitives::Point3 up     = parse_position(j.at("up"));
 
-    double x_fov = j.at("x_fov");
-    double y_fov = j.at("y_fov");
-    double z_min = j.at("z_min");
+    const double x_fov = j.at("x_fov");
+    const double y_fov = j.at("y_fov");
+    const double z_min = j.at("z_min");
 
     scene.camera = scene::Camera(origin, target, up, x_fov, y_fov, z_min);
 }
@@ -122,8 +123,9 @@ static void parse_lights(const json& j, scene::Scene& scene)
 {
     for (const auto& light : j)
     {
-        primitives::Point3 position = parse_position(light.at("position"));
-        primitives::Color  color    = parse_color(light.at("color"));
+        const primitives::Point3 position =
+            parse_position(light.at("position"));
+        const primitives::Color color = parse_color(light.at("color"));
 
         scene.light_sources.emplace_back(
             std::make_shared<scene::PointLight>(position, color));
@@ -132,12 +134,12 @@ static void parse_lights(const json& j, scene::Scene& scene)
 
 std::shared_ptr<scene::UniformTexture> parse_uniform_texture(const json& j)
 {
-    double kd         = j.at("kd");
-    double ks         = j.at("ks");
-    double ns         = j.at("ns");
-    double reflection = j.at("reflection");
+    const double kd         = j.at("kd");
+    const double ks         = j.at("ks");
+    const double ns         = j.at("ns");
+    const double reflection = j.at("reflection");
 
-    primitives::Color color = parse_color(j.at("color"));
+    const primitives::Color color = parse_color(j.at("color"));
 
     return std::make_shared<scene::UniformTexture>(
         scene::TextureMaterialCaracteristics{kd, ks, ns, reflection, color});
@@ -145,18 +147,22 @@ std::shared_ptr<scene::UniformTexture> parse_uniform_texture(const json& j)
 
 std::shared_ptr<scene::ImageTexture> parse_image_texture(const json& j)
 {
-    double kd         = j.at("kd");
-    double ks         = j.at("ks");
-    double ns         = j.at("ns");
-    double reflection = j.at("reflection");
+    const double kd         = j.at("kd");
+    const double ks         = j.at("ks");
+    const double ns         = j.at("ns");
+    const double reflection = j.at("reflection");
+
+    double offset_x = 0.0;
+    if (j.find("offset_x") != j.end())
+        offset_x = j.at("offset_x");
 
     std::string filename = j.at("image");
-
-    auto image = create_image(filename);
+    const auto  image    = create_image(filename);
     image->load(filename);
 
     return std::make_shared<scene::ImageTexture>(
         image,
+        offset_x,
         scene::TextureMaterialCaracteristics{
             kd, ks, ns, reflection, primitives::Color()});
 }
@@ -164,16 +170,16 @@ std::shared_ptr<scene::ImageTexture> parse_image_texture(const json& j)
 std::shared_ptr<scene::BumpMappingTexture>
 parse_bump_mapping_texture(const json& j)
 {
-    double kd         = j.at("kd");
-    double ks         = j.at("ks");
-    double ns         = j.at("ns");
-    double reflection = j.at("reflection");
+    const double kd         = j.at("kd");
+    const double ks         = j.at("ks");
+    const double ns         = j.at("ns");
+    const double reflection = j.at("reflection");
 
-    primitives::Color color = parse_color(j.at("color"));
+    const primitives::Color color = parse_color(j.at("color"));
 
-    double octave      = j.at("octave");
-    double persistence = j.at("persistence");
-    double intensity   = j.at("intensity");
+    const double octave      = j.at("octave");
+    const double persistence = j.at("persistence");
+    const double intensity   = j.at("intensity");
 
     return std::make_shared<scene::BumpMappingTexture>(
         octave,
@@ -185,15 +191,15 @@ parse_bump_mapping_texture(const json& j)
 std::shared_ptr<scene::ProceduralTexture>
 parse_procedural_texture(const json& j)
 {
-    double kd         = j.at("kd");
-    double ks         = j.at("ks");
-    double ns         = j.at("ns");
-    double reflection = j.at("reflection");
+    const double kd         = j.at("kd");
+    const double ks         = j.at("ks");
+    const double ns         = j.at("ns");
+    const double reflection = j.at("reflection");
 
-    primitives::Color color = parse_color(j.at("color"));
+    const primitives::Color color = parse_color(j.at("color"));
 
-    std::string style = j.at("style");
-    double      size  = j.at("size");
+    const std::string style = j.at("style");
+    const double      size  = j.at("size");
 
     return std::make_shared<scene::ProceduralTexture>(
         style,
@@ -203,15 +209,15 @@ parse_procedural_texture(const json& j)
 
 std::shared_ptr<scene::PerlinTexture> parse_perlin_texture(const json& j)
 {
-    double kd         = j.at("kd");
-    double ks         = j.at("ks");
-    double ns         = j.at("ns");
-    double reflection = j.at("reflection");
+    const double kd         = j.at("kd");
+    const double ks         = j.at("ks");
+    const double ns         = j.at("ns");
+    const double reflection = j.at("reflection");
 
-    double octave      = j.at("octave");
-    double persistence = j.at("persistence");
+    const double octave      = j.at("octave");
+    const double persistence = j.at("persistence");
 
-    std::string              effect = j.at("effect");
+    const std::string        effect = j.at("effect");
     scene::PerlinTextureType type;
     if (effect == "none")
         type = scene::DEFAULT;
@@ -239,13 +245,13 @@ std::shared_ptr<scene::PerlinTexture> parse_perlin_texture(const json& j)
 std::shared_ptr<scene::TransparentTexture>
 parse_transparent_texture(const json& j)
 {
-    double kd               = j.at("kd");
-    double ks               = j.at("ks");
-    double ns               = j.at("ns");
-    double reflection       = j.at("reflection");
-    double refractive_index = j.at("refractive_index");
+    const double kd               = j.at("kd");
+    const double ks               = j.at("ks");
+    const double ns               = j.at("ns");
+    const double reflection       = j.at("reflection");
+    const double refractive_index = j.at("refractive_index");
 
-    primitives::Color color = parse_color(j.at("color"));
+    const primitives::Color color = parse_color(j.at("color"));
 
     return std::make_shared<scene::TransparentTexture>(
         refractive_index,
@@ -290,13 +296,25 @@ std::shared_ptr<scene::Sphere> parse_sphere(
                              const std::shared_ptr<scene::TextureMaterial>>&
         textures_map)
 {
-    double             radius = j.at("radius");
-    primitives::Point3 center = parse_position(j.at("center"));
+    const double             radius = j.at("radius");
+    const primitives::Point3 center = parse_position(j.at("center"));
 
-    std::string texture = j.at("texture");
+    const std::string texture = j.at("texture");
 
     return std::make_shared<scene::Sphere>(
         textures_map.at(texture), center, radius);
+}
+
+std::shared_ptr<scene::Skybox> parse_skybox(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+                        textures_map,
+    const scene::Scene& scene)
+{
+    const std::string texture = j.at("texture");
+
+    return std::make_shared<scene::Skybox>(textures_map.at(texture), scene);
 }
 
 std::shared_ptr<scene::CubeAligned> parse_cube(
@@ -305,10 +323,10 @@ std::shared_ptr<scene::CubeAligned> parse_cube(
                              const std::shared_ptr<scene::TextureMaterial>>&
         textures_map)
 {
-    double             size     = j.at("size");
-    primitives::Point3 position = parse_position(j.at("position"));
+    double                   size     = j.at("size");
+    const primitives::Point3 position = parse_position(j.at("position"));
 
-    std::string texture = j.at("texture");
+    const std::string texture = j.at("texture");
 
     return std::make_shared<scene::CubeAligned>(
         textures_map.at(texture), position, size);
@@ -320,10 +338,10 @@ std::shared_ptr<scene::Plane> parse_plane(
                              const std::shared_ptr<scene::TextureMaterial>>&
         textures_map)
 {
-    primitives::Vector3 normal   = parse_vector(j.at("normal"));
-    primitives::Point3  position = parse_position(j.at("position"));
+    const primitives::Vector3 normal   = parse_vector(j.at("normal"));
+    const primitives::Point3  position = parse_position(j.at("position"));
 
-    std::string texture = j.at("texture");
+    const std::string texture = j.at("texture");
 
     return std::make_shared<scene::Plane>(
         textures_map.at(texture), position, normal);
@@ -335,12 +353,12 @@ std::shared_ptr<scene::Rectangle> parse_rectangle(
                              const std::shared_ptr<scene::TextureMaterial>>&
         textures_map)
 {
-    primitives::Point3 p1 = parse_position(j.at("p1"));
-    primitives::Point3 p2 = parse_position(j.at("p2"));
-    primitives::Point3 p3 = parse_position(j.at("p3"));
-    primitives::Point3 p4 = parse_position(j.at("p4"));
+    const primitives::Point3 p1 = parse_position(j.at("p1"));
+    const primitives::Point3 p2 = parse_position(j.at("p2"));
+    const primitives::Point3 p3 = parse_position(j.at("p3"));
+    const primitives::Point3 p4 = parse_position(j.at("p4"));
 
-    std::string texture = j.at("texture");
+    const std::string texture = j.at("texture");
 
     return std::make_shared<scene::Rectangle>(
         textures_map.at(texture), p1, p2, p3, p4);
@@ -352,11 +370,11 @@ std::shared_ptr<scene::Triangle> parse_triangle(
                              const std::shared_ptr<scene::TextureMaterial>>&
         textures_map)
 {
-    primitives::Point3 p1 = parse_position(j.at("p1"));
-    primitives::Point3 p2 = parse_position(j.at("p2"));
-    primitives::Point3 p3 = parse_position(j.at("p3"));
+    const primitives::Point3 p1 = parse_position(j.at("p1"));
+    const primitives::Point3 p2 = parse_position(j.at("p2"));
+    const primitives::Point3 p3 = parse_position(j.at("p3"));
 
-    std::string texture = j.at("texture");
+    const std::string texture = j.at("texture");
 
     return std::make_shared<scene::Triangle>(
         textures_map.at(texture), p1, p2, p3);
@@ -368,11 +386,11 @@ std::shared_ptr<scene::Blob> parse_blobs(
                              const std::shared_ptr<scene::TextureMaterial>>&
         textures_map)
 {
-    primitives::Point3 center    = parse_position(j.at("center"));
-    std::string        texture   = j.at("texture");
-    double             delta     = j.at("delta");
-    uint               size      = j.at("size");
-    double             threshold = j.at("threshold");
+    const primitives::Point3 center    = parse_position(j.at("center"));
+    const std::string        texture   = j.at("texture");
+    const double             delta     = j.at("delta");
+    const uint               size      = j.at("size");
+    const double             threshold = j.at("threshold");
 
     auto res = std::make_shared<scene::Blob>(
         center, delta, size, threshold, textures_map.at(texture));
@@ -395,6 +413,9 @@ static void parse_objects(
         std::string type = object.at("type");
         if (type == "sphere")
             scene.objects.emplace_back(parse_sphere(object, textures_map));
+        else if (type == "skybox")
+            scene.objects.emplace_back(
+                parse_skybox(object, textures_map, scene));
         else if (type == "cube")
             scene.objects.emplace_back(parse_cube(object, textures_map));
         else if (type == "plane")

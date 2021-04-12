@@ -6,8 +6,10 @@
 namespace scene
 {
 ImageTexture::ImageTexture(const std::shared_ptr<utils::Image>& texture_image,
+                           const double                         offset_x,
                            const TextureMaterialCaracteristics& caracteristic)
     : texture_image_(texture_image)
+    , offset_x_(offset_x)
     , caracteristic_(caracteristic)
 {
 }
@@ -21,7 +23,7 @@ ImageTexture::get_caracteristics(const primitives::Point3& point) const
 {
     TextureMaterialCaracteristics res(caracteristic_);
 
-    double x = point.x;
+    double x = std::fmod(point.x + offset_x_, 1.0);
     double y = point.y;
 
     // Handle 6 faces of a cube

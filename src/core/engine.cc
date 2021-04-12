@@ -1,4 +1,5 @@
 #include "engine.hh"
+#include "scene/objects/skybox.hh"
 #include "scene/textures/transparent_texture.hh"
 
 #include <algorithm>
@@ -256,7 +257,9 @@ bool Engine::cast_ray_light_check(const primitives::Point3&  A,
         auto lambda = object->ray_intersection(A, v);
 
         if (lambda.has_value() && lambda.value() < min_lambda &&
-            typeid(*object->get_texture()) != typeid(scene::TransparentTexture))
+            typeid(*object->get_texture()) !=
+                typeid(scene::TransparentTexture) &&
+            typeid(*object) != typeid(scene::Skybox))
         {
             min_lambda = lambda.value();
             res        = true;

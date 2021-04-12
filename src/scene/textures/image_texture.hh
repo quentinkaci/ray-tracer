@@ -11,6 +11,7 @@ class ImageTexture : public TextureMaterial
     // FIXME Maybe take a structure TextureMap that links pixels to a
     // TextureMaterialCaracteristics
     ImageTexture(const std::shared_ptr<utils::Image>& texture_image,
+                 const double                         offset_x,
                  const TextureMaterialCaracteristics& caracteristic);
 
     TextureMaterialCaracteristics
@@ -21,6 +22,8 @@ class ImageTexture : public TextureMaterial
 
   private:
     const std::shared_ptr<utils::Image> texture_image_;
+
+    const double offset_x_;
 
     TextureMaterialCaracteristics caracteristic_;
 

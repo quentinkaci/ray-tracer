@@ -94,6 +94,16 @@
         "ks": 0.30,
         "ns": 1,
         "reflection": 0.30
+      },
+      {
+        "name": "skybox_texture",
+        "type": "image",
+        "image": "../textures/cannon.png",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "offset_x": 0.5
       }
     ],
     "objects": [
@@ -116,6 +126,10 @@
           "z": 10
         },
         "radius": 1
+      },
+      {
+        "type": "skybox",
+        "texture": "skybox_texture"
       }
     ]
   }

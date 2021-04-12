@@ -22,6 +22,7 @@ set(SRC
     src/scene/objects/object.cc
     src/scene/objects/englobing_object.cc
     src/scene/objects/sphere.cc
+    src/scene/objects/skybox.cc
     src/scene/objects/plane.cc
     src/scene/objects/triangle.cc
     src/scene/objects/rectangle.cc
