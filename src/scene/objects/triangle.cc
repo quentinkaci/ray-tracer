@@ -23,40 +23,41 @@ Triangle::ray_intersection(const primitives::Point3&  A,
 {
     primitives::Vector3 normal = get_normal(A, v);
 
+    // Check if ray and plane (defined by normal) are parallel => no
+    // intersection
     double normal_dot_ray = normal.dot(v);
-    if (fabs(normal_dot_ray) < EPSILON)
+    if (std::fabs(normal_dot_ray) < EPSILON)
         return std::nullopt;
 
+    // Determine intersection point
     double d = normal.dot(primitives::Vector3(p0_));
-
-    double lambda = (normal.dot(primitives::Vector3(A)) + d) / normal_dot_ray;
-    if (lambda < 0)
+    double t = (normal.dot(primitives::Vector3(A)) + d) / normal_dot_ray;
+    if (t < 0)
         return std::nullopt;
+    primitives::Vector3 intersection = primitives::Vector3(A) + v * t;
 
-    primitives::Vector3 intersection = primitives::Vector3(A) + v * lambda;
-
-    // Check if outside of first edge
+    // Check if intersection is outside of first edge
     primitives::Vector3 edge0(p1_ - p0_);
     primitives::Vector3 p0_to_intersection =
         intersection - primitives::Vector3(p0_);
     if (normal.dot(edge0.cross(p0_to_intersection)) < 0)
         return std::nullopt;
 
-    // Check if outside of second edge
+    // Check if intersection is outside of second edge
     primitives::Vector3 edge1(p2_ - p1_);
     primitives::Vector3 p1_to_intersection =
         intersection - primitives::Vector3(p1_);
     if (normal.dot(edge1.cross(p1_to_intersection)) < 0)
         return std::nullopt;
 
-    // Check if outside of third edge
+    // Check if intersection is outside of third edge
     primitives::Vector3 edge2(p0_ - p2_);
     primitives::Vector3 p2_to_intersection =
         intersection - primitives::Vector3(p2_);
     if (normal.dot(edge2.cross(p2_to_intersection)) < 0)
         return std::nullopt;
 
-    return lambda;
+    return t;
 }
 
 primitives::Vector3 Triangle::get_normal(const primitives::Point3&,
@@ -71,15 +72,19 @@ primitives::Vector3 Triangle::get_normal(const primitives::Point3&,
 }
 
 primitives::Point3
-Triangle::get_planar_projection(const primitives::Point3&) const
+Triangle::get_planar_projection(const primitives::Point3& A) const
 {
-    // FIXME Uniform texture
-    return primitives::Point3();
+    double trash = 0;
+    double u     = std::modf(A.x, &trash);
+    double v     = std::modf(A.z, &trash);
+
+    return primitives::Point3(u, v, 0);
 }
 
 TextureMaterialCaracteristics
 Triangle::get_texture_info(const primitives::Point3& A) const
 {
-    return Object::texture_material_->get_caracteristics(A);
+    return Object::texture_material_->get_caracteristics(
+        get_planar_projection(A));
 }
 } // namespace scene

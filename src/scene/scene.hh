@@ -16,6 +16,16 @@ struct Scene
 
     ~Scene() = default;
 
+    uint count_objects() const
+    {
+        uint res = objects.size();
+
+        for (const auto& o : englobing_objects)
+            res += o->get_objects().size();
+
+        return res;
+    }
+
     std::vector<std::shared_ptr<Object>>          objects;
     std::vector<std::shared_ptr<EnglobingObject>> englobing_objects;
     std::vector<std::shared_ptr<Light>>           light_sources;

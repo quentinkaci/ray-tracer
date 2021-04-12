@@ -38,6 +38,17 @@ void Blob::add(primitives::Point3 pos)
     energy_points_.emplace_back(pos);
 }
 
+primitives::Point3 Blob::interpolate(const primitives::Point3& v1,
+                                     const primitives::Point3& v2,
+                                     const double              v1_p,
+                                     const double              v2_p) const
+{
+    double t = (threshold_ - v1_p) / (v2_p - v1_p);
+    return v1 + (v2 - v1) * t;
+
+    // old interpolation: return (v1 + v2) / 2;
+}
+
 void Blob::add_cube_segmentation(const primitives::Point3& p)
 {
     // Determine corners positions
@@ -51,13 +62,15 @@ void Blob::add_cube_segmentation(const primitives::Point3& p)
     corners.push_back(p - primitives::Point3(delta_, delta_, delta_));
     corners.push_back(p - primitives::Point3(0, delta_, delta_));
 
+    double potentials[8];
+
     // Determine configuration index
     int cube_index = 0;
     for (int i = 0; i < 8; i++)
     {
-        double potential = get_potential(corners[i]);
+        potentials[i] = get_potential(corners[i]);
 
-        if (potential < threshold_)
+        if (potentials[i] < threshold_)
             cube_index |= 1 << i;
     }
 
@@ -73,7 +86,11 @@ void Blob::add_cube_segmentation(const primitives::Point3& p)
         int index_B = MC_CORNER_INDEX_B_FROM_EDGE[edge_index];
 
         // Find middle of edge
-        primitives::Point3 vertex = (corners[index_A] + corners[index_B]) / 2;
+        primitives::Point3 vertex = interpolate(corners[index_A],
+                                                corners[index_B],
+                                                potentials[index_A],
+                                                potentials[index_B]);
+
         vertices.push_back(vertex);
     }
 

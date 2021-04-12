@@ -19,24 +19,24 @@ std::optional<double>
 Plane::ray_intersection(const primitives::Point3&  A,
                         const primitives::Vector3& v) const
 {
-    double denom = normal_.dot(v);
+    double normal_dot_v = normal_.dot(v);
 
-    if (std::abs(denom) > PLANE_EPSILON)
+    if (std::fabs(normal_dot_v) > PLANE_EPSILON)
     {
         primitives::Vector3 pos_A = pos_ - A;
 
-        double t = pos_A.dot(normal_) / denom;
+        double t = pos_A.dot(normal_) / normal_dot_v;
 
         if (t >= 0)
             return t;
     }
+
     return std::nullopt;
 }
 
 primitives::Vector3 Plane::get_normal(const primitives::Point3&,
                                       const primitives::Vector3&) const
 {
-    // FIXME: adapt normal depending on direction of ray.
     return normal_;
 }
 

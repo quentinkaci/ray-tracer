@@ -27,6 +27,11 @@ class Blob
 
     void add_cube_segmentation(const primitives::Point3& p);
 
+    primitives::Point3 interpolate(const primitives::Point3& v1,
+                                   const primitives::Point3& v2,
+                                   const double              v1_p,
+                                   const double              v2_p) const;
+
     std::vector<primitives::Point3> energy_points_;
 
     primitives::Point3 origin_;

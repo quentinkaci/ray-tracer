@@ -10,10 +10,10 @@ CubeAligned::CubeAligned(
     const primitives::Point3&               pos,
     double                                  size)
     : Object(texture_material)
-    , pos_(pos)
+    , center_pos_(pos)
     , size_(size)
-    , min_(pos.x - size, pos.y - size, pos.z - size)
-    , max_(pos.x + size, pos.y + size, pos.z + size)
+    , min_pos_(pos.x - size, pos.y - size, pos.z - size)
+    , max_pos_(pos.x + size, pos.y + size, pos.z + size)
 {
     // FIXME: dirty trick to let ImageTexture instance know that we are using a
     // 6 faces cube texture
@@ -29,46 +29,50 @@ std::optional<double>
 CubeAligned::ray_intersection(const primitives::Point3&  A,
                               const primitives::Vector3& v) const
 {
-    double tmin = (min_.x - A.x) / v.x;
-    double tmax = (max_.x - A.x) / v.x;
+    // Find intersection on x axis
+    double t_min_x = (min_pos_.x - A.x) / v.x;
+    double t_max_x = (max_pos_.x - A.x) / v.x;
+    if (t_min_x > t_max_x)
+        std::swap(t_min_x, t_max_x); // Make sure min < max
 
-    if (tmin > tmax)
-        std::swap(tmin, tmax);
+    // Find intersection on y axis
+    double t_min_y = (min_pos_.y - A.y) / v.y;
+    double t_max_y = (max_pos_.y - A.y) / v.y;
+    if (t_min_y > t_max_y)
+        std::swap(t_min_y, t_max_y); // Make sure min < max
 
-    double tymin = (min_.y - A.y) / v.y;
-    double tymax = (max_.y - A.y) / v.y;
-
-    if (tymin > tymax)
-        std::swap(tymin, tymax);
-
-    if ((tmin > tymax) || (tymin > tmax))
+    // Handle if ray misses axis x and/or y
+    if (t_min_x > t_max_y || t_min_y > t_max_x)
         return std::nullopt;
 
-    if (tymin > tmin)
-        tmin = tymin;
+    // Make sure min < max
+    if (t_min_y > t_min_x)
+        t_min_x = t_min_y;
+    if (t_max_y < t_max_x)
+        t_max_x = t_max_y;
 
-    if (tymax < tmax)
-        tmax = tymax;
+    // Find intersection on z axis
+    double t_min_z = (min_pos_.z - A.z) / v.z;
+    double t_max_z = (max_pos_.z - A.z) / v.z;
+    if (t_min_z > t_max_z)
+        std::swap(t_min_z, t_max_z); // Make sure min < max
 
-    double tzmin = (min_.z - A.z) / v.z;
-    double tzmax = (max_.z - A.z) / v.z;
-
-    if (tzmin > tzmax)
-        std::swap(tzmin, tzmax);
-
-    if ((tmin > tzmax) || (tzmin > tmax))
+    // Handle if ray misses axis z
+    if ((t_min_x > t_max_z) || (t_min_z > t_max_x))
         return std::nullopt;
 
-    if (tzmin > tmin)
-        tmin = tzmin;
+    // Make sure min < max
+    if (t_min_z > t_min_x)
+        t_min_x = t_min_z;
+    if (t_max_z < t_max_x)
+        t_max_x = t_max_z;
 
-    if (tzmax < tmax)
-        tmax = tzmax;
+    // If t_min_x is negative => intersection behind ray
+    if (t_min_x < 0)
+        return std::nullopt;
 
-    if (tmin >= 0)
-        return tmin;
-
-    return std::nullopt;
+    // We return t_min_x as it is the closest distance
+    return t_min_x;
 }
 
 primitives::Vector3 CubeAligned::get_normal(const primitives::Point3& A,
@@ -91,29 +95,29 @@ primitives::Vector3 CubeAligned::get_normal(const primitives::Point3& A,
 CUBE_FACES CubeAligned::get_cube_face(const primitives::Point3& A) const
 {
     CUBE_FACES          res   = CUBE_FACES::FRONT;
-    primitives::Vector3 point = A - pos_;
+    primitives::Vector3 point = A - center_pos_;
 
-    float min = std::numeric_limits<float>::max();
+    double min_dist = std::numeric_limits<double>::max();
 
-    float distance = std::abs(size_ - std::abs(point.x));
-    if (distance < min)
+    double distance_x = std::fabs(size_ - std::fabs(point.x));
+    if (distance_x < min_dist)
     {
-        min = distance;
-        res = (point.x < 0) ? CUBE_FACES::RIGHT : CUBE_FACES::LEFT;
+        res      = (point.x < 0) ? CUBE_FACES::RIGHT : CUBE_FACES::LEFT;
+        min_dist = distance_x;
     }
 
-    distance = std::abs(size_ - std::abs(point.y));
-    if (distance < min)
+    double distance_y = std::fabs(size_ - std::fabs(point.y));
+    if (distance_y < min_dist)
     {
-        min = distance;
-        res = (point.y < 0) ? CUBE_FACES::DOWN : CUBE_FACES::TOP;
+        res      = (point.y < 0) ? CUBE_FACES::DOWN : CUBE_FACES::TOP;
+        min_dist = distance_y;
     }
 
-    distance = std::abs(size_ - std::abs(point.z));
-    if (distance < min)
+    double distance_z = std::fabs(size_ - std::fabs(point.z));
+    if (distance_z < min_dist)
     {
-        min = distance;
-        res = (point.z < 0) ? CUBE_FACES::FRONT : CUBE_FACES::BACK;
+        res      = (point.z < 0) ? CUBE_FACES::FRONT : CUBE_FACES::BACK;
+        min_dist = distance_z;
     }
 
     return res;
@@ -124,7 +128,7 @@ CubeAligned::get_planar_projection(const primitives::Point3& A) const
 {
     CUBE_FACES face = get_cube_face(A);
 
-    const primitives::Point3& point = (A - pos_) / size_;
+    const primitives::Point3& point = (A - center_pos_) / size_;
 
     double u = 0;
     double v = 0;

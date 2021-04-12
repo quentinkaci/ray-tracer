@@ -138,14 +138,14 @@ void Engine::run(utils::Image& image)
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    // Spawn thread
+    // Spawn thread to track progress
     std::thread show_progress_thread([&]() {
         while (progress_count_ < width * height)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
             int progress = 25.0 * (progress_count_) / (width * height);
-            std::cout << "Rendering scene (" << scene_.objects.size()
+            std::cout << "Rendering scene (" << scene_.count_objects()
                       << " object(s)) [";
             for (int p = 0; p < progress; p++)
                 std::cout << (p == progress - 1 ? ">" : "=");

@@ -40,9 +40,9 @@ class CubeAligned : public Object
     CUBE_FACES get_cube_face(const primitives::Point3& A) const;
 
   private:
-    const primitives::Point3 pos_;
+    const primitives::Point3 center_pos_;
     const double             size_;
-    const primitives::Point3 min_;
-    const primitives::Point3 max_;
+    const primitives::Point3 min_pos_;
+    const primitives::Point3 max_pos_;
 };
 } // namespace scene
