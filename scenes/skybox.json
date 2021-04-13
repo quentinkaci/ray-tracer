@@ -1,0 +1,173 @@
+{
+  "options": {
+    "rendering": {
+      "height": 1080,
+      "width": 1920,
+      "output_filename": "skybox.png",
+      "gamma_correction": 1
+    },
+    "background": {
+      "gradient_color_top": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "gradient_color_bottom": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "reflection": {
+      "depth": 5
+    }
+  },
+  "scene": {
+    "camera": {
+      "origin": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": -0.2,
+        "z": 1
+      },
+      "up": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "x_fov": 80,
+      "y_fov": 53,
+      "z_min": 1
+    },
+    "lights": [
+      {
+        "type": "point",
+        "position": {
+          "x": 10,
+          "y": 10,
+          "z": -10
+        },
+        "color": {
+          "r": 200,
+          "g": 200,
+          "b": 200
+        }
+      }
+    ],
+    "textures": [
+      {
+        "name": "texture_1",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "color": {
+          "r": 240,
+          "g": 240,
+          "b": 240
+        }
+      },
+      {
+        "name": "texture_2",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0.03,
+        "color": {
+          "r": 67,
+          "g": 107,
+          "b": 78
+        }
+      },
+      {
+        "name": "texture_3",
+        "type": "transparent",
+        "kd": 0,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 1,
+        "refractive_index": 1.5,
+        "color": {
+          "r": 240,
+          "g": 240,
+          "b": 240
+        }
+      },
+      {
+        "name": "texture_4",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 1,
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 0
+        }
+      },
+      {
+        "name": "skybox_texture",
+        "type": "image",
+        "image": "../textures/bell_park_pier.png",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "offset_x": 0
+      }
+    ],
+    "objects": [
+      {
+        "type": "sphere",
+        "texture": "texture_1",
+        "center": {
+          "x": -3,
+          "y": -4.5,
+          "z": 14
+        },
+        "radius": 0.6
+      },
+      {
+        "type": "sphere",
+        "texture": "texture_4",
+        "center": {
+          "x": 1.5,
+          "y": -4.5,
+          "z": 18
+        },
+        "radius": 1.2
+      },
+      {
+        "type": "sphere",
+        "texture": "texture_3",
+        "center": {
+          "x": -2.8,
+          "y": -4.5,
+          "z": 24
+        },
+        "radius": 1
+      },
+      {
+        "type": "sphere",
+        "texture": "texture_2",
+        "center": {
+          "x": 0,
+          "y": -4.5,
+          "z": 10
+        },
+        "radius": 0.8
+      },
+      {
+        "type": "skybox",
+        "texture": "skybox_texture"
+      }
+    ]
+  }
+}

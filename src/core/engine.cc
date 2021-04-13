@@ -142,34 +142,30 @@ void Engine::render_image(utils::Image& image)
     auto start_time = std::chrono::high_resolution_clock::now();
 
     // Spawn thread to track progress
-    std::thread show_progress_thread(
-        [&]()
+    std::thread show_progress_thread([&]() {
+        while (progress_count_ < width * height)
         {
-            while (progress_count_ < width * height)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-                int progress = 25.0 * (progress_count_) / (width * height);
-                std::cout << "Rendering scene (" << scene_.count_objects()
-                          << " object(s)) [";
-                for (int p = 0; p < progress; p++)
-                    std::cout << (p == progress - 1 ? ">" : "=");
-                for (int p = 0; p < 25 - progress; p++)
-                    std::cout << ".";
-                std::cout << "] "
-                          << std::ceil(100.0 * progress_count_ /
-                                       (width * height))
-                          << "%"
-                          << "\r" << std::flush;
-            }
-        });
+            int progress = 25.0 * (progress_count_) / (width * height);
+            std::cout << "Rendering scene (" << scene_.count_objects()
+                      << " object(s)) [";
+            for (int p = 0; p < progress; p++)
+                std::cout << (p == progress - 1 ? ">" : "=");
+            for (int p = 0; p < 25 - progress; p++)
+                std::cout << ".";
+            std::cout << "] "
+                      << std::ceil(100.0 * progress_count_ / (width * height))
+                      << "%"
+                      << "\r" << std::flush;
+        }
+    });
 
     std::for_each(
         std::execution::par_unseq,
         positions.begin(),
         positions.end(),
-        [&](uint position)
-        {
+        [&](uint position) {
             uint i = position % width;
             uint j = position / width;
 
@@ -359,9 +355,7 @@ bool Engine::cast_ray_light_check(const primitives::Point3&  A,
         auto lambda = object->ray_intersection(A, v);
 
         if (lambda.has_value() && lambda.value() < min_lambda &&
-            typeid(*object->get_texture()) !=
-                typeid(scene::TransparentTexture) &&
-            typeid(*object) != typeid(scene::Skybox))
+            typeid(*object->get_texture()) != typeid(scene::TransparentTexture))
         {
             min_lambda = lambda.value();
             res        = true;
@@ -459,8 +453,10 @@ Engine::cast_ray(const primitives::Point3&  origin,
 
         primitives::Vector3 light_ray = light->get_ray_to_light(hitpoint);
 
-        double shadow_coef =
-            compute_soft_shadow(offset_hitpoint, light, light_ray);
+        double shadow_coef = 0;
+        if (typeid(*closest_object) != typeid(scene::Skybox))
+            shadow_coef =
+                compute_soft_shadow(offset_hitpoint, light, light_ray);
 
         primitives::Color   lc = light->get_caracteristics().color;
         primitives::Vector3 light_color(lc.r, lc.g, lc.b);
