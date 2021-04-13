@@ -7,13 +7,13 @@ namespace core
 struct Options
 {
     // Background gradient colors
-    primitives::Vector3 bg_color_top;
-    primitives::Vector3 bg_color_bottom;
+    primitives::Vector3 bg_color_top{18, 18, 255};
+    primitives::Vector3 bg_color_bottom{255, 255, 255};
 
     // Rendering
     unsigned int rendering_height          = 1080;
     unsigned int rendering_width           = 1920;
-    std::string  rendering_output_filename = "scene";
+    std::string  rendering_output_filename = "scene.ppm";
     double       rendering_gamma           = 1.0;
 
     // Anaglyph effect
@@ -39,6 +39,6 @@ struct Options
     bool         dof_enabled    = true;
     unsigned int nb_ray_dof     = 20;
     double       focal_distance = 10.;
-    double       aperture_size  = 250.;
+    double       aperture_size  = 150.;
 };
 } // namespace core
