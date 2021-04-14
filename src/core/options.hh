@@ -13,7 +13,7 @@ struct Options
     // Rendering
     unsigned int rendering_height          = 1080;
     unsigned int rendering_width           = 1920;
-    std::string  rendering_output_filename = "scene.ppm";
+    std::string  rendering_output_filename = "scene.png";
     double       rendering_gamma           = 1.0;
 
     // Anaglyph effect
@@ -26,19 +26,19 @@ struct Options
 
     // Anti-aliasing
     bool         aa_enabled   = true;
-    unsigned int nb_ray_aa    = 20;
+    unsigned int nb_ray_aa    = 30;
     unsigned int aa_threshold = 10;
 
     // Soft shadow
     bool         soft_shadow_enabled   = true;
-    unsigned int nb_ray_soft_shadow    = 20;
+    unsigned int nb_ray_soft_shadow    = 10;
     double       min_range_soft_shadow = -1.;
     double       max_range_soft_shadow = 1.;
 
     // Depth of field
     bool         dof_enabled    = true;
     unsigned int nb_ray_dof     = 20;
-    double       focal_distance = 10.;
-    double       aperture_size  = 150.;
+    double       focal_distance = 7.;
+    double       aperture_size  = 100.;
 };
 } // namespace core
