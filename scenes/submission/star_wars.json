@@ -30,7 +30,7 @@
     },
     "anti-aliasing": {
       "nb_ray": 50,
-      "threshold": -1
+      "threshold": 0
     }
   },
   "scene": {

@@ -22,8 +22,8 @@
       "depth": 5
     },
     "anti_aliasing": {
-      "nb_ray": 20,
-      "threshold": 10
+      "nb_ray": 30,
+      "threshold": 0
     },
     "soft_shadow": {
       "nb_ray": 20,
@@ -122,12 +122,12 @@
       {
         "name": "floor_texture",
         "type": "procedural",
-        "style": "gradient",
+        "style": "gradient_xy",
         "size": 0,
         "color": {
-          "r": 255,
-          "g": 255,
-          "b": 255
+          "r": 150,
+          "g": 150,
+          "b": 150
         },
         "kd": 0.005,
         "ks": 0,

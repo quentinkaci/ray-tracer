@@ -20,6 +20,15 @@
     },
     "reflection": {
       "depth": 5
+    },
+    "anti_aliasing": {
+      "nb_ray": 30,
+      "threshold": 10
+    },
+    "soft_shadow": {
+      "nb_ray": 30,
+      "min_range": -2,
+      "max_range": 2
     }
   },
   "scene": {

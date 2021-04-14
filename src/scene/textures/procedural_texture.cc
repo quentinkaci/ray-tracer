@@ -42,7 +42,9 @@ ProceduralTexture::get_caracteristics(const primitives::Point3& A) const
     }
     else if (style_ == "gradient_xy")
     {
-        double t  = (A.x + A.y) / 2;
+        double tx = (A.x + 1) * 0.5;
+        double ty = (A.y + 1) * 0.5;
+        double t  = (tx + ty) / 2;
         res.color = primitives::Color(
             t * res.color.r, t * res.color.g, t * res.color.b);
     }
