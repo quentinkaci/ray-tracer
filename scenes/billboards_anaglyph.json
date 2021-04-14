@@ -27,6 +27,10 @@
         "y": 0,
         "z": 0
       }
+    },
+    "anti-aliasing": {
+      "nb_ray": 50,
+      "threshold": -1
     }
   },
   "scene": {
