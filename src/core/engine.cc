@@ -142,34 +142,30 @@ void Engine::render_image(utils::Image& image)
     auto start_time = std::chrono::high_resolution_clock::now();
 
     // Spawn thread to track progress
-    std::thread show_progress_thread(
-        [&]()
+    std::thread show_progress_thread([&]() {
+        while (progress_count_ < width * height)
         {
-            while (progress_count_ < width * height)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-                int progress = 25.0 * (progress_count_) / (width * height);
-                std::cout << "Rendering scene (" << scene_.count_objects()
-                          << " object(s)) [";
-                for (int p = 0; p < progress; p++)
-                    std::cout << (p == progress - 1 ? ">" : "=");
-                for (int p = 0; p < 25 - progress; p++)
-                    std::cout << ".";
-                std::cout << "] "
-                          << std::ceil(100.0 * progress_count_ /
-                                       (width * height))
-                          << "%"
-                          << "\r" << std::flush;
-            }
-        });
+            int progress = 25.0 * (progress_count_) / (width * height);
+            std::cout << "Rendering scene (" << scene_.count_objects()
+                      << " object(s)) [";
+            for (int p = 0; p < progress; p++)
+                std::cout << (p == progress - 1 ? ">" : "=");
+            for (int p = 0; p < 25 - progress; p++)
+                std::cout << ".";
+            std::cout << "] "
+                      << std::ceil(100.0 * progress_count_ / (width * height))
+                      << "%"
+                      << "\r" << std::flush;
+        }
+    });
 
     std::for_each(
         std::execution::par_unseq,
         positions.begin(),
         positions.end(),
-        [&](uint position)
-        {
+        [&](uint position) {
             uint i = position % width;
             uint j = position / width;
 
@@ -204,11 +200,11 @@ void Engine::render_image(utils::Image& image)
     show_progress_thread.join();
 
     auto stop_time = std::chrono::high_resolution_clock::now();
-    auto duration  = std::chrono::duration_cast<std::chrono::milliseconds>(
+    auto duration  = std::chrono::duration_cast<std::chrono::seconds>(
         stop_time - start_time);
 
     std::cout << std::endl
-              << "Rendering time: " << duration.count() << "ms" << std::endl;
+              << "Rendering time: " << duration.count() << "s" << std::endl;
 
     progress_count_ = 0;
 }
