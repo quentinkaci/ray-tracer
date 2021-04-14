@@ -200,11 +200,11 @@ void Engine::render_image(utils::Image& image)
     show_progress_thread.join();
 
     auto stop_time = std::chrono::high_resolution_clock::now();
-    auto duration  = std::chrono::duration_cast<std::chrono::milliseconds>(
+    auto duration  = std::chrono::duration_cast<std::chrono::seconds>(
         stop_time - start_time);
 
     std::cout << std::endl
-              << "Rendering time: " << duration.count() << "ms" << std::endl;
+              << "Rendering time: " << duration.count() << "s" << std::endl;
 
     progress_count_ = 0;
 }
