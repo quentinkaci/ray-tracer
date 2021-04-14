@@ -1,0 +1,216 @@
+{
+  "options": {
+    "rendering": {
+      "height": 1080,
+      "width": 1920,
+      "output_filename": "textures.png",
+      "gamma_correction": 1
+    },
+    "background": {
+      "gradient_color_top": {
+        "r": 128,
+        "g": 178,
+        "b": 255
+      },
+      "gradient_color_bottom": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "reflection": {
+      "depth": 5
+    }
+  },
+  "scene": {
+    "camera": {
+      "origin": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "up": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "x_fov": 62.22,
+      "y_fov": 35,
+      "z_min": 1
+    },
+    "lights": [
+      {
+        "type": "point",
+        "position": {
+          "x": 10,
+          "y": 10,
+          "z": -10
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        }
+      }
+    ],
+    "textures": [
+      {
+        "name": "uniform_texture_red",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 150,
+          "g": 0,
+          "b": 0
+        }
+      },
+      {
+        "name": "procedural_texture_blue",
+        "type": "procedural",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 0,
+          "g": 0,
+          "b": 150
+        },
+        "style": "checkerboard",
+        "size": 0.2
+      },
+      {
+        "name": "billiard_texture",
+        "type": "image",
+        "image": "../textures/8_billiard_ball.ppm",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30
+      },
+      {
+        "name": "bump_texture_green",
+        "type": "bump_mapping",
+        "octave": 6,
+        "persistence": 10,
+        "intensity": 2,
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30,
+        "color": {
+          "r": 0,
+          "g": 150,
+          "b": 0
+        }
+      },
+      {
+        "name": "wood_texture",
+        "type": "perlin",
+        "effect": "wood",
+        "octave": 3,
+        "persistence": 8,
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.05,
+        "colors": [
+          {
+            "r": 90,
+            "g": 70,
+            "b": 0
+          },
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0
+          }
+        ]
+      },
+      {
+        "name": "transparent_texture",
+        "type": "transparent",
+        "kd": 0,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 1,
+        "refractive_index": 1.5,
+        "color": {
+          "r": 10,
+          "g": 10,
+          "b": 200
+        }
+      }
+    ],
+    "objects": [
+      {
+        "type": "sphere",
+        "texture": "uniform_texture_red",
+        "center": {
+          "x": 0,
+          "y": 1,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "procedural_texture_blue",
+        "center": {
+          "x": -1,
+          "y": -5,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "wood_texture",
+        "center": {
+          "x": 5,
+          "y": 5,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "billiard_texture",
+        "center": {
+          "x": -15,
+          "y": -1,
+          "z": 40
+        },
+        "radius": 5
+      },
+      {
+        "type": "sphere",
+        "texture": "bump_texture_green",
+        "center": {
+          "x": 10,
+          "y": -5,
+          "z": 40
+        },
+        "radius": 5
+      },
+      {
+        "type": "sphere",
+        "texture": "transparent_texture",
+        "center": {
+          "x": -5,
+          "y": 2,
+          "z": 30
+        },
+        "radius": 2
+      }
+    ]
+  }
+}

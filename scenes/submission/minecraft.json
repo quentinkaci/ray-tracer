@@ -1,0 +1,504 @@
+{
+  "options": {
+    "rendering": {
+      "height": 1080,
+      "width": 1920,
+      "output_filename": "minecraft.png",
+      "gamma_correction": 1
+    },
+    "background": {
+      "gradient_color_top": {
+        "r": 0,
+        "g": 102,
+        "b": 255
+      },
+      "gradient_color_bottom": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "reflection": {
+      "depth": 5
+    },
+    "anti_aliasing": {
+      "nb_ray": 20,
+      "threshold": 10
+    },
+    "soft_shadow": {
+      "nb_ray": 20,
+      "min_range": -1,
+      "max_range": 1
+    }
+  },
+  "scene": {
+    "camera": {
+      "origin": {
+        "x": 7,
+        "y": 10,
+        "z": -20
+      },
+      "target": {
+        "x": -1,
+        "y": 4,
+        "z": 1
+      },
+      "up": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "x_fov": 62.22,
+      "y_fov": 35,
+      "z_min": 1
+    },
+    "lights": [
+      {
+        "type": "point",
+        "position": {
+          "x": 14,
+          "y": 20,
+          "z": -10
+        },
+        "color": {
+          "r": 220,
+          "g": 220,
+          "b": 220
+        }
+      },
+      {
+        "type": "directional",
+        "direction": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "color": {
+          "r": 120,
+          "g": 120,
+          "b": 120
+        }
+      }
+    ],
+    "textures": [
+      {
+        "name": "grass_texture",
+        "type": "image",
+        "image": "../textures/grass.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "crafting_table_texture",
+        "type": "image",
+        "image": "../textures/crafting_table.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "wood_texture",
+        "type": "image",
+        "image": "../textures/wood.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "leaves_texture",
+        "type": "image",
+        "image": "../textures/leaves.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      }
+    ],
+    "objects": [
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": 0,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -2,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -4,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -2,
+          "y": -4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -4,
+          "y": -4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -2,
+          "y": -4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -4,
+          "y": -4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "wood_texture",
+        "position": {
+          "x": -2,
+          "y": -2,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "wood_texture",
+        "position": {
+          "x": -2,
+          "y": 0,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "wood_texture",
+        "position": {
+          "x": -2,
+          "y": 2,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -2,
+          "y": 4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -2,
+          "y": 4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -2,
+          "y": 4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": 0,
+          "y": 4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": 0,
+          "y": 4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": 0,
+          "y": 4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -4,
+          "y": 4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -4,
+          "y": 4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -4,
+          "y": 4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -2,
+          "y": 6,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -4,
+          "y": 6,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": 0,
+          "y": 6,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -2,
+          "y": 6,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "leaves_texture",
+        "position": {
+          "x": -2,
+          "y": 8,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -6,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -6,
+          "y": -4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -6,
+          "y": -4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -8,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -8,
+          "y": -4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -8,
+          "y": -4,
+          "z": 12
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -8,
+          "y": -4,
+          "z": 14
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -6,
+          "y": -4,
+          "z": 14
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -6,
+          "y": -4,
+          "z": 6
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -8,
+          "y": -4,
+          "z": 6
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -10,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -10,
+          "y": -4,
+          "z": 8
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "grass_texture",
+        "position": {
+          "x": -10,
+          "y": -4,
+          "z": 10
+        },
+        "size": 1
+      },
+      {
+        "type": "cube",
+        "texture": "crafting_table_texture",
+        "position": {
+          "x": -8,
+          "y": -2,
+          "z": 8
+        },
+        "size": 1
+      }
+    ]
+  }
+}

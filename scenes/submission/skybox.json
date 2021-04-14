@@ -20,6 +20,10 @@
     },
     "reflection": {
       "depth": 5
+    },
+    "anti_aliasing": {
+      "nb_ray": 20,
+      "threshold": 10
     }
   },
   "scene": {
