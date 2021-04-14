@@ -47,7 +47,7 @@ Plane::get_planar_projection(const primitives::Point3& A) const
     const double u     = std::modf(A.x, &trash);
     const double v     = std::modf(A.z, &trash);
 
-    return primitives::Point3(u, v, 0);
+    return primitives::Point3(std::fabs(u), std::fabs(v), 0);
 }
 
 TextureMaterialCaracteristics

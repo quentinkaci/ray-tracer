@@ -7,13 +7,13 @@ namespace core
 struct Options
 {
     // Background gradient colors
-    primitives::Vector3 bg_color_top;
-    primitives::Vector3 bg_color_bottom;
+    primitives::Vector3 bg_color_top{112, 54, 150};
+    primitives::Vector3 bg_color_bottom{0, 0, 0};
 
     // Rendering
     unsigned int rendering_height          = 1080;
     unsigned int rendering_width           = 1920;
-    std::string  rendering_output_filename = "scene";
+    std::string  rendering_output_filename = "scene.ppm";
     double       rendering_gamma           = 1.0;
 
     // Anaglyph effect
@@ -21,22 +21,22 @@ struct Options
     primitives::Point3 anaglyph_camera_translation = {0.015, 0, 0};
 
     // Reflection
-    bool         reflection_enabled = true;
+    bool         reflection_enabled = false;
     unsigned int reflection_depth   = 5;
 
     // Anti-aliasing
-    bool         aa_enabled   = true;
+    bool         aa_enabled   = false;
     unsigned int nb_ray_aa    = 20;
     unsigned int aa_threshold = 10;
 
     // Soft shadow
-    bool         soft_shadow_enabled   = true;
+    bool         soft_shadow_enabled   = false;
     unsigned int nb_ray_soft_shadow    = 20;
     double       min_range_soft_shadow = -1.;
     double       max_range_soft_shadow = 1.;
 
     // Depth of field
-    bool         dof_enabled    = true;
+    bool         dof_enabled    = false;
     unsigned int nb_ray_dof     = 20;
     double       focal_distance = 10.;
     double       aperture_size  = 250.;

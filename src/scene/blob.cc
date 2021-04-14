@@ -101,8 +101,9 @@ void Blob::add_cube_segmentation(const primitives::Point3& p)
         primitives::Point3 b = vertices[i + 1];
         primitives::Point3 c = vertices[i + 2];
 
-        englobing_object_->add_object(
-            std::make_shared<Triangle>(texture_material_, a, b, c));
+        auto triangle = std::make_shared<Triangle>(texture_material_, a, b, c);
+
+        englobing_object_->add_object(triangle);
     }
 }
 

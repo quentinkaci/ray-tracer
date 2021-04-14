@@ -42,7 +42,7 @@ class Blob
 
     double threshold_;
 
-    const std::shared_ptr<TextureMaterial>& texture_material_;
+    std::shared_ptr<TextureMaterial> texture_material_;
 
     std::shared_ptr<EnglobingObject> englobing_object_;
 };
