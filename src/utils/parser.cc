@@ -9,6 +9,7 @@
 #include "scene/objects/billboard.hh"
 #include "scene/objects/cube.hh"
 #include "scene/objects/cube_aligned.hh"
+#include "scene/objects/cuboid_aligned.hh"
 #include "scene/objects/plane.hh"
 #include "scene/objects/rectangle.hh"
 #include "scene/objects/skybox.hh"
@@ -368,6 +369,21 @@ std::shared_ptr<scene::CubeAligned> parse_cube(
         textures_map.at(texture), position, size);
 }
 
+std::shared_ptr<scene::CuboidAligned> parse_cuboid(
+    const json& j,
+    const std::unordered_map<std::string,
+                             const std::shared_ptr<scene::TextureMaterial>>&
+        textures_map)
+{
+    const primitives::Point3 size     = parse_position(j.at("size"));
+    const primitives::Point3 position = parse_position(j.at("position"));
+
+    const std::string texture = j.at("texture");
+
+    return std::make_shared<scene::CuboidAligned>(
+        textures_map.at(texture), position, size);
+}
+
 std::shared_ptr<scene::Plane> parse_plane(
     const json& j,
     const std::unordered_map<std::string,
@@ -471,6 +487,8 @@ static void parse_objects(
                 parse_skybox(object, textures_map, scene));
         else if (type == "cube")
             scene.objects.emplace_back(parse_cube(object, textures_map));
+        else if (type == "cuboid")
+            scene.objects.emplace_back(parse_cuboid(object, textures_map));
         else if (type == "plane")
             scene.objects.emplace_back(parse_plane(object, textures_map));
         else if (type == "rectangle")

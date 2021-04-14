@@ -8,9 +8,9 @@
     },
     "background": {
       "gradient_color_top": {
-        "r": 128,
-        "g": 178,
-        "b": 255
+        "r": 0,
+        "g": 108,
+        "b": 200
       },
       "gradient_color_bottom": {
         "r": 255,
@@ -20,6 +20,15 @@
     },
     "reflection": {
       "depth": 5
+    },
+    "anti_aliasing": {
+      "nb_ray": 20,
+      "threshold": 10
+    },
+    "soft_shadow": {
+      "nb_ray": 20,
+      "min_range": -1,
+      "max_range": 1
     }
   },
   "scene": {
@@ -27,7 +36,7 @@
       "origin": {
         "x": 0,
         "y": 0,
-        "z": 0
+        "z": -14
       },
       "target": {
         "x": 0,
@@ -47,9 +56,9 @@
       {
         "type": "point",
         "position": {
-          "x": 10,
-          "y": 10,
-          "z": -10
+          "x": 4,
+          "y": 4,
+          "z": 0
         },
         "color": {
           "r": 255,
@@ -60,29 +69,61 @@
     ],
     "textures": [
       {
-        "name": "uniform_texture_red",
-        "type": "uniform",
-        "kd": 0.005,
-        "ks": 0.30,
-        "ns": 1,
-        "reflection": 0.30,
-        "color": {
-          "r": 150,
-          "g": 0,
-          "b": 0
-        }
-      },
-      {
-        "name": "procedural_texture_blue",
+        "name": "procedural_stripes",
         "type": "procedural",
         "kd": 0.005,
         "ks": 0.30,
         "ns": 1,
-        "reflection": 0.30,
+        "reflection": 0.05,
         "color": {
           "r": 0,
           "g": 0,
           "b": 150
+        },
+        "style": "stripes_x",
+        "size": 0.05
+      },
+      {
+        "name": "procedural_stripes2",
+        "type": "procedural",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.05,
+        "color": {
+          "r": 150,
+          "g": 0,
+          "b": 10
+        },
+        "style": "stripes_y",
+        "size": 0.1
+      },
+      {
+        "name": "procedural_gradient",
+        "type": "procedural",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.0,
+        "color": {
+          "r": 20,
+          "g": 200,
+          "b": 200
+        },
+        "style": "gradient_xy",
+        "size": 1
+      },
+      {
+        "name": "procedural_checkerboard",
+        "type": "procedural",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.05,
+        "color": {
+          "r": 220,
+          "g": 220,
+          "b": 220
         },
         "style": "checkerboard",
         "size": 0.2
@@ -94,10 +135,28 @@
         "kd": 0.005,
         "ks": 0.30,
         "ns": 1,
-        "reflection": 0.30
+        "reflection": 0.1
       },
       {
-        "name": "bump_texture_green",
+        "name": "earth_texture",
+        "type": "image",
+        "image": "../textures/earth_map.ppm",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.1
+      },
+      {
+        "name": "dice_texture",
+        "type": "image",
+        "image": "../textures/dice.ppm",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "bump_texture",
         "type": "bump_mapping",
         "octave": 6,
         "persistence": 10,
@@ -105,9 +164,25 @@
         "kd": 0.005,
         "ks": 0.30,
         "ns": 1,
-        "reflection": 0.30,
+        "reflection": 0,
         "color": {
-          "r": 0,
+          "r": 44,
+          "g": 115,
+          "b": 66
+        }
+      },
+      {
+        "name": "bump_texture2",
+        "type": "bump_mapping",
+        "octave": 10,
+        "persistence": 2,
+        "intensity": 1,
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.1,
+        "color": {
+          "r": 255,
           "g": 150,
           "b": 0
         }
@@ -136,6 +211,29 @@
         ]
       },
       {
+        "name": "marble_texture",
+        "type": "perlin",
+        "effect": "marble",
+        "octave": 4,
+        "persistence": 10,
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0,
+        "colors": [
+          {
+            "r": 200,
+            "g": 200,
+            "b": 200
+          },
+          {
+            "r": 0,
+            "g": 0,
+            "b": 0
+          }
+        ]
+      },
+      {
         "name": "transparent_texture",
         "type": "transparent",
         "kd": 0,
@@ -148,25 +246,98 @@
           "g": 10,
           "b": 200
         }
+      },
+      {
+        "name": "label_texture_procedural",
+        "type": "image",
+        "image": "../textures/label_texture_procedural.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "label_texture_perlin",
+        "type": "image",
+        "image": "../textures/label_texture_perlin.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "label_texture_image",
+        "type": "image",
+        "image": "../textures/label_texture_image.png",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0
+      },
+      {
+        "name": "wall_texture",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "color": {
+          "r": 30,
+          "g": 30,
+          "b": 30
+        }
+      },
+      {
+        "name": "shelf_texture",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "color": {
+          "r": 230,
+          "g": 230,
+          "b": 230
+        }
       }
     ],
     "objects": [
       {
         "type": "sphere",
-        "texture": "uniform_texture_red",
+        "texture": "procedural_stripes",
         "center": {
           "x": 0,
-          "y": 1,
+          "y": 8,
           "z": 30
         },
         "radius": 2
       },
       {
         "type": "sphere",
-        "texture": "procedural_texture_blue",
+        "texture": "procedural_stripes2",
         "center": {
-          "x": -1,
-          "y": -5,
+          "x": -12,
+          "y": 8,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "cube",
+        "texture": "procedural_gradient",
+        "position": {
+          "x": -6,
+          "y": 7.5,
+          "z": 30
+        },
+        "size": 1.5
+      },
+      {
+        "type": "sphere",
+        "texture": "procedural_checkerboard",
+        "center": {
+          "x": 6,
+          "y": 8,
           "z": 30
         },
         "radius": 2
@@ -175,41 +346,160 @@
         "type": "sphere",
         "texture": "wood_texture",
         "center": {
-          "x": 5,
-          "y": 5,
+          "x": -6,
+          "y": 0,
           "z": 30
         },
         "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "bump_texture",
+        "center": {
+          "x": 0,
+          "y": 0,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "marble_texture",
+        "center": {
+          "x": 6,
+          "y": 0,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "bump_texture2",
+        "center": {
+          "x": -12,
+          "y": 0,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "cube",
+        "texture": "dice_texture",
+        "position": {
+          "x": 0,
+          "y": -9,
+          "z": 30
+        },
+        "size": 1
       },
       {
         "type": "sphere",
         "texture": "billiard_texture",
         "center": {
-          "x": -15,
-          "y": -1,
-          "z": 40
-        },
-        "radius": 5
-      },
-      {
-        "type": "sphere",
-        "texture": "bump_texture_green",
-        "center": {
-          "x": 10,
-          "y": -5,
-          "z": 40
-        },
-        "radius": 5
-      },
-      {
-        "type": "sphere",
-        "texture": "transparent_texture",
-        "center": {
-          "x": -5,
-          "y": 2,
+          "x": -6,
+          "y": -8,
           "z": 30
         },
         "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "earth_texture",
+        "center": {
+          "x": 6,
+          "y": -8,
+          "z": 30
+        },
+        "radius": 2
+      },
+      {
+        "type": "billboard",
+        "texture": "label_texture_procedural",
+        "position": {
+          "x": 16,
+          "y": 8,
+          "z": 30
+        },
+        "width": 3,
+        "height": 1.5
+      },
+      {
+        "type": "billboard",
+        "texture": "label_texture_image",
+        "position": {
+          "x": 16,
+          "y": -8,
+          "z": 30
+        },
+        "width": 3,
+        "height": 1.5
+      },
+      {
+        "type": "billboard",
+        "texture": "label_texture_perlin",
+        "position": {
+          "x": 16,
+          "y": 0,
+          "z": 30
+        },
+        "width": 3,
+        "height": 1.5
+      },
+      {
+        "type": "cuboid",
+        "texture": "shelf_texture",
+        "position": {
+          "x": -3,
+          "y": -2.5,
+          "z": 30
+        },
+        "size": {
+          "x": 12,
+          "y": 0.5,
+          "z": 2
+        }
+      },
+      {
+        "type": "cuboid",
+        "texture": "shelf_texture",
+        "position": {
+          "x": -3,
+          "y": -10.5,
+          "z": 30
+        },
+        "size": {
+          "x": 12,
+          "y": 0.5,
+          "z": 2
+        }
+      },
+      {
+        "type": "cuboid",
+        "texture": "shelf_texture",
+        "position": {
+          "x": -3,
+          "y": 5.5,
+          "z": 30
+        },
+        "size": {
+          "x": 12,
+          "y": 0.5,
+          "z": 2
+        }
+      },
+      {
+        "type": "plane",
+        "texture": "wall_texture",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 32
+        },
+        "normal": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        }
       }
     ]
   }

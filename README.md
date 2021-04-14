@@ -27,3 +27,7 @@ cmake .. && make
 - Skybox
 - Billboards
 - Anaglyph rendering
+
+## To-Do
+
+- [ ] Check params and render all scenes

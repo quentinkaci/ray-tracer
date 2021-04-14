@@ -20,10 +20,6 @@
     },
     "reflection": {
       "depth": 5
-    },
-    "anti_aliasing": {
-      "nb_ray": 20,
-      "threshold": 10
     }
   },
   "scene": {
@@ -64,7 +60,20 @@
     ],
     "textures": [
       {
-        "name": "texture_1",
+        "name": "texture_blue",
+        "type": "uniform",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0,
+        "color": {
+          "r": 0,
+          "g": 200,
+          "b": 200
+        }
+      },
+      {
+        "name": "texture_white",
         "type": "uniform",
         "kd": 0.005,
         "ks": 0,
@@ -77,7 +86,7 @@
         }
       },
       {
-        "name": "texture_2",
+        "name": "texture_green",
         "type": "uniform",
         "kd": 0.005,
         "ks": 0,
@@ -90,7 +99,7 @@
         }
       },
       {
-        "name": "texture_3",
+        "name": "texture_transparent",
         "type": "transparent",
         "kd": 0,
         "ks": 0,
@@ -104,7 +113,7 @@
         }
       },
       {
-        "name": "texture_4",
+        "name": "texture_metal",
         "type": "uniform",
         "kd": 0.005,
         "ks": 0,
@@ -130,43 +139,63 @@
     "objects": [
       {
         "type": "sphere",
-        "texture": "texture_1",
+        "texture": "texture_blue",
         "center": {
           "x": -3,
-          "y": -4.5,
-          "z": 14
-        },
-        "radius": 0.6
-      },
-      {
-        "type": "sphere",
-        "texture": "texture_4",
-        "center": {
-          "x": 1.5,
-          "y": -4.5,
-          "z": 18
-        },
-        "radius": 1.2
-      },
-      {
-        "type": "sphere",
-        "texture": "texture_3",
-        "center": {
-          "x": -2.8,
-          "y": -4.5,
-          "z": 24
+          "y": -4,
+          "z": 16
         },
         "radius": 1
       },
       {
         "type": "sphere",
-        "texture": "texture_2",
+        "texture": "texture_metal",
         "center": {
-          "x": 0,
-          "y": -4.5,
-          "z": 10
+          "x": 2.4,
+          "y": -4,
+          "z": 15
+        },
+        "radius": 1
+      },
+      {
+        "type": "sphere",
+        "texture": "texture_transparent",
+        "center": {
+          "x": -0.5,
+          "y": -3.5,
+          "z": 18
+        },
+        "radius": 1.5
+      },
+      {
+        "type": "sphere",
+        "texture": "texture_transparent",
+        "center": {
+          "x": -1.8,
+          "y": -4.3,
+          "z": 13
+        },
+        "radius": 0.7
+      },
+      {
+        "type": "sphere",
+        "texture": "texture_green",
+        "center": {
+          "x": 0.5,
+          "y": -4.2,
+          "z": 13
         },
         "radius": 0.8
+      },
+      {
+        "type": "cube",
+        "texture": "texture_white",
+        "position": {
+          "x": -0.5,
+          "y": -9,
+          "z": 16
+        },
+        "size": 4
       },
       {
         "type": "skybox",

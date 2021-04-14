@@ -372,8 +372,7 @@ bool Engine::cast_ray_light_check(const primitives::Point3&  A,
 
                 if (lambda.has_value() && lambda.value() < min_lambda &&
                     typeid(*object->get_texture()) !=
-                        typeid(scene::TransparentTexture) &&
-                    typeid(*object) != typeid(scene::Skybox))
+                        typeid(scene::TransparentTexture))
                 {
                     min_lambda = lambda.value();
                     res        = true;

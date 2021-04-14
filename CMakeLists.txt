@@ -31,6 +31,7 @@ set(SRC
     src/scene/objects/billboard.cc
     src/scene/objects/cube.cc
     src/scene/objects/cube_aligned.cc
+    src/scene/objects/cuboid_aligned.cc
     src/scene/textures/uniform_texture.cc
     src/scene/textures/procedural_texture.cc
     src/scene/textures/transparent_texture.cc
