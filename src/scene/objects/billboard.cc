@@ -38,8 +38,7 @@ Billboard::ray_intersection(const primitives::Point3&  A,
 
             // CHeck if inside of rectangle and if current pixel is transparent
             if (std::fabs(dist.x) <= width_ && std::fabs(dist.y) <= height_ &&
-                get_texture_info(hitpoint).color !=
-                    primitives::Color(255, 255, 255))
+                get_texture_info(hitpoint).color != primitives::Color(0, 0, 0))
             {
                 return t;
             }

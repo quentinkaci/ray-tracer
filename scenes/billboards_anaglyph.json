@@ -1,0 +1,122 @@
+{
+  "options": {
+    "rendering": {
+      "height": 1080,
+      "width": 1920,
+      "output_filename": "rendered_scene.png",
+      "gamma_correction": 1
+    },
+    "background": {
+      "gradient_color_top": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "gradient_color_bottom": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      }
+    },
+    "reflection": {
+      "depth": 5
+    },
+    "anaglyph": {
+      "camera_translation": {
+        "x": 0.01,
+        "y": 0,
+        "z": 0
+      }
+    }
+  },
+  "scene": {
+    "camera": {
+      "origin": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "target": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "up": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "x_fov": 62.22,
+      "y_fov": 35,
+      "z_min": 1
+    },
+    "lights": [
+      {
+        "type": "point",
+        "position": {
+          "x": 10,
+          "y": 10,
+          "z": -10
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        }
+      }
+    ],
+    "textures": [
+      {
+        "name": "bb8_texture",
+        "type": "image",
+        "image": "../textures/bb8.ppm",
+        "kd": 0.005,
+        "ks": 0.30,
+        "ns": 1,
+        "reflection": 0.30
+      },
+      {
+        "name": "star_wars_billboard_texture",
+        "type": "image",
+        "image": "../textures/star_wars.ppm",
+        "kd": 0.005,
+        "ks": 0,
+        "ns": 0,
+        "reflection": 0
+      }
+    ],
+    "objects": [
+      {
+        "type": "billboard",
+        "texture": "star_wars_billboard_texture",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 20
+        },
+        "width": 8,
+        "height": 5
+      },
+      {
+        "type": "sphere",
+        "texture": "bb8_texture",
+        "center": {
+          "x": 9,
+          "y": 0,
+          "z": 20
+        },
+        "radius": 2
+      },
+      {
+        "type": "sphere",
+        "texture": "bb8_texture",
+        "center": {
+          "x": -9.5,
+          "y": 0,
+          "z": 20
+        },
+        "radius": 2
+      }
+    ]
+  }
+}
