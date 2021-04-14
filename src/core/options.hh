@@ -31,7 +31,7 @@ struct Options
 
     // Soft shadow
     bool         soft_shadow_enabled   = true;
-    unsigned int nb_ray_soft_shadow    = 10;
+    unsigned int nb_ray_soft_shadow    = 20;
     double       min_range_soft_shadow = -1.;
     double       max_range_soft_shadow = 1.;
 
