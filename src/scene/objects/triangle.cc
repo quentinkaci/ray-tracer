@@ -29,35 +29,24 @@ Triangle::ray_intersection(const primitives::Point3&  A,
     if (std::fabs(normal_dot_ray) < EPSILON)
         return std::nullopt;
 
-    // Determine intersection point
-    double d = normal.dot(primitives::Vector3(p0_));
-    double t = (normal.dot(primitives::Vector3(A)) + d) / normal_dot_ray;
-    if (t < 0)
-        return std::nullopt;
-    primitives::Vector3 intersection = primitives::Vector3(A) + v * t;
+    // Determine intersection time
+    double t = (normal.dot(primitives::Vector3(A)) +
+                normal.dot(primitives::Vector3(p0_))) /
+               normal_dot_ray;
 
-    // Check if intersection is outside of first edge
-    primitives::Vector3 edge0(p1_ - p0_);
-    primitives::Vector3 p0_to_intersection =
-        intersection - primitives::Vector3(p0_);
-    if (normal.dot(edge0.cross(p0_to_intersection)) < 0)
-        return std::nullopt;
+    primitives::Vector3 w  = primitives::Vector3(A) + v * t - p0_;
+    primitives::Vector3 s1 = p1_ - p0_;
+    primitives::Vector3 s2 = p2_ - p0_;
 
-    // Check if intersection is outside of second edge
-    primitives::Vector3 edge1(p2_ - p1_);
-    primitives::Vector3 p1_to_intersection =
-        intersection - primitives::Vector3(p1_);
-    if (normal.dot(edge1.cross(p1_to_intersection)) < 0)
-        return std::nullopt;
+    // Barycentric coordinates
+    double b  = (s1.dot(s1) * s2.dot(s2) - pow(s1.dot(s2), 2));
+    double b1 = (w.dot(s1) * s2.dot(s2) - w.dot(s2) * s1.dot(s2)) / b;
+    double b2 = (w.dot(s2) * s1.dot(s1) - w.dot(s1) * s1.dot(s2)) / b;
 
-    // Check if intersection is outside of third edge
-    primitives::Vector3 edge2(p0_ - p2_);
-    primitives::Vector3 p2_to_intersection =
-        intersection - primitives::Vector3(p2_);
-    if (normal.dot(edge2.cross(p2_to_intersection)) < 0)
-        return std::nullopt;
+    if (b1 >= 0 && b2 >= 0 && b1 + b2 <= 1)
+        return t;
 
-    return t;
+    return std::nullopt;
 }
 
 primitives::Vector3 Triangle::get_normal(const primitives::Point3&,
