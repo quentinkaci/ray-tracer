@@ -519,6 +519,10 @@ void parse_json(const std::string& filename,
                 scene::Scene&      scene)
 {
     std::ifstream file(filename);
+    if (!file.is_open())
+        throw std::logic_error("Json file (" + filename +
+                               ") doesn't exist.");
+
     json          j;
     file >> j;
 

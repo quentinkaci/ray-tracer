@@ -3,6 +3,13 @@
 #include <cstdio>
 #include <fstream>
 
+static void safe_read(std::ifstream& ifs, std::string& buffer)
+{
+    ifs >> buffer;
+    if (ifs.fail() || ifs.eof())
+        throw std::logic_error("PPM file is corrupted.");
+}
+
 namespace utils
 {
 class ImagePPM : public Image
@@ -12,24 +19,23 @@ class ImagePPM : public Image
     {
         std::ifstream ifs(filename, std::ios_base::out);
         if (!ifs.is_open())
-            return;
+            throw std::logic_error("PPM file (" + filename +
+                                   ") doesn't exist.");
 
         std::string buffer;
 
-        ifs >> buffer;
+        safe_read(ifs, buffer);
         if (buffer != "P3")
-        {
-            std::cerr << "Error: PPM format not handled." << std::endl;
-            return;
-        }
+            throw std::logic_error("PPM format not handled.");
 
-        ifs >> buffer;
+        safe_read(ifs, buffer);
         uint width = std::stoul(buffer);
-        ifs >> buffer;
+        safe_read(ifs, buffer);
         uint height = std::stoul(buffer);
 
-        // Skip largest value of RGB
-        ifs >> buffer;
+        safe_read(ifs, buffer);
+        if (std::stoul(buffer) != 255)
+            throw std::logic_error("RGB depth must be 8 bit.");
 
         height_ = height;
         width_  = width;
@@ -39,11 +45,12 @@ class ImagePPM : public Image
         {
             for (uint x = 0; x < width; ++x)
             {
-                ifs >> buffer;
+                safe_read(ifs, buffer);
+
                 uchar r = std::stoul(buffer);
-                ifs >> buffer;
+                safe_read(ifs, buffer);
                 uchar g = std::stoul(buffer);
-                ifs >> buffer;
+                safe_read(ifs, buffer);
                 uchar b = std::stoul(buffer);
 
                 pixel(x, y) = primitives::Color(r, g, b);
