@@ -113,10 +113,7 @@ CUBE_FACES CuboidAligned::get_cube_face(const primitives::Point3& A) const
 
     const double distance_z = std::fabs(size_.z - std::fabs(point.z));
     if (distance_z < min_dist)
-    {
-        res      = (point.z < 0) ? CUBE_FACES::FRONT : CUBE_FACES::BACK;
-        min_dist = distance_z;
-    }
+        res = (point.z < 0) ? CUBE_FACES::FRONT : CUBE_FACES::BACK;
 
     return res;
 }

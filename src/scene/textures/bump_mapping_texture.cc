@@ -25,17 +25,15 @@ BumpMappingTexture::get_caracteristics(const primitives::Point3&) const
 primitives::Vector3 BumpMappingTexture::get_normal_perturbation(
     const primitives::Point3& point) const
 {
-    double z = 0.5;
-
     return primitives::Vector3(
                p_.get_octave(
-                   point.x - EPSILON, point.y, z, octave_, persistence_) -
+                   point.x - EPSILON, point.y, 0, octave_, persistence_) -
                    p_.get_octave(
-                       point.x + EPSILON, point.y, z, octave_, persistence_),
+                       point.x + EPSILON, point.y, 0, octave_, persistence_),
                p_.get_octave(
-                   point.x, point.y - EPSILON, z, octave_, persistence_) -
+                   point.x, point.y - EPSILON, 0, octave_, persistence_) -
                    p_.get_octave(
-                       point.x, point.y + EPSILON, z, octave_, persistence_),
+                       point.x, point.y + EPSILON, 0, octave_, persistence_),
                0.) *
            intensity_;
 }

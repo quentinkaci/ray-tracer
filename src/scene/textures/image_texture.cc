@@ -24,7 +24,7 @@ ImageTexture::get_caracteristics(const primitives::Point3& point) const
     TextureMaterialCaracteristics res(caracteristic_);
 
     double x = std::fmod(point.x + offset_x_, 1.0);
-    double y = point.y;
+    double y = std::fabs(point.y);
 
     // Handle 6 faces of a cube
     if (cube_texture_)

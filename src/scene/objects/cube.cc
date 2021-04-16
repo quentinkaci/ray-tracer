@@ -1,8 +1,6 @@
 #include "cube.hh"
 #include "rectangle.hh"
 
-#include <cmath>
-
 #define EPSILON 0.0001
 
 namespace scene
@@ -34,7 +32,7 @@ std::optional<double> Cube::ray_intersection(const primitives::Point3&  A,
 {
     std::optional<double> res = std::nullopt;
 
-    for (Rectangle r : rectangles_)
+    for (const Rectangle& r : rectangles_)
     {
         std::optional<double> t = r.ray_intersection(A, v);
         if (t.has_value() && (!res.has_value() || t < res.value()))
@@ -47,7 +45,7 @@ std::optional<double> Cube::ray_intersection(const primitives::Point3&  A,
 primitives::Vector3 Cube::get_normal(const primitives::Point3&  A,
                                      const primitives::Vector3& v) const
 {
-    for (Rectangle r : rectangles_)
+    for (const Rectangle& r : rectangles_)
     {
         primitives::Vector3 normal = r.get_normal(A, v);
         primitives::Vector3 A_pos  = A - r.pos_;
@@ -62,7 +60,7 @@ primitives::Vector3 Cube::get_normal(const primitives::Point3&  A,
 primitives::Point3
 Cube::get_planar_projection(const primitives::Point3& A) const
 {
-    for (Rectangle r : rectangles_)
+    for (const Rectangle& r : rectangles_)
     {
         primitives::Vector3 normal = r.get_normal(A, primitives::Vector3());
         primitives::Vector3 A_pos  = A - r.pos_;
