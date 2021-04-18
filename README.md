@@ -1,5 +1,7 @@
 # ray-tracer
 
+![Results](https://raw.githubusercontent.com/quentinkaci/ray-tracer/main/docs/results.gif)
+
 Ray-tracer written from scratch in C++.
 
 ## Usage
