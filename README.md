@@ -4,6 +4,13 @@
 
 Ray-tracer written from scratch in C++.
 
+## Prerequisites
+
+* [libtbb-dev]()
+* [nlohmann json](https://github.com/nlohmann/json)
+* [libpng-dev](http://www.libpng.org/pub/png/libpng.html)
+* [png++](http://www.nongnu.org/pngpp/)
+
 ## Usage
 
 ```
