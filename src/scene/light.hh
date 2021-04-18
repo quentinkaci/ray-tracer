@@ -20,5 +20,7 @@ struct Light
 
     virtual const primitives::Vector3
     get_ray_to_light(const primitives::Point3& point) const = 0;
+
+    virtual bool is_illuminated(const primitives::Vector3& light_ray) const = 0;
 };
 } // namespace scene

@@ -24,4 +24,9 @@ PointLight::get_ray_to_light(const primitives::Point3& point) const
     return ray;
 }
 
+bool PointLight::is_illuminated(const primitives::Vector3&) const
+{
+    return true;
+}
+
 } // namespace scene

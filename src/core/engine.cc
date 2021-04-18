@@ -279,37 +279,11 @@ Engine::compute_soft_shadow(const primitives::Point3& offset_hitpoint,
                             const std::shared_ptr<scene::Light>& light,
                             const primitives::Vector3&           light_ray)
 {
-    // With a DirectionalLight, a shadow is created if light_ray and
-    // light.get_direction() are in the same orientation.
+    if (!light->is_illuminated(light_ray))
+        return options_.nb_ray_soft_shadow;
+
     bool is_directional_light =
         typeid(*light) == typeid(scene::DirectionalLight);
-    if (is_directional_light)
-    {
-        const auto& light_directional =
-            dynamic_cast<const scene::DirectionalLight&>(*light);
-
-        if (light_directional.get_direction().dot(light_ray) >= 0)
-            return options_.nb_ray_soft_shadow;
-    }
-
-    // With a SpotLight, a shadow is created if the angle between light_ray and
-    // light.get_direction() is greater than a specific value.
-    bool is_spot_light = typeid(*light) == typeid(scene::SpotLight);
-    if (is_spot_light)
-    {
-        const auto& light_spot = dynamic_cast<const scene::SpotLight&>(*light);
-
-        // Rays must be in the same orientation
-        auto light_ray_inv = light_ray * -1.0;
-
-        const double theta = std::acos(
-            light_spot.get_direction().dot(light_ray_inv) /
-            (light_spot.get_direction().norm() * light_ray_inv.norm()));
-
-        if (std::fabs(theta) > light_spot.get_angle())
-            return options_.nb_ray_soft_shadow;
-    }
-
     if (!options_.soft_shadow_enabled || is_directional_light)
     {
         // Take shadow into account

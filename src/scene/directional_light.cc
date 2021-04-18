@@ -34,4 +34,12 @@ DirectionalLight::get_ray_to_light(const primitives::Point3&) const
 {
     return direction_.normalize() * -1.0;
 }
+
+bool DirectionalLight::is_illuminated(
+    const primitives::Vector3& light_ray) const
+{
+    // A shadow is created if light_ray and get_direction() are in the same
+    // orientation.
+    return get_direction().dot(light_ray) < 0;
+}
 } // namespace scene

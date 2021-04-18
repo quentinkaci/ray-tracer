@@ -20,6 +20,8 @@ class DirectionalLight : public Light
     const primitives::Vector3
     get_ray_to_light(const primitives::Point3& point) const override;
 
+    bool is_illuminated(const primitives::Vector3& light_ray) const override;
+
   private:
     const primitives::Point3 position_;
 
