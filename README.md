@@ -1,8 +1,13 @@
-# ray-tracer
+# Ray Tracer
 
 ![Results](https://raw.githubusercontent.com/quentinkaci/ray-tracer/main/docs/results.gif)
 
 Ray-tracer written from scratch in C++.
+
+## Authors
+
+* Quentin Kaci (quentin.kaci)
+* Theo Lepage (theo.lepage)
 
 ## Prerequisites
 
