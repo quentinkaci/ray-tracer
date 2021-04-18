@@ -29,6 +29,10 @@ std::optional<double>
 CuboidAligned::ray_intersection(const primitives::Point3&  A,
                                 const primitives::Vector3& v) const
 {
+    // Intersection algorithm for Axis-Aligned Bounding Box (AABB)
+    // Inspired from
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
+
     // Find intersection on x axis
     double t_min_x = (min_pos_.x - A.x) / v.x;
     double t_max_x = (max_pos_.x - A.x) / v.x;

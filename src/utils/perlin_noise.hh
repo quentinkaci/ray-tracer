@@ -29,6 +29,6 @@ class PerlinNoise
 
     double lerp(double begin, double end, double value) const;
     double fade(double value) const;
-    double grad(uint hash, double x, double y, double z) const;
+    double dot(uint hash, double x, double y, double z) const;
 };
 } // namespace utils

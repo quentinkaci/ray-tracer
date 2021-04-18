@@ -24,58 +24,59 @@ double PerlinNoise::get(double x, double y, double z) const
 
     // We assume that x, y and z are between 0.0 and 1.0.
     // Thus we rely on their fractional part to get their actual position.
-    double trash = 0;
-    double xf    = std::modf(x, &trash);
-    double yf    = std::modf(y, &trash);
-    double zf    = std::modf(z, &trash);
+    double       trash = 0;
+    const double xf    = std::modf(x, &trash);
+    const double yf    = std::modf(y, &trash);
+    const double zf    = std::modf(z, &trash);
 
     // ------
     // Part 1
     // Find hash values for each of the 8 corners of the cube
     // ------
 
-    uint xi = static_cast<uint>(x) % 256;
-    uint yi = static_cast<uint>(y) % 256;
-    uint zi = static_cast<uint>(z) % 256;
+    const uint xi = static_cast<uint>(x) % 256;
+    const uint yi = static_cast<uint>(y) % 256;
+    const uint zi = static_cast<uint>(z) % 256;
 
-    uint aaa = hash_[hash_[hash_[xi] + yi] + zi];
-    uint aba = hash_[hash_[hash_[xi] + yi + 1] + zi];
-    uint aab = hash_[hash_[hash_[xi] + yi] + zi + 1];
-    uint abb = hash_[hash_[hash_[xi] + yi + 1] + zi + 1];
-    uint baa = hash_[hash_[hash_[xi + 1] + yi] + zi];
-    uint bba = hash_[hash_[hash_[xi + 1] + yi + 1] + zi];
-    uint bab = hash_[hash_[hash_[xi + 1] + yi] + zi + 1];
-    uint bbb = hash_[hash_[hash_[xi + 1] + yi + 1] + zi + 1];
+    const uint aaa = hash_[hash_[hash_[xi] + yi] + zi];
+    const uint aba = hash_[hash_[hash_[xi] + yi + 1] + zi];
+    const uint aab = hash_[hash_[hash_[xi] + yi] + zi + 1];
+    const uint abb = hash_[hash_[hash_[xi] + yi + 1] + zi + 1];
+    const uint baa = hash_[hash_[hash_[xi + 1] + yi] + zi];
+    const uint bba = hash_[hash_[hash_[xi + 1] + yi + 1] + zi];
+    const uint bab = hash_[hash_[hash_[xi + 1] + yi] + zi + 1];
+    const uint bbb = hash_[hash_[hash_[xi + 1] + yi + 1] + zi + 1];
 
     // ------
     // Part 2
     // Interpolate between the dot product of each of the 8 corners
     // ------
 
-    double u = fade(xf);
-    double v = fade(yf);
-    double w = fade(zf);
+    const double u = fade(xf);
+    const double v = fade(yf);
+    const double w = fade(zf);
 
-    double aaa_grad = grad(aaa, xf, yf, zf);
-    double baa_grad = grad(baa, xf - 1, yf, zf);
-    double x1       = lerp(aaa_grad, baa_grad, u);
+    const double aaa_dot = dot(aaa, xf, yf, zf);
+    const double baa_dot = dot(baa, xf - 1, yf, zf);
+    double       x1      = lerp(aaa_dot, baa_dot, u);
 
-    double aba_grad = grad(aba, xf, yf - 1, zf);
-    double bba_grad = grad(bba, xf - 1, yf - 1, zf);
-    double x2       = lerp(aba_grad, bba_grad, u);
+    const double aba_dot = dot(aba, xf, yf - 1, zf);
+    const double bba_dot = dot(bba, xf - 1, yf - 1, zf);
+    double       x2      = lerp(aba_dot, bba_dot, u);
 
-    double y1 = lerp(x1, x2, v);
+    const double y1 = lerp(x1, x2, v);
 
-    double aab_grad = grad(aab, xf, yf, zf - 1);
-    double bab_grad = grad(bab, xf - 1, yf, zf - 1);
-    x1              = lerp(aab_grad, bab_grad, u);
+    const double aab_dot = dot(aab, xf, yf, zf - 1);
+    const double bab_dot = dot(bab, xf - 1, yf, zf - 1);
+    x1                   = lerp(aab_dot, bab_dot, u);
 
-    double abb_grad = grad(abb, xf, yf - 1, zf - 1);
-    double bbb_grad = grad(bbb, xf - 1, yf - 1, zf - 1);
-    x2              = lerp(abb_grad, bbb_grad, u);
+    const double abb_dot = dot(abb, xf, yf - 1, zf - 1);
+    const double bbb_dot = dot(bbb, xf - 1, yf - 1, zf - 1);
+    x2                   = lerp(abb_dot, bbb_dot, u);
 
-    double y2 = lerp(x1, x2, v);
+    const double y2 = lerp(x1, x2, v);
 
+    // Return normalized result between 0 and 1
     return (1 + lerp(y1, y2, w)) / 2;
 }
 
@@ -114,12 +115,12 @@ double PerlinNoise::fade(double value) const
     return value * value * value * (value * (value * 6 - 15) + 10);
 }
 
-double PerlinNoise::grad(uint hash, double x, double y, double z) const
+double PerlinNoise::dot(uint hash, double x, double y, double z) const
 {
     // Depending on hash value, compute the dot product between vector
     // (x, y, z) and a unit vector (eg: (1, -1, 0)).
 
-    switch (hash & 0xF)
+    switch (hash & 0xF) // Last 4 bits of hash
     {
     case 0x0:
         return x + y;

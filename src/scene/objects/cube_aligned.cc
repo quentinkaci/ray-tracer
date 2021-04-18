@@ -29,6 +29,10 @@ std::optional<double>
 CubeAligned::ray_intersection(const primitives::Point3&  A,
                               const primitives::Vector3& v) const
 {
+    // Intersection algorithm for Axis-Aligned Bounding Box (AABB)
+    // Inspired from
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
+
     // Find intersection on x axis
     double t_min_x = (min_pos_.x - A.x) / v.x;
     double t_max_x = (max_pos_.x - A.x) / v.x;
@@ -58,7 +62,7 @@ CubeAligned::ray_intersection(const primitives::Point3&  A,
         std::swap(t_min_z, t_max_z); // Make sure min < max
 
     // Handle if ray misses axis z
-    if ((t_min_x > t_max_z) || (t_min_z > t_max_x))
+    if (t_min_x > t_max_z || t_min_z > t_max_x)
         return std::nullopt;
 
     // Make sure min < max
