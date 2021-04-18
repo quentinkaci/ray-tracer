@@ -455,11 +455,13 @@ Engine::cast_ray(const primitives::Point3&  origin,
     // Add reflection / refraction
     if (options_.reflection_enabled)
     {
-        primitives::Vector3 scattered_ray =
-            closest_object->get_texture()->get_scattered_ray(vector, normal);
+        scene::SCATTERED_RAY scattered_type = scene::SCATTERED_RAY::REFLECTED;
 
-        if (typeid(*closest_object->get_texture()) ==
-            typeid(scene::TransparentTexture))
+        primitives::Vector3 scattered_ray =
+            closest_object->get_texture()->get_scattered_ray(
+                vector, normal, scattered_type);
+
+        if (scattered_type == scene::SCATTERED_RAY::REFRACTED)
         {
             offset_hitpoint =
                 hitpoint + (vector.normalize() * EPSILON).get_destination();

@@ -7,6 +7,12 @@
 
 namespace scene
 {
+enum SCATTERED_RAY
+{
+    REFLECTED = 0,
+    REFRACTED
+};
+
 struct TextureMaterialCaracteristics
 {
     double            kd;
@@ -23,7 +29,8 @@ struct TextureMaterial
 
     virtual primitives::Vector3
     get_scattered_ray(const primitives::Vector3& ray,
-                      const primitives::Vector3& normal) const
+                      const primitives::Vector3& normal,
+                      SCATTERED_RAY&) const
     {
         // By default the scattered ray is the reflected ray.
         return (ray - normal * ray.dot(normal) * 2).normalize();

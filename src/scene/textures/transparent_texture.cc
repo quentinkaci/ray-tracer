@@ -1,4 +1,5 @@
 #include <cmath>
+#include <random>
 
 #include "transparent_texture.hh"
 
@@ -18,36 +19,70 @@ TransparentTexture::get_caracteristics(const primitives::Point3&) const
     return caracteristic_;
 }
 
+bool TransparentTexture::schlick_approximation(const double n_1,
+                                               const double n_2,
+                                               const double cos_theta_1) const
+{
+    // Schlick's approximation
+    // (https://en.wikipedia.org/wiki/Schlick%27s_approximation)
+
+    const double r_0     = std::pow((n_1 - n_2) / (n_1 + n_2), 2);
+    const double r_theta = r_0 + (1.0 - r_0) * std::pow(1.0 - cos_theta_1, 5);
+
+    // Find a random number between 0 and 1
+    std::random_device               rd;
+    std::default_random_engine       re(rd());
+    std::uniform_real_distribution<> random_value(0, 1);
+
+    // If reflected prob > random number => use reflection over refraction
+    return r_theta > random_value(re);
+}
+
 primitives::Vector3
 TransparentTexture::get_scattered_ray(const primitives::Vector3& ray,
-                                      const primitives::Vector3& normal) const
+                                      const primitives::Vector3& normal,
+                                      SCATTERED_RAY& scattered_ray_type) const
 {
-    primitives::Vector3 u       = ray.normalize();
-    primitives::Vector3 normal_ = normal;
+    const primitives::Vector3 normal_ =
+        (ray.dot(normal) > 0) ? normal * -1.0 : normal;
 
-    double ir = refractive_index_;
+    // Determine ratio of refractive indexes (1.0 for air)
+    const double n1         = (ray.dot(normal) <= 0) ? 1.0 : refractive_index_;
+    const double n2         = (ray.dot(normal) <= 0) ? refractive_index_ : 1.0;
+    const double n1_over_n2 = n1 / n2;
 
-    if (ray.dot(normal) <= 0)
-        ir = 1.0 / ir;
-    else
-        normal_ = normal * -1.0;
+    // Compute angle between ray and normal
+    const double cos_theta_1 =
+        std::fmin((ray.normalize() * -1.0).dot(normal_), 1.0);
+    const double sin_theta_1 = std::sqrt(1.0 - cos_theta_1 * cos_theta_1);
 
-    double cos_theta = std::fmin((u * -1.0).dot(normal_), 1.0);
-    double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
+    // Determine if scattered ray is reflected or refracted
+    const bool refraction_is_possible = n1_over_n2 * sin_theta_1 <= 1.0;
 
-    bool can_refract = ir * sin_theta <= 1.0;
-
-    if (can_refract)
-    {
-        // The scattered ray is the refracted ray.
-        primitives::Vector3 r_out_perp = (u + normal_ * cos_theta) * ir;
-        primitives::Vector3 r_out_parallel =
-            normal_ * std::sqrt(std::fabs(1.0 - r_out_perp.norm_squared())) *
-            -1.0;
-        return r_out_perp + r_out_parallel;
-    }
+    // FIXME: The following condition does not produce expected results.
+    // const bool reflect = refraction_is_possible
+    //                          ? schlick_approximation(n1, n2, cos_theta_1)
+    //                          : true;
+    const bool reflect = !refraction_is_possible;
 
     // The scattered ray is the reflected ray.
-    return (ray - normal_ * ray.dot(normal_) * 2).normalize();
+    if (reflect)
+    {
+        const primitives::Vector3 res =
+            (ray - normal_ * ray.dot(normal_) * 2).normalize();
+
+        scattered_ray_type = SCATTERED_RAY::REFLECTED;
+        return res;
+    }
+
+    // The scattered ray is the refracted ray.
+    const primitives::Vector3 a =
+        (ray.normalize() + normal_ * cos_theta_1) * n1_over_n2;
+    const primitives::Vector3 b =
+        normal_ * std::sqrt(std::fabs(1.0 - a.norm_squared())) * -1.0;
+    const primitives::Vector3 res = a + b;
+
+    scattered_ray_type = SCATTERED_RAY::REFRACTED;
+    return res;
 }
 } // namespace scene

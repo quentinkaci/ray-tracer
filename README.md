@@ -7,7 +7,7 @@ Ray-tracer written from scratch in C++.
 ```
 mkdir build && cd build
 cmake .. && make
-./ray-tracer ../scenes/default.json
+./raytracer ../scenes/default.json
 ```
 
 ## Features
